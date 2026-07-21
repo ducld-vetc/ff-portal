@@ -1,116 +1,185 @@
+import { useState } from 'react'
+import { RightOutlined } from '@ant-design/icons'
+import { DatePicker, Select, Table, message, type TableColumnsType } from 'antd'
+import dayjs from 'dayjs'
 import {
-  BankOutlined,
-  HomeOutlined,
-  ProductOutlined,
-  ShoppingOutlined,
-  TeamOutlined,
-  WarningOutlined,
-} from '@ant-design/icons'
-import { Card, Col, List, Progress, Row, Space, Statistic, Tag, Typography } from 'antd'
-import { PageHeader } from '../components/PageHeader'
+  AreaTrendChart,
+  DonutChart,
+  GaugeChart,
+} from '../components/dashboard/FulfillmentCharts'
+import {
+  avgDeliveryTime,
+  avgProcessingTime,
+  channelBreakdown,
+  completionRate,
+  fulfillmentKpis,
+  needsProcessingCount,
+  partnerFilterOptions,
+  processingRate,
+  processingSpeedSegments,
+  salesChannelOptions,
+  type ChannelRow,
+} from '../data/dashboardFulfillment'
+import { warehouseOptions } from '../data/mock'
+import { usePortal } from '../portal/PortalContext'
 
-const metrics = [
-  {
-    title: 'Khách hàng',
-    value: 12,
-    icon: <BankOutlined />,
-    className: 'metric-blue',
-  },
-  {
-    title: 'Kho hoạt động',
-    value: 5,
-    icon: <HomeOutlined />,
-    className: 'metric-cyan',
-  },
-  {
-    title: 'SKU active',
-    value: 1842,
-    icon: <ProductOutlined />,
-    className: 'metric-purple',
-  },
-  {
-    title: 'Đơn hôm nay',
-    value: 326,
-    icon: <ShoppingOutlined />,
-    className: 'metric-orange',
-  },
-  {
-    title: 'Nhân sự',
-    value: 48,
-    icon: <TeamOutlined />,
-    className: 'metric-gold',
-  },
-  {
-    title: 'Cảnh báo',
-    value: 3,
-    icon: <WarningOutlined />,
-    className: 'metric-orange',
-  },
-]
+const { RangePicker } = DatePicker
 
-const recent = [
-  { title: 'Wave WAVE-20260720-01 đang lấy hàng', tag: 'PICKING', color: 'blue' },
-  { title: 'Khách hàng ShopFast Demo chờ onboarding', tag: 'ONBOARDING', color: 'gold' },
-  { title: 'SKU-CHARGER-20W sắp hết tồn tại WH-HCM-01', tag: 'INVENTORY', color: 'orange' },
-  { title: 'Audit: Admin cập nhật role E2E Warehouse Operator', tag: 'AUDIT', color: 'purple' },
+const kpiToneClass: Record<string, string> = {
+  default: 'fd-kpi-default',
+  orange: 'fd-kpi-orange',
+  blue: 'fd-kpi-blue',
+  green: 'fd-kpi-green',
+  red: 'fd-kpi-red',
+  brown: 'fd-kpi-brown',
+}
+
+const channelColumns: TableColumnsType<ChannelRow> = [
+  { title: 'Kênh bán hàng', dataIndex: 'channel', width: 180 },
+  { title: 'Đang xử lý', dataIndex: 'processing', align: 'right' },
+  { title: 'Xử lý nhanh', dataIndex: 'fast', align: 'right' },
+  { title: 'Xử lý đúng hạn', dataIndex: 'onTime', align: 'right' },
+  { title: 'Xử lý trễ', dataIndex: 'late', align: 'right' },
+  { title: 'Hủy', dataIndex: 'cancelled', align: 'right' },
+  {
+    title: 'Tổng cộng',
+    dataIndex: 'total',
+    align: 'right',
+    render: (value: number) => <strong>{value.toLocaleString('vi-VN')}</strong>,
+  },
 ]
 
 export default function DashboardPage() {
+  const { isCustomer } = usePortal()
+  const [partner, setPartner] = useState<string | undefined>()
+  const [warehouse, setWarehouse] = useState<string | undefined>()
+  const [channel, setChannel] = useState<string | undefined>()
+  const [range, setRange] = useState<[dayjs.Dayjs, dayjs.Dayjs]>([
+    dayjs('2026-07-14'),
+    dayjs('2026-07-21'),
+  ])
+
   return (
-    <div>
-      <PageHeader
-        title="Tổng quan"
-        description="Theo dõi sức khỏe vận hành fulfillment theo customer / warehouse scope hiện tại."
-      />
-
-      <Row gutter={[16, 16]}>
-        {metrics.map((item) => (
-          <Col xs={24} sm={12} lg={8} xl={4} key={item.title}>
-            <Card className={`metric-card ${item.className}`} size="small">
-              <Space style={{ width: '100%', justifyContent: 'space-between' }}>
-                <Statistic title={item.title} value={item.value} />
-                <span className="metric-icon">{item.icon}</span>
-              </Space>
-            </Card>
-          </Col>
-        ))}
-      </Row>
-
-      <Row gutter={[16, 16]} style={{ marginTop: 16 }}>
-        <Col xs={24} lg={14}>
-          <Card className="dashboard-card content-card" title="Công suất kho hôm nay">
-            <Space direction="vertical" style={{ width: '100%' }} size="large">
-              <div>
-                <Typography.Text type="secondary">Inbound</Typography.Text>
-                <Progress percent={72} strokeColor="#2563eb" />
-              </div>
-              <div>
-                <Typography.Text type="secondary">Picking</Typography.Text>
-                <Progress percent={58} strokeColor="#7c3aed" />
-              </div>
-              <div>
-                <Typography.Text type="secondary">Packing / Handover</Typography.Text>
-                <Progress percent={41} strokeColor="#ea580c" />
-              </div>
-            </Space>
-          </Card>
-        </Col>
-        <Col xs={24} lg={10}>
-          <Card className="dashboard-card content-card" title="Hoạt động gần đây">
-            <List
-              dataSource={recent}
-              renderItem={(item) => (
-                <List.Item>
-                  <List.Item.Meta
-                    title={item.title}
-                    description={<Tag color={item.color}>{item.tag}</Tag>}
-                  />
-                </List.Item>
-              )}
+    <div className="fulfillment-dashboard">
+      <div className="fd-topbar">
+        <h2 className="fd-title">Fulfillment</h2>
+        <div className="fd-filters">
+          {!isCustomer ? (
+            <Select
+              allowClear
+              placeholder="Chọn đối tác"
+              style={{ minWidth: 180 }}
+              value={partner}
+              onChange={setPartner}
+              options={partnerFilterOptions}
             />
-          </Card>
-        </Col>
-      </Row>
+          ) : null}
+          <Select
+            allowClear
+            placeholder="Chọn kho"
+            style={{ minWidth: 160 }}
+            value={warehouse}
+            onChange={setWarehouse}
+            options={warehouseOptions.filter((item) => item.value !== 'all')}
+          />
+          <Select
+            allowClear
+            placeholder="Chọn kênh bán hàng"
+            style={{ minWidth: 180 }}
+            value={channel}
+            onChange={setChannel}
+            options={salesChannelOptions.filter((item) => item.value !== 'all')}
+          />
+          <RangePicker
+            value={range}
+            format="DD/MM/YYYY"
+            onChange={(values) => {
+              if (values?.[0] && values?.[1]) {
+                setRange([values[0], values[1]])
+              }
+            }}
+          />
+        </div>
+      </div>
+
+      <div className="fd-kpi-grid">
+        {fulfillmentKpis.map((item) => (
+          <div key={item.key} className={`fd-kpi-card ${kpiToneClass[item.tone]}`}>
+            <div className="fd-kpi-label">{item.label}</div>
+            <div className="fd-kpi-value">
+              {item.value.toLocaleString('vi-VN')}
+              {item.percent !== undefined ? (
+                <span className="fd-kpi-percent"> ({item.percent}%)</span>
+              ) : null}
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div className="fd-panel-grid fd-panel-grid-3">
+        <div className="fd-panel">
+          <div className="fd-panel-title">Tốc độ xử lý đơn hàng</div>
+          <DonutChart
+            segments={processingSpeedSegments}
+            centerValue="9,492"
+            centerLabel="đơn hàng"
+          />
+        </div>
+        <div className="fd-panel">
+          <div className="fd-panel-title">Tỷ lệ xử lý đơn hàng</div>
+          <GaugeChart
+            percent={processingRate.percent}
+            color="#2563eb"
+            label={`Đã xuất kho ${processingRate.shipped.toLocaleString('vi-VN')} trên tổng ${processingRate.total.toLocaleString('vi-VN')} đơn hàng`}
+          />
+        </div>
+        <div className="fd-panel">
+          <div className="fd-panel-title">Tỷ lệ hoàn thành đơn hàng</div>
+          <GaugeChart
+            percent={completionRate.percent}
+            color="#22c55e"
+            label={`Giao hàng thành công ${completionRate.delivered.toLocaleString('vi-VN')} trên tổng ${completionRate.total.toLocaleString('vi-VN')} đơn hàng`}
+          />
+        </div>
+      </div>
+
+      <button
+        type="button"
+        className="fd-alert-bar"
+        onClick={() => message.info(`Có ${needsProcessingCount} đơn hàng cần xử lý (mock)`)}
+      >
+        <span className="fd-alert-label">Cần xử lý</span>
+        <span className="fd-alert-value">
+          {needsProcessingCount} Đơn hàng <RightOutlined />
+        </span>
+      </button>
+
+      <div className="fd-panel-grid fd-panel-grid-2">
+        <AreaTrendChart
+          title="Thời gian xử lý đơn hàng trung bình"
+          yLabel="Số lượng đơn"
+          xLabel="Khoảng thời gian (ngày)"
+          points={avgProcessingTime}
+          color="#2563eb"
+        />
+        <AreaTrendChart
+          title="Thời gian giao hàng trung bình"
+          yLabel="Số lượng đơn"
+          xLabel="Khoảng thời gian (ngày)"
+          points={avgDeliveryTime}
+          color="#22c55e"
+        />
+      </div>
+
+      <div className="fd-panel fd-table-panel">
+        <Table
+          rowKey="channel"
+          columns={channelColumns}
+          dataSource={channelBreakdown}
+          pagination={false}
+          size="middle"
+        />
+      </div>
     </div>
   )
 }

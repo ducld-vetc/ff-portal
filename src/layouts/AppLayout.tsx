@@ -1,30 +1,15 @@
 import { useEffect, useMemo, useState, type ReactNode } from 'react'
 import { Navigate, Outlet, useLocation, useNavigate } from 'react-router-dom'
 import {
-  ApartmentOutlined,
-  AppstoreOutlined,
-  AuditOutlined,
   BankOutlined,
-  BarChartOutlined,
   BellOutlined,
-  CarOutlined,
-  DashboardOutlined,
-  EnvironmentOutlined,
-  GiftOutlined,
-  HistoryOutlined,
   HomeOutlined,
-  IdcardOutlined,
-  InboxOutlined,
   MenuFoldOutlined,
   MenuUnfoldOutlined,
   MoonOutlined,
-  ProductOutlined,
-  SafetyCertificateOutlined,
-  SettingOutlined,
+  SwapOutlined,
   SunOutlined,
-  TeamOutlined,
   UserOutlined,
-  UsergroupAddOutlined,
 } from '@ant-design/icons'
 import {
   Avatar,
@@ -36,119 +21,84 @@ import {
   Menu,
   Select,
   Space,
+  Tag,
   theme as antTheme,
 } from 'antd'
 import viVN from 'antd/locale/vi_VN'
 import { useAuth } from '../auth/AuthContext'
 import { BrandMark } from '../components/PageHeader'
 import { customerOptions, warehouseOptions } from '../data/mock'
+import { usePortal } from '../portal/PortalContext'
+import {
+  adminHomePath,
+  adminMenuItems,
+  customerHomePath,
+  customerMenuItems,
+} from '../portal/menuConfig'
 
 const { Header, Sider, Content } = Layout
 
-const menuItems = [
-  { key: '/dashboard', icon: <DashboardOutlined />, label: 'Tổng quan' },
-  { key: '/onboarding', icon: <UsergroupAddOutlined />, label: 'Onboarding' },
-  { key: '/customers', icon: <BankOutlined />, label: 'Khách hàng' },
-  {
-    key: 'settings-group',
-    icon: <SettingOutlined />,
-    label: 'Thiết lập',
-    children: [
-      { key: '/warehouses', icon: <HomeOutlined />, label: 'Kho' },
-      { key: '/warehouses/materials', icon: <InboxOutlined />, label: 'Vật tư' },
-      {
-        key: '/warehouses/storage-devices',
-        icon: <AppstoreOutlined />,
-        label: 'Thiết bị chứa hàng',
-      },
-    ],
-  },
-  {
-    key: 'staff-group',
-    icon: <TeamOutlined />,
-    label: 'Nhân sự & truy cập',
-    children: [
-      { key: '/staff/roles', icon: <SafetyCertificateOutlined />, label: 'Quản lý nhóm quyền' },
-      { key: '/staff/users', icon: <UserOutlined />, label: 'Quản lý nhân sự' },
-    ],
-  },
-  { key: '/pickup-assignments', icon: <ApartmentOutlined />, label: 'Phân công lấy hàng' },
-  {
-    key: 'products-group',
-    icon: <ProductOutlined />,
-    label: 'Sản phẩm',
-    children: [
-      { key: '/catalog', icon: <ProductOutlined />, label: 'Product & SKU' },
-      {
-        key: '/products/locations',
-        icon: <EnvironmentOutlined />,
-        label: 'Vị trí sản phẩm',
-      },
-      {
-        key: '/products/location-history',
-        icon: <HistoryOutlined />,
-        label: 'Lịch sử vị trí sản phẩm',
-      },
-    ],
-  },
-  {
-    key: 'carriers-group',
-    icon: <CarOutlined />,
-    label: 'Đơn vị vận chuyển',
-    children: [
-      { key: '/carriers', icon: <CarOutlined />, label: 'Đơn vị vận chuyển' },
-      { key: '/carriers/accounts', icon: <IdcardOutlined />, label: 'Tài khoản đơn vị vận chuyển' },
-      { key: '/carriers/packages', icon: <GiftOutlined />, label: 'Gói vận chuyển' },
-    ],
-  },
-  { key: '/reports', icon: <BarChartOutlined />, label: 'Báo cáo' },
-  {
-    key: 'system-group',
-    icon: <SettingOutlined />,
-    label: 'Hệ thống',
-    children: [
-      { key: '/audit', icon: <AuditOutlined />, label: 'Audit log' },
-      { key: '/system', icon: <SettingOutlined />, label: 'Trạng thái dịch vụ' },
-    ],
-  },
-]
+function flattenMenuKeys(items: typeof adminMenuItems): { key: string }[] {
+  return items.flatMap((item) =>
+    'children' in item && item.children ? item.children : [item],
+  ) as { key: string }[]
+}
 
 export default function AppLayout() {
   const { user, logout } = useAuth()
+  const { portal, setPortal, isCustomer } = usePortal()
   const navigate = useNavigate()
   const location = useLocation()
   const [collapsed, setCollapsed] = useState(false)
-  const [openKeys, setOpenKeys] = useState<string[]>([
-    'settings-group',
-    'staff-group',
-    'products-group',
-    'carriers-group',
-    'system-group',
-  ])
+  const [openKeys, setOpenKeys] = useState<string[]>([])
   const [isDark, setIsDark] = useState(() => localStorage.getItem('ffm-theme') === 'dark')
 
+  const menuItems = isCustomer ? customerMenuItems : adminMenuItems
+  const homePath = isCustomer ? customerHomePath : adminHomePath
+
   useEffect(() => {
-    if (location.pathname.startsWith('/staff')) {
-      setOpenKeys((keys) => (keys.includes('staff-group') ? keys : [...keys, 'staff-group']))
-    }
-    if (location.pathname.startsWith('/carriers')) {
-      setOpenKeys((keys) =>
-        keys.includes('carriers-group') ? keys : [...keys, 'carriers-group'],
-      )
-    }
-    if (location.pathname.startsWith('/warehouses')) {
-      setOpenKeys((keys) =>
-        keys.includes('settings-group') ? keys : [...keys, 'settings-group'],
-      )
-    }
-    if (
-      location.pathname.startsWith('/catalog') ||
-      location.pathname.startsWith('/products')
-    ) {
-      setOpenKeys((keys) =>
-        keys.includes('products-group') ? keys : [...keys, 'products-group'],
-      )
-    }
+    const defaults = isCustomer
+      ? [
+          'client-ops-group',
+          'client-channel-group',
+          'client-products-group',
+          'client-shipping-group',
+        ]
+      : [
+          'customers-group',
+          'settings-group',
+          'staff-group',
+          'products-group',
+          'carriers-group',
+          'system-group',
+        ]
+    setOpenKeys(defaults)
+  }, [isCustomer])
+
+  useEffect(() => {
+    const path = location.pathname
+    setOpenKeys((keys) => {
+      const next = new Set(keys)
+      if (path.startsWith('/customers')) next.add('customers-group')
+      if (path.startsWith('/staff')) next.add('staff-group')
+      if (path.startsWith('/carriers') && !path.startsWith('/client')) next.add('carriers-group')
+      if (path.startsWith('/warehouses')) next.add('settings-group')
+      if (
+        (path.startsWith('/catalog') || path.startsWith('/products')) &&
+        !path.startsWith('/client')
+      ) {
+        next.add('products-group')
+      }
+      if (path.startsWith('/client/catalog') || path.startsWith('/client/products')) {
+        next.add('client-products-group')
+      }
+      if (path.startsWith('/client/carriers')) next.add('client-shipping-group')
+      if (path.startsWith('/client/operations')) next.add('client-ops-group')
+      if (path.startsWith('/client/stores') || path.startsWith('/client/channel')) {
+        next.add('client-channel-group')
+      }
+      return [...next]
+    })
   }, [location.pathname])
 
   useEffect(() => {
@@ -156,15 +106,36 @@ export default function AppLayout() {
     localStorage.setItem('ffm-theme', isDark ? 'dark' : 'light')
   }, [isDark])
 
+  // Keep portal mode aligned with current route namespace
+  useEffect(() => {
+    const onClient = location.pathname.startsWith('/client')
+    if (onClient && portal !== 'customer') setPortal('customer')
+    if (!onClient && portal === 'customer' && location.pathname !== '/login') {
+      // stay on customer portal even if deep-linking admin routes via URL is rare;
+      // only auto-switch when explicitly switching via button
+    }
+  }, [location.pathname, portal, setPortal])
+
   const selectedKeys = useMemo(() => {
-    const flat = menuItems.flatMap((item) =>
-      'children' in item && item.children ? item.children : [item],
-    )
+    const flat = flattenMenuKeys(menuItems)
     const match = flat
-      .filter((item) => location.pathname === item.key || location.pathname.startsWith(`${item.key}/`))
+      .filter(
+        (item) =>
+          location.pathname === item.key || location.pathname.startsWith(`${item.key}/`),
+      )
       .sort((a, b) => b.key.length - a.key.length)[0]
-    return match ? [match.key] : ['/dashboard']
-  }, [location.pathname])
+    return match ? [match.key] : [homePath]
+  }, [location.pathname, menuItems, homePath])
+
+  const switchPortal = () => {
+    if (isCustomer) {
+      setPortal('admin')
+      navigate(adminHomePath)
+    } else {
+      setPortal('customer')
+      navigate(customerHomePath)
+    }
+  }
 
   if (!user) {
     return <Navigate to="/login" replace state={{ from: location.pathname }} />
@@ -176,8 +147,8 @@ export default function AppLayout() {
       theme={{
         algorithm: isDark ? antTheme.darkAlgorithm : antTheme.defaultAlgorithm,
         token: {
-          colorPrimary: '#1e40af',
-          colorInfo: '#3b82f6',
+          colorPrimary: isCustomer ? '#0f766e' : '#1e40af',
+          colorInfo: isCustomer ? '#14b8a6' : '#3b82f6',
           borderRadius: 10,
           fontFamily: '"Fira Sans", ui-sans-serif, system-ui, sans-serif',
           fontFamilyCode: '"Fira Code", ui-monospace, monospace',
@@ -196,7 +167,7 @@ export default function AppLayout() {
         },
       }}
     >
-      <Layout className="app-shell">
+      <Layout className={`app-shell ${isCustomer ? 'portal-customer' : 'portal-admin'}`}>
         <Sider
           className="app-sider"
           width={248}
@@ -206,15 +177,23 @@ export default function AppLayout() {
           trigger={null}
           theme="dark"
         >
-          <button type="button" className="brand" onClick={() => navigate('/dashboard')}>
+          <button type="button" className="brand" onClick={() => navigate(homePath)}>
             <BrandMark />
             {!collapsed && (
               <span>
                 <strong>FulfillOne</strong>
-                <small>Control Center</small>
+                <small>{isCustomer ? 'Customer Portal' : 'Control Center'}</small>
               </span>
             )}
           </button>
+
+          {!collapsed && (
+            <div className="portal-sider-badge">
+              <Tag color={isCustomer ? 'cyan' : 'blue'}>
+                {isCustomer ? 'Cổng Khách hàng' : 'Cổng Admin'}
+              </Tag>
+            </div>
+          )}
 
           <Menu
             theme="dark"
@@ -232,7 +211,7 @@ export default function AppLayout() {
           {!collapsed && (
             <div className="sider-footnote">
               <span className="dot" />
-              Đã kết nối BFF
+              {isCustomer ? 'Không gian đối tác' : 'Đã kết nối BFF'}
             </div>
           )}
         </Sider>
@@ -245,21 +224,36 @@ export default function AppLayout() {
                 icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
                 onClick={() => setCollapsed((v) => !v)}
               />
-              <div className="scope-selector">
-                <Select
-                  defaultValue="all"
-                  options={customerOptions}
-                  suffixIcon={<BankOutlined style={{ color: 'var(--color-text-muted)' }} />}
-                />
-                <Select
-                  defaultValue="all"
-                  options={warehouseOptions}
-                  suffixIcon={<HomeOutlined style={{ color: 'var(--color-text-muted)' }} />}
-                />
-              </div>
+              {!isCustomer ? (
+                <div className="scope-selector">
+                  <Select
+                    defaultValue="all"
+                    options={customerOptions}
+                    suffixIcon={<BankOutlined style={{ color: 'var(--color-text-muted)' }} />}
+                  />
+                  <Select
+                    defaultValue="all"
+                    options={warehouseOptions}
+                    suffixIcon={<HomeOutlined style={{ color: 'var(--color-text-muted)' }} />}
+                  />
+                </div>
+              ) : (
+                <Tag color="cyan" style={{ marginInlineEnd: 0 }}>
+                  Đang xem với tư cách Khách hàng
+                </Tag>
+              )}
             </Space>
 
             <div className="header-actions">
+              <Button
+                type="primary"
+                ghost={!isCustomer}
+                icon={<SwapOutlined />}
+                onClick={switchPortal}
+                className="portal-switch-btn"
+              >
+                {isCustomer ? 'Sang Admin' : 'Sang Khách hàng'}
+              </Button>
               <Button
                 type="text"
                 icon={isDark ? <SunOutlined /> : <MoonOutlined />}
@@ -272,6 +266,12 @@ export default function AppLayout() {
                 menu={{
                   items: [
                     { key: 'profile', label: 'Hồ sơ cá nhân', icon: <UserOutlined /> },
+                    {
+                      key: 'switch-portal',
+                      label: isCustomer ? 'Chuyển sang Admin' : 'Chuyển sang Khách hàng',
+                      icon: <SwapOutlined />,
+                      onClick: switchPortal,
+                    },
                     { type: 'divider' },
                     {
                       key: 'logout',
@@ -289,7 +289,9 @@ export default function AppLayout() {
                   <Avatar size={36}>{user.displayName.charAt(0)}</Avatar>
                   <div className="user-copy">
                     <span className="name">{user.displayName}</span>
-                    <span className="role">{user.role}</span>
+                    <span className="role">
+                      {isCustomer ? 'Customer Portal' : user.role}
+                    </span>
                   </div>
                 </div>
               </Dropdown>

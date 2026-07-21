@@ -27,10 +27,25 @@ export const permissionTree: PermissionNode[] = [
     key: 'customers',
     title: 'Khách hàng',
     children: [
-      { key: 'customers.view', title: 'Xem danh sách' },
-      { key: 'customers.create', title: 'Thêm khách hàng' },
-      { key: 'customers.update', title: 'Cập nhật khách hàng' },
-      { key: 'customers.export', title: 'Xuất CSV' },
+      {
+        key: 'customers.list',
+        title: 'Khách hàng',
+        children: [
+          { key: 'customers.view', title: 'Xem danh sách' },
+          { key: 'customers.create', title: 'Thêm khách hàng' },
+          { key: 'customers.update', title: 'Cập nhật khách hàng' },
+          { key: 'customers.export', title: 'Xuất CSV' },
+        ],
+      },
+      {
+        key: 'customers.stores',
+        title: 'Quản lý cửa hàng',
+        children: [
+          { key: 'customers.stores.view', title: 'Xem danh sách cửa hàng' },
+          { key: 'customers.stores.filter', title: 'Lọc theo đối tác / kênh' },
+          { key: 'customers.stores.connection', title: 'Theo dõi trạng thái kết nối' },
+        ],
+      },
     ],
   },
   {

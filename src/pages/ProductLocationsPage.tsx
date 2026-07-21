@@ -10,6 +10,7 @@ import {
   type ProductLocationRow,
   type ProductLocationStatus,
 } from '../data/productLocations'
+import { usePortal } from '../portal/PortalContext'
 
 const partnerOptions = Array.from(
   new Map(
@@ -33,6 +34,7 @@ const conditionColor: Record<ProductCondition, string> = {
 }
 
 export default function ProductLocationsPage() {
+  const { isCustomer } = usePortal()
   const [query, setQuery] = useState('')
   const [appliedQuery, setAppliedQuery] = useState('')
   const [partner, setPartner] = useState<string | undefined>()
@@ -40,7 +42,7 @@ export default function ProductLocationsPage() {
   const filtered = useMemo(() => {
     const q = appliedQuery.trim().toLowerCase()
     return seedProductLocations.filter((row) => {
-      if (partner && row.partnerCode !== partner) return false
+      if (!isCustomer && partner && row.partnerCode !== partner) return false
       if (
         q &&
         !row.sku.toLowerCase().includes(q) &&
@@ -51,7 +53,7 @@ export default function ProductLocationsPage() {
       }
       return true
     })
-  }, [appliedQuery, partner])
+  }, [appliedQuery, partner, isCustomer])
 
   const locationRows = filtered.filter((r) => r.kind === 'location')
   const packageRows = filtered.filter((r) => r.kind === 'package')
@@ -114,7 +116,9 @@ export default function ProductLocationsPage() {
       width: 120,
       render: (value: string | null) => value || 'N/A',
     },
-    { title: 'Đối tác', dataIndex: 'partnerName', width: 240 },
+    ...(!isCustomer
+      ? ([{ title: 'Đối tác', dataIndex: 'partnerName', width: 240 }] as TableColumnsType<ProductLocationRow>)
+      : []),
   ]
 
   const packageColumns: TableColumnsType<ProductLocationRow> = [
@@ -151,7 +155,9 @@ export default function ProductLocationsPage() {
       width: 120,
       render: (value: string | null) => value || 'N/A',
     },
-    { title: 'Đối tác', dataIndex: 'partnerName', width: 240 },
+    ...(!isCustomer
+      ? ([{ title: 'Đối tác', dataIndex: 'partnerName', width: 240 }] as TableColumnsType<ProductLocationRow>)
+      : []),
   ]
 
   return (
@@ -178,14 +184,16 @@ export default function ProductLocationsPage() {
                 onClick={() => setAppliedQuery(query)}
               />
             </Space.Compact>
-            <Select
-              allowClear
-              placeholder="Đối tác"
-              style={{ minWidth: 320 }}
-              value={partner}
-              onChange={setPartner}
-              options={partnerOptions}
-            />
+            {!isCustomer ? (
+              <Select
+                allowClear
+                placeholder="Đối tác"
+                style={{ minWidth: 320 }}
+                value={partner}
+                onChange={setPartner}
+                options={partnerOptions}
+              />
+            ) : null}
           </Space>
         </div>
 

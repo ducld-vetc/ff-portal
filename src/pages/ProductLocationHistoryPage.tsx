@@ -20,6 +20,7 @@ import {
   type ProductCondition,
   type ProductLocationHistoryRow,
 } from '../data/productLocations'
+import { usePortal } from '../portal/PortalContext'
 
 const { RangePicker } = DatePicker
 
@@ -33,6 +34,7 @@ const partnerOptions = Array.from(
 )
 
 export default function ProductLocationHistoryPage() {
+  const { isCustomer } = usePortal()
   const [query, setQuery] = useState('')
   const [appliedQuery, setAppliedQuery] = useState('')
   const [partner, setPartner] = useState<string | undefined>()
@@ -45,7 +47,7 @@ export default function ProductLocationHistoryPage() {
   const filtered = useMemo(() => {
     const q = appliedQuery.trim().toLowerCase()
     return seedProductLocationHistory.filter((row) => {
-      if (partner && row.partnerCode !== partner) return false
+      if (!isCustomer && partner && row.partnerCode !== partner) return false
       if (session && row.session !== workSessionOptions.find((s) => s.value === session)?.label) {
         return false
       }
@@ -65,7 +67,7 @@ export default function ProductLocationHistoryPage() {
       }
       return true
     })
-  }, [appliedQuery, partner, session, range])
+  }, [appliedQuery, partner, session, range, isCustomer])
 
   const summary = filtered[0]
 
@@ -221,14 +223,16 @@ export default function ProductLocationHistoryPage() {
                 setRange(values && values[0] && values[1] ? [values[0], values[1]] : null)
               }
             />
-            <Select
-              allowClear
-              placeholder="Đối tác"
-              style={{ minWidth: 280 }}
-              value={partner}
-              onChange={setPartner}
-              options={partnerOptions}
-            />
+            {!isCustomer ? (
+              <Select
+                allowClear
+                placeholder="Đối tác"
+                style={{ minWidth: 280 }}
+                value={partner}
+                onChange={setPartner}
+                options={partnerOptions}
+              />
+            ) : null}
             <Select
               allowClear
               placeholder="Phiên làm việc"

@@ -29,8 +29,10 @@ import {
   type CarrierAccount,
 } from '../data/shipping'
 import { warehouses } from '../data/mock'
+import { usePortal } from '../portal/PortalContext'
 
 export default function CarrierAccountsPage() {
+  const { isCustomer, customerScope } = usePortal()
   const [rows, setRows] = useState<CarrierAccount[]>(() => [...seedAccounts])
   const [query, setQuery] = useState('')
   const [appliedQuery, setAppliedQuery] = useState('')
@@ -65,12 +67,12 @@ export default function CarrierAccountsPage() {
     return rows.filter((row) => {
       if (typeFilter && row.type !== typeFilter) return false
       if (carrierFilter && row.carrierCode !== carrierFilter) return false
-      if (partnerFilter && row.partnerCode !== partnerFilter) return false
+      if (!isCustomer && partnerFilter && row.partnerCode !== partnerFilter) return false
       if (warehouseFilter && row.warehouseCode !== warehouseFilter) return false
       if (q && !row.name.toLowerCase().includes(q)) return false
       return true
     })
-  }, [rows, appliedQuery, typeFilter, carrierFilter, partnerFilter, warehouseFilter])
+  }, [rows, appliedQuery, typeFilter, carrierFilter, partnerFilter, warehouseFilter, isCustomer])
 
   const columns: TableColumnsType<CarrierAccount> = [
     { title: '#', width: 56, render: (_, __, index) => index + 1 },
@@ -87,7 +89,9 @@ export default function CarrierAccountsPage() {
       width: 220,
       render: (label: string) => <a className="link-copy">{label}</a>,
     },
-    { title: 'Đối tác gửi hàng', dataIndex: 'partnerName', width: 260 },
+    ...(!isCustomer
+      ? ([{ title: 'Đối tác gửi hàng', dataIndex: 'partnerName', width: 260 }] as TableColumnsType<CarrierAccount>)
+      : []),
     {
       title: 'Kho',
       dataIndex: 'warehouseName',
@@ -237,16 +241,18 @@ export default function CarrierAccountsPage() {
               options={carrierCatalog.map((c) => ({ value: c.code, label: c.label }))}
             />
           </Col>
-          <Col xs={24} sm={12} md={6}>
-            <Select
-              allowClear
-              placeholder="Đối tác gửi hàng"
-              style={{ width: '100%' }}
-              value={partnerFilter}
-              onChange={setPartnerFilter}
-              options={partnerOptions}
-            />
-          </Col>
+          {!isCustomer ? (
+            <Col xs={24} sm={12} md={6}>
+              <Select
+                allowClear
+                placeholder="Đối tác gửi hàng"
+                style={{ width: '100%' }}
+                value={partnerFilter}
+                onChange={setPartnerFilter}
+                options={partnerOptions}
+              />
+            </Col>
+          ) : null}
           <Col xs={24} sm={12} md={6}>
             <Select
               allowClear
@@ -273,6 +279,7 @@ export default function CarrierAccountsPage() {
         mode={editing ? 'edit' : 'create'}
         initial={editing}
         partnerOptions={partnerOptions}
+        customerId={isCustomer ? customerScope.customerId : undefined}
         onCancel={() => setOpen(false)}
         onSubmit={(account) => {
           if (editing) {
