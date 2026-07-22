@@ -7,7 +7,6 @@ import {
   SearchOutlined,
 } from '@ant-design/icons'
 import {
-  Button,
   Col,
   Input,
   Modal,
@@ -16,10 +15,10 @@ import {
   Space,
   Table,
   Tag,
-  Tooltip,
   message,
   type TableColumnsType,
 } from 'antd'
+import { IconAction } from '../components/IconAction'
 import { PageHeader } from '../components/PageHeader'
 import CarrierAccountFormModal from '../components/CarrierAccountFormModal'
 import { carrierCatalog } from '../data/carrierAccountFields'
@@ -129,56 +128,53 @@ export default function CarrierAccountsPage() {
       fixed: 'right',
       render: (_, row) => (
         <Space size={6}>
-          <Tooltip title={row.connection === 'connected' ? 'Ngắt kết nối' : 'Kết nối lại'}>
-            <Button
-              size="small"
-              icon={<LinkOutlined />}
-              onClick={() => {
-                setRows((prev) =>
-                  prev.map((item) =>
-                    item.id === row.id
-                      ? {
-                          ...item,
-                          connection:
-                            item.connection === 'connected' ? 'disconnected' : 'connected',
-                        }
-                      : item,
-                  ),
-                )
-              }}
-            />
-          </Tooltip>
-          <Tooltip title="Sửa">
-            <Button
-              type="primary"
-              size="small"
-              icon={<EditOutlined />}
-              onClick={() => {
-                setEditing(row)
-                setOpen(true)
-              }}
-            />
-          </Tooltip>
-          <Tooltip title="Xóa">
-            <Button
-              size="small"
-              danger
-              style={{ background: '#fa8c16', borderColor: '#fa8c16', color: '#fff' }}
-              icon={<DeleteOutlined />}
-              onClick={() => {
-                Modal.confirm({
-                  title: `Xóa tài khoản ${row.name}?`,
-                  okText: 'Xóa',
-                  okButtonProps: { danger: true },
-                  cancelText: 'Hủy',
-                  onOk: () => {
-                    setRows((prev) => prev.filter((item) => item.id !== row.id))
-                    message.success('Đã xóa tài khoản ĐVVC')
-                  },
-                })
-              }}
-            />
-          </Tooltip>
+          <IconAction
+            title={row.connection === 'connected' ? 'Ngắt kết nối' : 'Kết nối lại'}
+            size="small"
+            icon={<LinkOutlined />}
+            onClick={() => {
+              setRows((prev) =>
+                prev.map((item) =>
+                  item.id === row.id
+                    ? {
+                        ...item,
+                        connection:
+                          item.connection === 'connected' ? 'disconnected' : 'connected',
+                      }
+                    : item,
+                ),
+              )
+            }}
+          />
+          <IconAction
+            title="Sửa"
+            type="primary"
+            size="small"
+            icon={<EditOutlined />}
+            onClick={() => {
+              setEditing(row)
+              setOpen(true)
+            }}
+          />
+          <IconAction
+            title="Xóa"
+            size="small"
+            danger
+            style={{ background: '#fa8c16', borderColor: '#fa8c16', color: '#fff' }}
+            icon={<DeleteOutlined />}
+            onClick={() => {
+              Modal.confirm({
+                title: `Xóa tài khoản ${row.name}?`,
+                okText: 'Xóa',
+                okButtonProps: { danger: true },
+                cancelText: 'Hủy',
+                onOk: () => {
+                  setRows((prev) => prev.filter((item) => item.id !== row.id))
+                  message.success('Đã xóa tài khoản ĐVVC')
+                },
+              })
+            }}
+          />
         </Space>
       ),
     },
@@ -190,16 +186,15 @@ export default function CarrierAccountsPage() {
         title="Tài khoản đơn vị vận chuyển"
         description="Quản lý tài khoản kết nối với từng ĐVVC; form cấu hình đổi theo đơn vị đã chọn."
         extra={
-          <Button
+          <IconAction
+            title="Thêm tài khoản ĐVVC"
             type="primary"
             icon={<PlusOutlined />}
             onClick={() => {
               setEditing(null)
               setOpen(true)
             }}
-          >
-            Thêm tài khoản ĐVVC
-          </Button>
+          />
         }
       />
 
@@ -213,7 +208,12 @@ export default function CarrierAccountsPage() {
               onChange={(e) => setQuery(e.target.value)}
               onPressEnter={() => setAppliedQuery(query)}
             />
-            <Button type="primary" icon={<SearchOutlined />} onClick={() => setAppliedQuery(query)} />
+            <IconAction
+              title="Tìm kiếm"
+              type="primary"
+              icon={<SearchOutlined />}
+              onClick={() => setAppliedQuery(query)}
+            />
           </Space.Compact>
         </div>
 

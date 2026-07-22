@@ -1,7 +1,6 @@
 import { useMemo, useState } from 'react'
 import { DownloadOutlined, SearchOutlined } from '@ant-design/icons'
 import {
-  Button,
   DatePicker,
   Input,
   Select,
@@ -12,6 +11,7 @@ import {
   type TableColumnsType,
 } from 'antd'
 import dayjs, { type Dayjs } from 'dayjs'
+import { IconAction } from '../components/IconAction'
 import { PageHeader } from '../components/PageHeader'
 import {
   conditionLabels,
@@ -193,9 +193,12 @@ export default function ProductLocationHistoryPage() {
         title="Lịch sử vị trí sản phẩm"
         description="Theo dõi lịch sử di chuyển vị trí sản phẩm theo phiên làm việc."
         extra={
-          <Button type="primary" icon={<DownloadOutlined />} onClick={exportExcel}>
-            Xuất Excel
-          </Button>
+          <IconAction
+            title="Xuất Excel"
+            type="primary"
+            icon={<DownloadOutlined />}
+            onClick={exportExcel}
+          />
         }
       />
 
@@ -210,7 +213,8 @@ export default function ProductLocationHistoryPage() {
                 onChange={(e) => setQuery(e.target.value)}
                 onPressEnter={() => setAppliedQuery(query)}
               />
-              <Button
+              <IconAction
+                title="Tìm kiếm"
                 type="primary"
                 icon={<SearchOutlined />}
                 onClick={() => setAppliedQuery(query)}

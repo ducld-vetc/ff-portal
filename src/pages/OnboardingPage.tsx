@@ -1,6 +1,7 @@
 import { useState } from 'react'
-import { CheckCircleOutlined, PlusOutlined, RightOutlined } from '@ant-design/icons'
-import { Button, Card, Col, Form, Input, Row, Select, Steps, message } from 'antd'
+import { CheckCircleOutlined, CheckOutlined, LeftOutlined, RightOutlined } from '@ant-design/icons'
+import { Card, Col, Form, Input, Row, Select, Steps, message } from 'antd'
+import { IconAction } from '../components/IconAction'
 import { PageHeader } from '../components/PageHeader'
 import CustomerShippingConfig, {
   type CustomerCarrierConfig,
@@ -128,26 +129,31 @@ export default function OnboardingPage() {
         )}
 
         <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 24 }}>
-          <Button disabled={current === 0} onClick={() => setCurrent((c) => c - 1)}>
-            Quay lại
-          </Button>
+          <IconAction
+            title="Quay lại"
+            icon={<LeftOutlined />}
+            disabled={current === 0}
+            onClick={() => setCurrent((c) => c - 1)}
+          />
           {current < steps.length - 1 ? (
-            <Button type="primary" icon={<RightOutlined />} onClick={() => setCurrent((c) => c + 1)}>
-              Tiếp tục
-            </Button>
-          ) : (
-            <Button
+            <IconAction
+              title="Tiếp tục"
               type="primary"
-              icon={<PlusOutlined />}
+              icon={<RightOutlined />}
+              onClick={() => setCurrent((c) => c + 1)}
+            />
+          ) : (
+            <IconAction
+              title="Hoàn tất"
+              type="primary"
+              icon={<CheckOutlined />}
               onClick={() => {
                 message.success('Đã hoàn tất onboarding (mock)')
                 setCurrent(0)
                 form.resetFields()
                 setShipping({ carrierCodes: [], accountIds: [] })
               }}
-            >
-              Hoàn tất
-            </Button>
+            />
           )}
         </div>
       </div>

@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react'
-import { SearchOutlined } from '@ant-design/icons'
-import { Button, Modal, Select, Space, Table, message, type TableColumnsType } from 'antd'
+import { CloseOutlined, SaveOutlined, SearchOutlined } from '@ant-design/icons'
+import { Modal, Select, Space, Table, message, type TableColumnsType } from 'antd'
+import { IconAction } from './IconAction'
 import {
   accountTypeLabel,
   carrierAccounts,
@@ -79,16 +80,16 @@ export default function CarrierAccountPicker({
       }}
       footer={
         <Space>
-          <Button onClick={onCancel}>Thoát</Button>
-          <Button
+          <IconAction title="Thoát" icon={<CloseOutlined />} onClick={onCancel} />
+          <IconAction
+            title="Lưu"
             type="primary"
+            icon={<SaveOutlined />}
             onClick={() => {
               onSave(checked)
               message.success(`Đã gắn ${checked.length} tài khoản`)
             }}
-          >
-            Lưu
-          </Button>
+          />
         </Space>
       }
     >
@@ -112,9 +113,7 @@ export default function CarrierAccountPicker({
           onChange={setCarrierFilter}
           options={carriers.map((c) => ({ value: c.code, label: c.code }))}
         />
-        <Button type="primary" icon={<SearchOutlined />}>
-          Tìm
-        </Button>
+        <IconAction title="Tìm" type="primary" icon={<SearchOutlined />} />
       </Space>
 
       <div className="section-label">Danh sách tài khoản</div>

@@ -1,8 +1,7 @@
 import { useMemo, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
-import { DeleteOutlined, SearchOutlined } from '@ant-design/icons'
+import { CloseOutlined, DeleteOutlined, PlusOutlined, SearchOutlined } from '@ant-design/icons'
 import {
-  Button,
   Col,
   DatePicker,
   Form,
@@ -17,6 +16,7 @@ import {
   type TableColumnsType,
 } from 'antd'
 import dayjs from 'dayjs'
+import { IconAction } from '../components/IconAction'
 import { PageHeader } from '../components/PageHeader'
 import {
   generateInboundCode,
@@ -166,9 +166,9 @@ export default function ClientInboundCreatePage() {
       title: '',
       width: 56,
       render: (_, row) => (
-        <Button
+        <IconAction
+          title="Xóa dòng"
           danger
-          type="text"
           icon={<DeleteOutlined />}
           onClick={() => setLines((prev) => prev.filter((item) => item.id !== row.id))}
         />
@@ -391,10 +391,12 @@ export default function ClientInboundCreatePage() {
 
       <div className="inbound-create-footer">
         <Space>
-          <Button onClick={() => navigate('/client/operations/inbound')}>Thoát</Button>
-          <Button type="primary" onClick={submit}>
-            Tạo mới
-          </Button>
+          <IconAction
+            title="Thoát"
+            icon={<CloseOutlined />}
+            onClick={() => navigate('/client/operations/inbound')}
+          />
+          <IconAction title="Tạo mới" type="primary" icon={<PlusOutlined />} onClick={submit} />
         </Space>
       </div>
 

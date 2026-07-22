@@ -1,7 +1,8 @@
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { ArrowLeftOutlined, CopyOutlined } from '@ant-design/icons'
-import { Button, Space, Table, Tag, Typography } from 'antd'
+import { Space, Table, Tag, Typography } from 'antd'
 import dayjs from 'dayjs'
+import { IconAction } from '../components/IconAction'
 import { PageHeader } from '../components/PageHeader'
 import {
   deliveryMethodLabel,
@@ -24,7 +25,11 @@ export default function ClientOutboundDetailPage() {
     return (
       <div>
         <PageHeader title="Không tìm thấy yêu cầu xuất kho" />
-        <Button onClick={() => navigate('/client/operations/outbound')}>Quay lại danh sách</Button>
+        <IconAction
+          title="Quay lại danh sách"
+          icon={<ArrowLeftOutlined />}
+          onClick={() => navigate('/client/operations/outbound')}
+        />
       </div>
     )
   }
@@ -38,20 +43,18 @@ export default function ClientOutboundDetailPage() {
         description={`${request.warehouseName} · ${deliveryMethodLabel[request.deliveryMethod]}`}
         extra={
           <Space>
-            <Button
+            <IconAction
+              title="Danh sách"
               icon={<ArrowLeftOutlined />}
               onClick={() => navigate('/client/operations/outbound')}
-            >
-              Danh sách
-            </Button>
-            <Button
+            />
+            <IconAction
+              title="Sao chép tạo nhanh"
               icon={<CopyOutlined />}
               onClick={() =>
                 navigate(`/client/operations/outbound/create?copyFrom=${request.id}`)
               }
-            >
-              Sao chép tạo nhanh
-            </Button>
+            />
           </Space>
         }
       />

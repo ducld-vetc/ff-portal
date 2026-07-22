@@ -1,6 +1,8 @@
 import { useMemo, useState, type Key } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import {
+  CheckOutlined,
+  ClearOutlined,
   DownloadOutlined,
   EyeOutlined,
   FilterOutlined,
@@ -11,7 +13,6 @@ import {
   UploadOutlined,
 } from '@ant-design/icons'
 import {
-  Button,
   Drawer,
   Form,
   Input,
@@ -20,12 +21,12 @@ import {
   Space,
   Table,
   Tag,
-  Tooltip,
   Typography,
   message,
   type TableColumnsType,
 } from 'antd'
 import dayjs from 'dayjs'
+import { IconAction } from '../components/IconAction'
 import { PageHeader } from '../components/PageHeader'
 import {
   listWaybills,
@@ -142,20 +143,18 @@ export default function ClientWaybillListPage() {
       fixed: 'right',
       render: (_, row) => (
         <Space size={4}>
-          <Tooltip title="Xem chi tiết">
-            <Button
-              size="small"
-              icon={<EyeOutlined />}
-              onClick={() => navigate(`/client/operations/waybills/${row.id}`)}
-            />
-          </Tooltip>
-          <Tooltip title="In nhãn vận chuyển">
-            <Button
-              size="small"
-              icon={<PrinterOutlined />}
-              onClick={() => message.success(`Đã lấy nhãn vận chuyển cho ${row.code} (demo)`)}
-            />
-          </Tooltip>
+          <IconAction
+            title="Xem chi tiết"
+            size="small"
+            icon={<EyeOutlined />}
+            onClick={() => navigate(`/client/operations/waybills/${row.id}`)}
+          />
+          <IconAction
+            title="In nhãn vận chuyển"
+            size="small"
+            icon={<PrinterOutlined />}
+            onClick={() => message.success(`Đã lấy nhãn vận chuyển cho ${row.code} (demo)`)}
+          />
         </Space>
       ),
     },
@@ -168,22 +167,21 @@ export default function ClientWaybillListPage() {
         description="Tạo kiện hàng và lấy nhãn vận chuyển từ ĐVVC — chuyển hàng giữa cửa hàng hoặc gửi đến khách hàng / người mua."
         extra={
           <Space wrap>
-            <Button
+            <IconAction
+              title="Import vận đơn"
               className="btn-success"
               icon={<UploadOutlined />}
               onClick={() => message.info('Demo: import nhiều vận đơn từ Excel/CSV')}
-            >
-              Import vận đơn
-            </Button>
-            <Button
+            />
+            <IconAction
+              title="Chuyển trạng thái"
               className="btn-success"
               icon={<SwapOutlined />}
               disabled={selectedKeys.length === 0}
               onClick={() => setStatusOpen(true)}
-            >
-              Chuyển trạng thái
-            </Button>
-            <Button
+            />
+            <IconAction
+              title="Xuất file"
               className="btn-success"
               icon={<DownloadOutlined />}
               onClick={() =>
@@ -191,16 +189,13 @@ export default function ClientWaybillListPage() {
                   `Đã xuất ${selectedKeys.length || filtered.length} vận đơn ra Excel (demo)`,
                 )
               }
-            >
-              Xuất file
-            </Button>
-            <Button
+            />
+            <IconAction
+              title="Tạo vận đơn"
               type="primary"
               icon={<PlusOutlined />}
               onClick={() => navigate('/client/operations/waybills/create')}
-            >
-              Tạo vận đơn
-            </Button>
+            />
           </Space>
         }
       />
@@ -217,9 +212,12 @@ export default function ClientWaybillListPage() {
                 onChange={(e) => setQuery(e.target.value)}
                 prefix={<SearchOutlined />}
               />
-              <Tooltip title="Bộ lọc nâng cao">
-                <Button type="primary" icon={<FilterOutlined />} onClick={() => setAdvancedOpen(true)} />
-              </Tooltip>
+              <IconAction
+                title="Bộ lọc nâng cao"
+                type="primary"
+                icon={<FilterOutlined />}
+                onClick={() => setAdvancedOpen(true)}
+              />
             </Space.Compact>
             <Typography.Text type="secondary">
               Tổng số vận đơn: {filtered.length}
@@ -247,16 +245,18 @@ export default function ClientWaybillListPage() {
         width={380}
         extra={
           <Space>
-            <Button
+            <IconAction
+              title="Đặt lại"
+              icon={<ClearOutlined />}
               onClick={() => {
                 advForm.resetFields()
                 setAdvFilters({})
               }}
-            >
-              Đặt lại
-            </Button>
-            <Button
+            />
+            <IconAction
+              title="Áp dụng"
               type="primary"
+              icon={<CheckOutlined />}
               onClick={() => {
                 const values = advForm.getFieldsValue()
                 setAdvFilters({
@@ -266,9 +266,7 @@ export default function ClientWaybillListPage() {
                 setAdvancedOpen(false)
                 message.success('Đã áp dụng bộ lọc')
               }}
-            >
-              Áp dụng
-            </Button>
+            />
           </Space>
         }
       >

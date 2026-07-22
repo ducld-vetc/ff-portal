@@ -1,13 +1,14 @@
 import { useMemo, useState } from 'react'
 import {
+  CloseOutlined,
   DeleteOutlined,
   EditOutlined,
   PlusOutlined,
+  SaveOutlined,
   SearchOutlined,
   UserAddOutlined,
 } from '@ant-design/icons'
 import {
-  Button,
   Col,
   Form,
   Input,
@@ -22,6 +23,7 @@ import {
   message,
   type TableColumnsType,
 } from 'antd'
+import { IconAction } from '../components/IconAction'
 import { PageHeader } from '../components/PageHeader'
 import CarrierAccountPicker from '../components/CarrierAccountPicker'
 import {
@@ -143,8 +145,15 @@ export default function ShippingPackagesPage() {
       width: 110,
       render: (_, row) => (
         <Space>
-          <Button type="primary" size="small" icon={<EditOutlined />} onClick={() => openEdit(row)} />
-          <Button
+          <IconAction
+            title="Sửa"
+            type="primary"
+            size="small"
+            icon={<EditOutlined />}
+            onClick={() => openEdit(row)}
+          />
+          <IconAction
+            title="Xóa"
             danger
             size="small"
             icon={<DeleteOutlined />}
@@ -177,8 +186,8 @@ export default function ShippingPackagesPage() {
       title: '',
       width: 60,
       render: (_, row) => (
-        <Button
-          type="text"
+        <IconAction
+          title="Xóa bậc cân"
           danger
           icon={<DeleteOutlined />}
           onClick={() => setWeightTiers((prev) => prev.filter((item) => item.id !== row.id))}
@@ -193,9 +202,12 @@ export default function ShippingPackagesPage() {
         title="Gói vận chuyển"
         description="Cấu hình gói dịch vụ VC, bảng trọng lượng và gắn tài khoản khách hàng."
         extra={
-          <Button type="primary" icon={<PlusOutlined />} onClick={openCreate}>
-            Tạo dịch vụ vận chuyển
-          </Button>
+          <IconAction
+            title="Tạo dịch vụ vận chuyển"
+            type="primary"
+            icon={<PlusOutlined />}
+            onClick={openCreate}
+          />
         }
       />
 
@@ -235,10 +247,13 @@ export default function ShippingPackagesPage() {
         destroyOnHidden
         footer={
           <Space>
-            <Button onClick={() => setOpen(false)}>Thoát</Button>
-            <Button type="primary" onClick={() => form.submit()}>
-              Lưu
-            </Button>
+            <IconAction title="Thoát" icon={<CloseOutlined />} onClick={() => setOpen(false)} />
+            <IconAction
+              title="Lưu"
+              type="primary"
+              icon={<SaveOutlined />}
+              onClick={() => form.submit()}
+            />
           </Space>
         }
       >
@@ -397,7 +412,8 @@ export default function ShippingPackagesPage() {
                       />
                     </Col>
                     <Col>
-                      <Button
+                      <IconAction
+                        title="Thêm bậc cân"
                         type="primary"
                         icon={<PlusOutlined />}
                         onClick={() => {
@@ -453,13 +469,12 @@ export default function ShippingPackagesPage() {
                 <div>
                   <div className="table-toolbar">
                     <div className="section-label">Tài khoản đã gắn ({linkedAccounts.length})</div>
-                    <Button
+                    <IconAction
+                      title="Thêm tài khoản ĐVVC"
                       type="primary"
                       icon={<UserAddOutlined />}
                       onClick={() => setAccountPickerOpen(true)}
-                    >
-                      Thêm tài khoản ĐVVC
-                    </Button>
+                    />
                   </div>
                   <Table
                     rowKey="id"
@@ -487,8 +502,8 @@ export default function ShippingPackagesPage() {
                         title: '',
                         width: 60,
                         render: (_, row) => (
-                          <Button
-                            type="text"
+                          <IconAction
+                            title="Gỡ tài khoản"
                             danger
                             icon={<DeleteOutlined />}
                             onClick={() =>

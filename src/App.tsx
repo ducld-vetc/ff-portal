@@ -11,12 +11,14 @@ import CustomersPage from './pages/CustomersPage'
 import StoresPage from './pages/StoresPage'
 import CustomerDetailPage from './pages/CustomerDetailPage'
 import WarehousesPage from './pages/WarehousesPage'
+import WarehouseLocationsPage from './pages/WarehouseLocationsPage'
 import MaterialsPage from './pages/MaterialsPage'
 import StorageDevicesPage from './pages/StorageDevicesPage'
 import StaffPage from './pages/StaffPage'
 import RoleGroupsPage from './pages/RoleGroupsPage'
 import RoleGroupFormPage from './pages/RoleGroupFormPage'
 import PickupAssignmentsPage from './pages/PickupAssignmentsPage'
+import PickupWaveDetailPage from './pages/PickupWaveDetailPage'
 import CatalogPage from './pages/CatalogPage'
 import ProductLocationsPage from './pages/ProductLocationsPage'
 import ProductLocationHistoryPage from './pages/ProductLocationHistoryPage'
@@ -74,11 +76,13 @@ export default function App() {
                 <Route path="warehouses" element={<WarehousesPage />} />
                 <Route path="warehouses/materials" element={<MaterialsPage />} />
                 <Route path="warehouses/storage-devices" element={<StorageDevicesPage />} />
+                <Route path="warehouses/:id/locations" element={<WarehouseLocationsPage />} />
                 <Route path="staff" element={<Navigate to="/staff/users" replace />} />
                 <Route path="staff/users" element={<StaffPage />} />
                 <Route path="staff/roles" element={<RoleGroupsPage />} />
                 <Route path="staff/roles/:id" element={<RoleGroupFormPage />} />
                 <Route path="pickup-assignments" element={<PickupAssignmentsPage />} />
+                <Route path="pickup-assignments/:id" element={<PickupWaveDetailPage />} />
                 <Route path="catalog" element={<CatalogPage />} />
                 <Route path="products/locations" element={<ProductLocationsPage />} />
                 <Route path="products/location-history" element={<ProductLocationHistoryPage />} />

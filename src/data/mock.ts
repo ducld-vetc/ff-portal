@@ -55,15 +55,26 @@ export type Carrier = {
   status: 'active' | 'inactive'
 }
 
+export type PickupLine = {
+  binCode: string
+  sku: string
+  productName: string
+  qty: number
+  orderCode: string
+}
+
 export type PickupAssignment = {
   id: string
   wave: string
   warehouse: string
+  warehouseId: string
   picker: string
   orders: number
   items: number
   status: 'pending' | 'in_progress' | 'done'
   assignedAt: string
+  /** Các dòng đã allocate bin — lộ trình picker tính từ đây */
+  lines: PickupLine[]
 }
 
 export const staffMembers: StaffMember[] = [
@@ -294,31 +305,81 @@ export const pickupAssignments: PickupAssignment[] = [
     id: '1',
     wave: 'WAVE-20260720-01',
     warehouse: 'WH-HCM-01',
+    warehouseId: '1',
     picker: 'Nguyễn Thị Hằng',
     orders: 24,
     items: 86,
     status: 'in_progress',
     assignedAt: '2026-07-20T08:30:00',
+    lines: [
+      {
+        binCode: 'R1.A01.A.02',
+        sku: 'SKU-CHARGER-20W',
+        productName: 'Sạc nhanh 20W USB-C',
+        qty: 4,
+        orderCode: 'OR-1001',
+      },
+      {
+        binCode: 'R1.A01.A.05',
+        sku: 'SKU-CABLE-C-C-1M',
+        productName: 'Cáp USB-C to C 1m',
+        qty: 6,
+        orderCode: 'OR-1002',
+      },
+      {
+        binCode: 'R1.A02.A.03',
+        sku: 'SKU-SERUM-30ML',
+        productName: 'Serum dưỡng ẩm 30ml',
+        qty: 2,
+        orderCode: 'OR-1001',
+      },
+    ],
   },
   {
     id: '2',
     wave: 'WAVE-20260720-02',
     warehouse: 'WH-HCM-01',
+    warehouseId: '1',
     picker: 'E2E Warehouse Operator',
     orders: 18,
     items: 52,
     status: 'pending',
     assignedAt: '2026-07-20T09:05:00',
+    lines: [
+      {
+        binCode: 'R1.A01.A.01',
+        sku: 'SKU-CHARGER-20W',
+        productName: 'Sạc nhanh 20W USB-C',
+        qty: 2,
+        orderCode: 'OR-2001',
+      },
+      {
+        binCode: 'R1.A01.A.04',
+        sku: 'SKU-PHONE-X1',
+        productName: 'Điện thoại demo X1',
+        qty: 1,
+        orderCode: 'OR-2002',
+      },
+      {
+        binCode: 'R1.A02.A.06',
+        sku: 'SKU-CABLE-C-C-1M',
+        productName: 'Cáp USB-C to C 1m',
+        qty: 8,
+        orderCode: 'OR-2001',
+      },
+    ],
   },
   {
     id: '3',
     wave: 'WAVE-20260719-08',
     warehouse: 'WH-HN-01',
+    warehouseId: '2',
     picker: 'Trần Ngọc Khải',
     orders: 31,
     items: 120,
     status: 'done',
     assignedAt: '2026-07-19T14:20:00',
+    lines: [],
   },
 ]
 

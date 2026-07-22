@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react'
-import { CopyOutlined, SearchOutlined } from '@ant-design/icons'
-import { Button, Input, Modal, Space, Table, Typography, message } from 'antd'
+import { CloseOutlined, CopyOutlined, SaveOutlined, SearchOutlined } from '@ant-design/icons'
+import { Input, Modal, Space, Table, Typography, message } from 'antd'
+import { IconAction } from './IconAction'
 import { buildInboundSerials, type InboundLine } from '../data/inboundRequests'
 
 type Props = {
@@ -52,18 +53,19 @@ export function InboundSerialModal({ open, line, onClose, editable, onSave }: Pr
       }}
       footer={
         <Space>
-          <Button
+          <IconAction
+            title="Sao chép tất cả"
             icon={<CopyOutlined />}
             onClick={() => {
               void navigator.clipboard.writeText(serials.join('\n'))
               message.success(`Đã sao chép ${serials.length} mã serial`)
             }}
-          >
-            Sao chép tất cả
-          </Button>
+          />
           {editable ? (
-            <Button
+            <IconAction
+              title="Lưu"
               type="primary"
+              icon={<SaveOutlined />}
               onClick={() => {
                 onSave?.(draft)
                 setQuery('')
@@ -71,13 +73,9 @@ export function InboundSerialModal({ open, line, onClose, editable, onSave }: Pr
                 onClose()
                 message.success('Đã lưu danh sách serial')
               }}
-            >
-              Lưu
-            </Button>
+            />
           ) : (
-            <Button type="primary" onClick={onClose}>
-              Đóng
-            </Button>
+            <IconAction title="Đóng" type="primary" icon={<CloseOutlined />} onClick={onClose} />
           )}
         </Space>
       }

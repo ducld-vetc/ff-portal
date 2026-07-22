@@ -1595,10 +1595,221 @@ button {
   gap: 8px;
 }
 
-.outbound-totals-row {
+.picker-path-legend {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: rgba(22, 119, 255, 0.06);
+  color: var(--color-text-muted);
+  font-size: 13px;
+}
+
+/* Warehouse location setup */
+.loc-summary-card {
+  margin-bottom: 16px;
+  padding: 18px 20px;
+  border: 1px solid var(--color-border);
+  border-radius: 14px;
+  background:
+    linear-gradient(135deg, rgba(15, 118, 110, 0.08), transparent 42%),
+    var(--color-surface, #fff);
+  box-shadow: var(--shadow-card);
+}
+
+.loc-summary-top {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.loc-summary-identity {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.loc-summary-icon {
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  background: #0f766e;
+  color: #fff;
+  font-size: 18px;
+}
+
+.loc-summary-name {
+  font-weight: 700;
+  font-size: 15px;
+  color: var(--color-text);
+}
+
+.loc-summary-code {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--color-text-muted);
+}
+
+.loc-summary-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  border-radius: 999px;
   font-size: 13px;
+  font-weight: 600;
+}
+
+.loc-summary-status.is-ready {
+  background: rgba(22, 163, 74, 0.12);
+  color: #15803d;
+}
+
+.loc-summary-status.is-pending {
+  background: rgba(245, 158, 11, 0.14);
+  color: #b45309;
+}
+
+.loc-summary-status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.loc-summary-stats {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.loc-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  padding: 12px 14px;
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.72);
+  cursor: pointer;
+  text-align: left;
+  transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.loc-stat:hover,
+.loc-stat.is-active {
+  border-color: #0f766e;
+  box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.12);
+  transform: translateY(-1px);
+}
+
+.loc-stat-value {
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 1.1;
+  color: var(--color-text);
+  font-variant-numeric: tabular-nums;
+}
+
+.loc-stat-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.loc-stat-hint {
+  font-size: 11px;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.loc-table-card .ant-table-thead > tr > th {
+  background: rgba(15, 23, 42, 0.03);
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.loc-code {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.loc-priority {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 6px;
+}
+
+.loc-priority-num {
+  display: inline-grid;
+  place-items: center;
+  min-width: 28px;
+  height: 28px;
+  padding: 0 6px;
+  border-radius: 8px;
+  background: rgba(15, 23, 42, 0.06);
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 13px;
+}
+
+.loc-priority.is-top .loc-priority-num {
+  background: rgba(22, 163, 74, 0.14);
+  color: #15803d;
+}
+
+.loc-priority-hint {
+  font-size: 11px;
+  color: #15803d;
+}
+
+.loc-dim {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--color-text-muted);
+}
+
+.loc-step {
+  display: inline-grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 999px;
+  background: #0f766e;
+  color: #fff;
+  font-weight: 700;
+  font-size: 12px;
+}
+
+:root[data-theme='dark'] .loc-summary-card {
+  background:
+    linear-gradient(135deg, rgba(15, 118, 110, 0.18), transparent 42%),
+    var(--color-surface);
+}
+
+:root[data-theme='dark'] .loc-stat {
+  background: rgba(15, 23, 42, 0.35);
+}
+
+:root[data-theme='dark'] .loc-table-card .ant-table-thead > tr > th {
+  background: rgba(148, 163, 184, 0.08);
+}
+
+@media (max-width: 900px) {
+  .loc-summary-stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }

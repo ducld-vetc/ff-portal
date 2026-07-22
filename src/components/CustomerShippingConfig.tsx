@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react'
-import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons'
-import { Button, Card, Form, Select, Space, Table, message } from 'antd'
+import { DeleteOutlined, EditOutlined, PlusOutlined, SelectOutlined } from '@ant-design/icons'
+import { Card, Form, Select, Space, Table, message } from 'antd'
+import { IconAction } from './IconAction'
 import CarrierAccountPicker from './CarrierAccountPicker'
 import CarrierAccountFormModal from './CarrierAccountFormModal'
 import { carrierCatalog } from '../data/carrierAccountFields'
@@ -62,10 +63,14 @@ export default function CustomerShippingConfig({ value, onChange, customerId }: 
         title="Tài khoản đơn vị vận chuyển"
         extra={
           <Space>
-            <Button size="small" icon={<PlusOutlined />} onClick={() => setPickerOpen(true)}>
-              Chọn có sẵn
-            </Button>
-            <Button
+            <IconAction
+              title="Chọn có sẵn"
+              size="small"
+              icon={<SelectOutlined />}
+              onClick={() => setPickerOpen(true)}
+            />
+            <IconAction
+              title="Thiết lập mới"
               type="primary"
               size="small"
               icon={<PlusOutlined />}
@@ -73,9 +78,7 @@ export default function CustomerShippingConfig({ value, onChange, customerId }: 
                 setEditing(null)
                 setFormOpen(true)
               }}
-            >
-              Thiết lập mới
-            </Button>
+            />
           </Space>
         }
       >
@@ -99,16 +102,16 @@ export default function CustomerShippingConfig({ value, onChange, customerId }: 
               width: 90,
               render: (_, row) => (
                 <Space size={4}>
-                  <Button
-                    type="text"
+                  <IconAction
+                    title="Sửa"
                     icon={<EditOutlined />}
                     onClick={() => {
                       setEditing(row)
                       setFormOpen(true)
                     }}
                   />
-                  <Button
-                    type="text"
+                  <IconAction
+                    title="Xóa"
                     danger
                     icon={<DeleteOutlined />}
                     onClick={() =>

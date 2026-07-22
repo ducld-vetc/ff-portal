@@ -6,10 +6,10 @@ import {
   EnvironmentOutlined,
   HomeOutlined,
   ProductOutlined,
+  SaveOutlined,
 } from '@ant-design/icons'
 import {
   Breadcrumb,
-  Button,
   Card,
   Checkbox,
   Col,
@@ -22,6 +22,7 @@ import {
   Tag,
   message,
 } from 'antd'
+import { IconAction } from '../components/IconAction'
 import CustomerShippingConfig, {
   type CustomerCarrierConfig,
 } from '../components/CustomerShippingConfig'
@@ -76,9 +77,11 @@ export default function CustomerDetailPage() {
     return (
       <div className="content-card">
         <Empty description="Không tìm thấy khách hàng" />
-        <Button type="link" onClick={() => navigate('/customers')}>
-          Quay lại danh sách
-        </Button>
+        <IconAction
+          title="Quay lại danh sách"
+          icon={<ArrowLeftOutlined />}
+          onClick={() => navigate('/customers')}
+        />
       </div>
     )
   }
@@ -107,16 +110,17 @@ export default function CustomerDetailPage() {
           </p>
         </div>
         <Space>
-          <Button icon={<ArrowLeftOutlined />} onClick={() => navigate('/customers')}>
-            Danh sách
-          </Button>
-          <Button
+          <IconAction
+            title="Danh sách"
+            icon={<ArrowLeftOutlined />}
+            onClick={() => navigate('/customers')}
+          />
+          <IconAction
+            title="Chỉnh sửa"
             type="primary"
             icon={<EditOutlined />}
             onClick={() => message.info('Chế độ chỉnh sửa (mock)')}
-          >
-            Chỉnh sửa
-          </Button>
+          />
         </Space>
       </div>
 
@@ -174,9 +178,12 @@ export default function CustomerDetailPage() {
                       ]}
                     />
                   </Form.Item>
-                  <Button type="primary" htmlType="submit">
-                    Lưu cấu hình
-                  </Button>
+                  <IconAction
+                    title="Lưu cấu hình"
+                    type="primary"
+                    htmlType="submit"
+                    icon={<SaveOutlined />}
+                  />
                 </Form>
               ),
             },

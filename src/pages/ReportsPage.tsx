@@ -1,11 +1,13 @@
 import {
   BarChartOutlined,
   DownloadOutlined,
+  EyeOutlined,
   FileSearchOutlined,
   LineChartOutlined,
   PieChartOutlined,
 } from '@ant-design/icons'
-import { Button, Card, Col, Row, Space, Typography } from 'antd'
+import { Card, Col, Row, Space, Typography } from 'antd'
+import { IconAction } from '../components/IconAction'
 import { PageHeader } from '../components/PageHeader'
 
 const reports = [
@@ -61,9 +63,7 @@ export default function ReportsPage() {
                   <Typography.Paragraph type="secondary" style={{ margin: '6px 0 14px' }}>
                     {report.description}
                   </Typography.Paragraph>
-                  <Button type="primary" ghost>
-                    Xem báo cáo
-                  </Button>
+                  <IconAction title="Xem báo cáo" type="primary" ghost icon={<EyeOutlined />} />
                 </div>
               </Space>
             </Card>

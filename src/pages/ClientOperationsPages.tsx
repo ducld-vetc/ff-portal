@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react'
-import { PlusOutlined, SearchOutlined } from '@ant-design/icons'
-import { Button, Input, Select, Space, Table, Tag, type TableColumnsType } from 'antd'
+import { DownloadOutlined, PlusOutlined, SearchOutlined } from '@ant-design/icons'
+import { Input, Select, Space, Table, Tag, type TableColumnsType } from 'antd'
+import { IconAction } from '../components/IconAction'
 import { PageHeader } from '../components/PageHeader'
 
 export type OpsDoc = {
@@ -89,10 +90,8 @@ function OpsTablePage({
         description={description}
         extra={
           <Space>
-            <Button>Xuất Excel</Button>
-            <Button type="primary" icon={<PlusOutlined />}>
-              {createLabel}
-            </Button>
+            <IconAction title="Xuất Excel" icon={<DownloadOutlined />} />
+            <IconAction title={createLabel} type="primary" icon={<PlusOutlined />} />
           </Space>
         }
       />

@@ -8,7 +8,8 @@ import {
   SafetyCertificateOutlined,
   SearchOutlined,
 } from '@ant-design/icons'
-import { Button, Input, Modal, Space, Table, Tag, Tooltip, message, type TableColumnsType } from 'antd'
+import { Input, Modal, Space, Table, Tag, message, type TableColumnsType } from 'antd'
+import { IconAction } from '../components/IconAction'
 import { PageHeader } from '../components/PageHeader'
 import { useRoleGroups, type RoleGroup } from '../data/RoleGroupsContext'
 import { ALL_PERMISSION_KEYS } from '../data/permissions'
@@ -78,34 +79,30 @@ export default function RoleGroupsPage() {
       width: 110,
       render: (_, row) => (
         <Space>
-          <Tooltip title={row.isSystem ? 'Xem / cập nhật tên' : 'Cập nhật'}>
-            <Button
-              type="text"
-              icon={<EditOutlined />}
-              onClick={() => navigate(`/staff/roles/${row.id}`)}
-            />
-          </Tooltip>
-          <Tooltip title={row.isSystem ? 'Không thể xóa nhóm hệ thống' : 'Xóa'}>
-            <Button
-              type="text"
-              danger
-              disabled={row.isSystem}
-              icon={<DeleteOutlined />}
-              onClick={() => {
-                Modal.confirm({
-                  title: `Xóa nhóm quyền ${row.code}?`,
-                  content: 'Nhân viên đang gán nhóm này sẽ cần được gán lại.',
-                  okText: 'Xóa',
-                  okButtonProps: { danger: true },
-                  cancelText: 'Hủy',
-                  onOk: () => {
-                    if (deleteGroup(row.id)) message.success('Đã xóa nhóm quyền')
-                    else message.error('Không thể xóa nhóm này')
-                  },
-                })
-              }}
-            />
-          </Tooltip>
+          <IconAction
+            title={row.isSystem ? 'Xem / cập nhật tên' : 'Cập nhật'}
+            icon={<EditOutlined />}
+            onClick={() => navigate(`/staff/roles/${row.id}`)}
+          />
+          <IconAction
+            title={row.isSystem ? 'Không thể xóa nhóm hệ thống' : 'Xóa'}
+            danger
+            disabled={row.isSystem}
+            icon={<DeleteOutlined />}
+            onClick={() => {
+              Modal.confirm({
+                title: `Xóa nhóm quyền ${row.code}?`,
+                content: 'Nhân viên đang gán nhóm này sẽ cần được gán lại.',
+                okText: 'Xóa',
+                okButtonProps: { danger: true },
+                cancelText: 'Hủy',
+                onOk: () => {
+                  if (deleteGroup(row.id)) message.success('Đã xóa nhóm quyền')
+                  else message.error('Không thể xóa nhóm này')
+                },
+              })
+            }}
+          />
         </Space>
       ),
     },
@@ -117,13 +114,12 @@ export default function RoleGroupsPage() {
         title="Quản lý nhóm quyền"
         description="Tạo và cấu hình quyền theo từng màn hình. SUPER_ADMIN luôn có đầy đủ quyền hệ thống."
         extra={
-          <Button
+          <IconAction
+            title="Tạo nhóm quyền"
             type="primary"
             icon={<PlusOutlined />}
             onClick={() => navigate('/staff/roles/new')}
-          >
-            Tạo nhóm quyền
-          </Button>
+          />
         }
       />
 

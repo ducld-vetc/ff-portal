@@ -14,7 +14,6 @@ import {
 import {
   Avatar,
   Badge,
-  Button,
   ConfigProvider,
   Dropdown,
   Layout,
@@ -24,6 +23,7 @@ import {
   Tag,
   theme as antTheme,
 } from 'antd'
+import { IconAction } from '../components/IconAction'
 import viVN from 'antd/locale/vi_VN'
 import { useAuth } from '../auth/AuthContext'
 import { BrandMark } from '../components/PageHeader'
@@ -219,8 +219,8 @@ export default function AppLayout() {
         <Layout>
           <Header className="app-header">
             <Space size={16}>
-              <Button
-                type="text"
+              <IconAction
+                title={collapsed ? 'Mở menu' : 'Thu gọn menu'}
                 icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
                 onClick={() => setCollapsed((v) => !v)}
               />
@@ -245,22 +245,21 @@ export default function AppLayout() {
             </Space>
 
             <div className="header-actions">
-              <Button
+              <IconAction
+                title={isCustomer ? 'Sang Admin' : 'Sang Khách hàng'}
                 type="primary"
                 ghost={!isCustomer}
                 icon={<SwapOutlined />}
                 onClick={switchPortal}
                 className="portal-switch-btn"
-              >
-                {isCustomer ? 'Sang Admin' : 'Sang Khách hàng'}
-              </Button>
-              <Button
-                type="text"
+              />
+              <IconAction
+                title={isDark ? 'Chế độ sáng' : 'Chế độ tối'}
                 icon={isDark ? <SunOutlined /> : <MoonOutlined />}
                 onClick={() => setIsDark((v) => !v)}
               />
               <Badge dot>
-                <Button type="text" icon={<BellOutlined />} />
+                <IconAction title="Thông báo" icon={<BellOutlined />} />
               </Badge>
               <Dropdown
                 menu={{

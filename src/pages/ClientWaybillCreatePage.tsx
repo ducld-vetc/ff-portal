@@ -1,8 +1,7 @@
 import { useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { DeleteOutlined, EnvironmentOutlined, PlusOutlined } from '@ant-design/icons'
+import { CloseOutlined, DeleteOutlined, EnvironmentOutlined, PlusOutlined } from '@ant-design/icons'
 import {
-  Button,
   Col,
   Form,
   Input,
@@ -17,6 +16,7 @@ import {
   message,
   type TableColumnsType,
 } from 'antd'
+import { IconAction } from '../components/IconAction'
 import { PageHeader } from '../components/PageHeader'
 import { seedCatalogProducts } from '../data/productCatalog'
 import { goodsConditionLabel } from '../data/outboundRequests'
@@ -156,9 +156,9 @@ export default function ClientWaybillCreatePage() {
       title: '',
       width: 56,
       render: (_, row) => (
-        <Button
+        <IconAction
+          title="Xóa dòng"
           danger
-          type="text"
           icon={<DeleteOutlined />}
           onClick={() => setLines((prev) => prev.filter((item) => item.id !== row.id))}
         />
@@ -223,7 +223,11 @@ export default function ClientWaybillCreatePage() {
         title="Tạo vận đơn"
         description="Thêm sản phẩm, thông tin lấy/nhận hàng và gói vận chuyển. Các mục * là bắt buộc."
         extra={
-          <Button onClick={() => navigate('/client/operations/waybills')}>Thoát</Button>
+          <IconAction
+            title="Thoát"
+            icon={<CloseOutlined />}
+            onClick={() => navigate('/client/operations/waybills')}
+          />
         }
       />
 
@@ -246,13 +250,12 @@ export default function ClientWaybillCreatePage() {
                 <h3 className="inbound-section-title" style={{ margin: 0 }}>
                   Chi tiết vận đơn
                 </h3>
-                <Button
+                <IconAction
+                  title="Thêm sản phẩm"
                   type="primary"
                   icon={<PlusOutlined />}
                   onClick={() => setProductOpen(true)}
-                >
-                  Thêm sản phẩm
-                </Button>
+                />
               </div>
 
               <Table
@@ -398,10 +401,18 @@ export default function ClientWaybillCreatePage() {
 
             <div className="inbound-create-footer" style={{ justifyContent: 'flex-start' }}>
               <Space>
-                <Button onClick={() => navigate('/client/operations/waybills')}>Thoát</Button>
-                <Button type="primary" className="btn-success" icon={<PlusOutlined />} onClick={submit}>
-                  Thêm
-                </Button>
+                <IconAction
+                  title="Thoát"
+                  icon={<CloseOutlined />}
+                  onClick={() => navigate('/client/operations/waybills')}
+                />
+                <IconAction
+                  title="Thêm"
+                  type="primary"
+                  className="btn-success"
+                  icon={<PlusOutlined />}
+                  onClick={submit}
+                />
               </Space>
             </div>
           </Col>

@@ -1,7 +1,8 @@
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { ArrowLeftOutlined, PrinterOutlined } from '@ant-design/icons'
-import { Button, Space, Table, Tag, Typography, message } from 'antd'
+import { Space, Table, Tag, Typography, message } from 'antd'
 import dayjs from 'dayjs'
+import { IconAction } from '../components/IconAction'
 import { PageHeader } from '../components/PageHeader'
 import { goodsConditionLabel } from '../data/outboundRequests'
 import {
@@ -21,7 +22,11 @@ export default function ClientWaybillDetailPage() {
     return (
       <div>
         <PageHeader title="Không tìm thấy vận đơn" />
-        <Button onClick={() => navigate('/client/operations/waybills')}>Quay lại danh sách</Button>
+        <IconAction
+          title="Quay lại danh sách"
+          icon={<ArrowLeftOutlined />}
+          onClick={() => navigate('/client/operations/waybills')}
+        />
       </div>
     )
   }
@@ -33,21 +38,19 @@ export default function ClientWaybillDetailPage() {
         description={`${waybill.recipientName} · ${waybill.shippingPackage || 'Chưa chọn gói VC'}`}
         extra={
           <Space>
-            <Button
+            <IconAction
+              title="Danh sách"
               icon={<ArrowLeftOutlined />}
               onClick={() => navigate('/client/operations/waybills')}
-            >
-              Danh sách
-            </Button>
-            <Button
+            />
+            <IconAction
+              title="In nhãn VC"
               type="primary"
               icon={<PrinterOutlined />}
               onClick={() =>
                 message.success(`Đã lấy nhãn vận chuyển cho ${waybill.code} (demo)`)
               }
-            >
-              In nhãn VC
-            </Button>
+            />
           </Space>
         }
       />

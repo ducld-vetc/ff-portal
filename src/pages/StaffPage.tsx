@@ -8,7 +8,6 @@ import {
   StopOutlined,
 } from '@ant-design/icons'
 import {
-  Button,
   Form,
   Input,
   Modal,
@@ -16,10 +15,10 @@ import {
   Space,
   Table,
   Tag,
-  Tooltip,
   message,
   type TableColumnsType,
 } from 'antd'
+import { IconAction } from '../components/IconAction'
 import { PageHeader } from '../components/PageHeader'
 import { staffMembers, type StaffMember } from '../data/mock'
 import { useRoleGroups } from '../data/RoleGroupsContext'
@@ -119,43 +118,37 @@ export default function StaffPage() {
       width: 120,
       render: (_, row) => (
         <Space>
-          <Tooltip title="Chỉnh sửa">
-            <Button
-              type="text"
-              icon={<EditOutlined />}
-              onClick={() => {
-                setEditing(row)
-                form.setFieldsValue(row)
-                setOpen(true)
-              }}
-            />
-          </Tooltip>
-          <Tooltip title="Đặt lại mật khẩu">
-            <Button
-              type="text"
-              icon={<LockOutlined />}
-              onClick={() => message.success(`Đã gửi mật khẩu tạm cho ${row.username}`)}
-            />
-          </Tooltip>
-          <Tooltip title={row.status === 'active' ? 'Vô hiệu hóa' : 'Kích hoạt'}>
-            <Button
-              type="text"
-              danger={row.status === 'active'}
-              icon={<StopOutlined />}
-              onClick={() => {
-                setRows((prev) =>
-                  prev.map((item) =>
-                    item.id === row.id
-                      ? {
-                          ...item,
-                          status: item.status === 'active' ? 'inactive' : 'active',
-                        }
-                      : item,
-                  ),
-                )
-              }}
-            />
-          </Tooltip>
+          <IconAction
+            title="Chỉnh sửa"
+            icon={<EditOutlined />}
+            onClick={() => {
+              setEditing(row)
+              form.setFieldsValue(row)
+              setOpen(true)
+            }}
+          />
+          <IconAction
+            title="Đặt lại mật khẩu"
+            icon={<LockOutlined />}
+            onClick={() => message.success(`Đã gửi mật khẩu tạm cho ${row.username}`)}
+          />
+          <IconAction
+            title={row.status === 'active' ? 'Vô hiệu hóa' : 'Kích hoạt'}
+            danger={row.status === 'active'}
+            icon={<StopOutlined />}
+            onClick={() => {
+              setRows((prev) =>
+                prev.map((item) =>
+                  item.id === row.id
+                    ? {
+                        ...item,
+                        status: item.status === 'active' ? 'inactive' : 'active',
+                      }
+                    : item,
+                ),
+              )
+            }}
+          />
         </Space>
       ),
     },
@@ -167,7 +160,8 @@ export default function StaffPage() {
         title="Quản lý nhân sự"
         description="Tạo người dùng và gán nhóm quyền đã cấu hình ở Quản lý nhóm quyền."
         extra={
-          <Button
+          <IconAction
+            title="Tạo nhân viên"
             type="primary"
             icon={<PlusOutlined />}
             onClick={() => {
@@ -181,9 +175,7 @@ export default function StaffPage() {
               })
               setOpen(true)
             }}
-          >
-            Tạo nhân viên
-          </Button>
+          />
         }
       />
 
@@ -209,9 +201,11 @@ export default function StaffPage() {
               ]}
             />
           </div>
-          <Button icon={<ReloadOutlined />} onClick={() => message.info('Đã làm mới danh sách')}>
-            Làm mới
-          </Button>
+          <IconAction
+            title="Làm mới"
+            icon={<ReloadOutlined />}
+            onClick={() => message.info('Đã làm mới danh sách')}
+          />
         </div>
 
         <Table

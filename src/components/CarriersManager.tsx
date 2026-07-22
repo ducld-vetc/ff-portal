@@ -6,7 +6,6 @@ import {
   SearchOutlined,
 } from '@ant-design/icons'
 import {
-  Button,
   Form,
   Input,
   Modal,
@@ -15,10 +14,10 @@ import {
   Switch,
   Table,
   Tag,
-  Tooltip,
   message,
   type TableColumnsType,
 } from 'antd'
+import { IconAction } from './IconAction'
 import { PageHeader } from './PageHeader'
 import { type Carrier } from '../data/shipping'
 
@@ -78,37 +77,35 @@ export default function CarriersManager({ initialRows }: Props) {
       width: 110,
       render: (_, row) => (
         <Space>
-          <Tooltip title="Sửa">
-            <Button
-              type="primary"
-              size="small"
-              icon={<EditOutlined />}
-              onClick={() => {
-                setEditing(row)
-                form.setFieldsValue(row)
-                setOpen(true)
-              }}
-            />
-          </Tooltip>
-          <Tooltip title="Xóa">
-            <Button
-              danger
-              size="small"
-              icon={<DeleteOutlined />}
-              onClick={() => {
-                Modal.confirm({
-                  title: `Xóa ĐVVC ${row.code}?`,
-                  okText: 'Xóa',
-                  okButtonProps: { danger: true },
-                  cancelText: 'Hủy',
-                  onOk: () => {
-                    setRows((prev) => prev.filter((item) => item.id !== row.id))
-                    message.success('Đã xóa ĐVVC')
-                  },
-                })
-              }}
-            />
-          </Tooltip>
+          <IconAction
+            title="Sửa"
+            type="primary"
+            size="small"
+            icon={<EditOutlined />}
+            onClick={() => {
+              setEditing(row)
+              form.setFieldsValue(row)
+              setOpen(true)
+            }}
+          />
+          <IconAction
+            title="Xóa"
+            danger
+            size="small"
+            icon={<DeleteOutlined />}
+            onClick={() => {
+              Modal.confirm({
+                title: `Xóa ĐVVC ${row.code}?`,
+                okText: 'Xóa',
+                okButtonProps: { danger: true },
+                cancelText: 'Hủy',
+                onOk: () => {
+                  setRows((prev) => prev.filter((item) => item.id !== row.id))
+                  message.success('Đã xóa ĐVVC')
+                },
+              })
+            }}
+          />
         </Space>
       ),
     },
@@ -120,7 +117,8 @@ export default function CarriersManager({ initialRows }: Props) {
         title="Đơn vị vận chuyển"
         description="Tạo, sửa, xóa đơn vị vận chuyển (carrier) dùng trong hệ thống."
         extra={
-          <Button
+          <IconAction
+            title="Thêm ĐVVC"
             type="primary"
             icon={<PlusOutlined />}
             onClick={() => {
@@ -129,9 +127,7 @@ export default function CarriersManager({ initialRows }: Props) {
               form.setFieldsValue({ cod: true, status: 'active', service: 'Standard' })
               setOpen(true)
             }}
-          >
-            Thêm ĐVVC
-          </Button>
+          />
         }
       />
 

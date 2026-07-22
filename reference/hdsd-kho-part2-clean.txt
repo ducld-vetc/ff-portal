@@ -1,0 +1,428 @@
+
+
+===== PAGE 8 =====
+
+ 
+PHẦN 2: THIẾT LẬP CÁC VỊ TRÍ CHỨA HÀNG 
+Kho vừa được tạo trên hệ thống hiện chưa có bất kỳ thông tin nào về khu vực lưu trữ, vị trí lưu trữ, 
+thiết bị chứa hàng, lối đi, v.v... (tức là kho hoàn toàn trống). 
+Để có thể vận hành kho này, bạn cần tiến hành thiết lập toàn bộ các vị trí trong kho theo hướng dẫn bên 
+dưới. 
+I.​
+Thiết lập Phòng lưu trữ 
+Trước khi tạo vị trí lưu trữ trong kho, bạn cần khai báo phòng (room) trên hệ thống theo hướng dẫn 
+bên dưới: 
+-​
+Từ màn hình trang chủ chọn: Thiết lập\Quản lý vị trí  
+-​
+Chọn + Phòng  
+ 
+-​
+Nhập các thông tin bắt buộc như sau: 
+ 
+●​ Mã phòng: Mã định danh của phòng, tối đa 5 ký tự 
+●​ Độ ưu tiên: Giá trị số thể hiện mức độ ưu tiên khi 
+lấy hàng.​
+ (Số 1 là ưu tiên cao nhất, tiếp theo là 2, 3,... theo thứ tự 
+giảm dần).​
+VD: Tạo P1 có độ ưu tiên 1; P2 có độ ưu tiên 2 → khi lấy 
+hàng thì hệ thống sẽ ưu tiên chỉ định lấy hàng ở P1 trước, 
+sau khi lấy hết hàng ở P1 sẽ sang P2 lấy hàng tiếp. 
+ 
+ 
+Kiểm tra lại thông tin đã nhập, sau đó nhấn ‘LƯU’ để hoàn tất thiết lập.
+ 
+8 
+
+
+===== PAGE 9 =====
+
+ 
+II.​
+Thiết lập Tầng của kệ 
+Thiết lập các tầng trong giá kệ của kho bằng cách thực hiện theo các bước sau: 
+-​
+Từ màn hình trang chủ chọn: Thiết lập\Quản lý vị trí  
+-​
+Nhấn + Tầng để tạo mới​
+ 
+ 
+-​
+Nhập các thông tin bắt buộc như sau:​
+ 
+●​ Mã tầng: Mã định danh tầng kệ, tối đa 3 ký tự 
+●​ Độ ưu tiên: Giá trị số thể hiện mức độ ưu tiên của 
+tầng kệ trong thao tác lấy hàng​
+ (1 là ưu tiên cao nhất, tiếp theo là 2, 3,... theo thứ tự giảm 
+dần) 
+VD: Tạo tầng A (trệt) có độ ưu tiên 1; tầng B có độ ưu tiên 2 
+→ khi lấy hàng thì hệ thống sẽ ưu tiên chỉ định lấy hàng ở 
+tầng thấp A trước, sau khi lấy hết hàng ở tầng A sẽ chuyển 
+sang tầng cao B lấy hàng tiếp. 
+ 
+Kiểm tra lại thông tin đã nhập, sau đó nhấn ‘SAVE’ để hoàn tất thiết lập.​
+ 
+ 
+ 
+9 
+
+
+===== PAGE 10 =====
+
+ 
+III.​
+Thiết lập Lối đi (Aisle) 
+Aisle là lối đi trong kho, chạy giữa các dãy kệ, phục vụ cho các hoạt động như lưu kho (put-away) hoặc lấy 
+hàng (picking). 
+Các bước thiết lập lối đi trong khu vực lưu trữ (Room): 
+Từ bảng vận hàng, truy cập Thiết lập\Quản lý vị trí , chọn tab ‘Danh sách luống đi’ 
+1.​ Thiết lập lối đi thủ công 
+-​
+Chọn ‘+Luống’ 
+ 
+ 
+●​ Mã phòng: Chọn mã phòng nơi bạn muốn tạo lối 
+đi để lấy hàng. 
+●​ Mã luống đi: Nhập mã định danh cho lối đi. Mã 
+này có thể gồm tối đa 10 ký tự. 
+●​ Độ ưu tiên: Gán một giá trị số để xác định thứ tự 
+ưu tiên khi thực hiện lấy hàng trong các lối đi. 
+Giá trị càng nhỏ thì mức độ ưu tiên càng cao (ví dụ: 1 là 
+cao nhất, tiếp theo là 2, 3,...). 
+VD: Tạo lối đi 01 có độ ưu tiên 1; lối đi 02 có độ ưu tiên 2 
+→ khi lấy hàng thì hệ thống sẽ ưu tiên chỉ định đi lối 01 để 
+lấy hàng trước, sau khi lấy hết hàng ở lối 01 sẽ chuyển 
+sang lối đi 02 lấy hàng tiếp. 
+ 
+ 
+Kiểm tra lại tất cả thông tin đã nhập. Nhấn nút ‘SAVE’ để lưu lại và hoàn tất thiết lập lối đi. 
+ 
+ 
+10 
+
+
+===== PAGE 11 =====
+
+ 
+2.​ Tạo nhiều luống đi cùng lúc bằng file Excel 
+-​
+Chọn ‘+Nhiều Luống Đi’ 
+ 
+-​
+Tải xuống file mẫu (template) và điền đầy đủ thông tin theo hướng dẫn có trong file.​
+Trong sheet “Mô tả” của file mẫu sẽ có 
+phần giải thích chi tiết ý nghĩa từng cột dữ 
+liệu.​
+Vui lòng đọc kỹ phần mô tả này trước khi 
+nhập dữ liệu. 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+-​
+Sau khi upload, kết quả tạo lối đi sẽ hiển thị bên dưới, cho biết những bản ghi nào tạo thành 
+công hoặc thất bại (nếu có lỗi). 
+ 
+ 
+ 
+11 
+
+
+===== PAGE 12 =====
+
+ 
+IV.​
+Thiết lập Dãy kệ (Rack) 
+Thực hiện theo các bước sau để thiết lập giá kệ trong kho: 
+Từ bảng vận hàng, truy cập: Thiết lập\Quản lý vị trí , chọn tab ‘Danh sách kệ’ 
+1.​ Thiết lập dãy kệ thủ công 
+-​
+Chọn ‘+ Dãy Kệ’ 
+ 
+-​
+Nhập các thông tin cần thiết như sau: 
+ 
++​ Mã phòng: Chọn phòng chứa giá kệ 
++​ Mã giá: Nhập mã định danh cho giá, tối đa 10 ký tự 
++​ Mã lối đi: Chọn đường đi trong kho phục vụ cho giá này 
++​ Độ ưu tiên: Nhập thứ tự ưu tiên để hệ thống biết nên 
+lấy hàng ở giá nào trước (Giá trị 1 là ưu tiên cao nhất, tiếp theo 
+là 2, 3,... theo thứ tự giảm dần) 
+VD: Tạo dãy kệ A có độ ưu tiên 1; dãy kệ B có độ ưu tiên 2 và 
+dãy A và B cùng chung 1 luống đi → khi lấy hàng thì hệ thống sẽ 
+ưu tiên chỉ định lấy hàng bên dãy A trước, sau khi lấy hết hàng 
+ở dãy A sẽ chuyển sang dãy B để lấy hàng tiếp. 
+Nếu 2 dãy A và B này ở 2 luống đi khác nhau thì hệ thống sẽ 
+được chỉ định lấy hàng ở dãy nào có luống đi được thiết lập độ 
+ưu tiên cao hơn. 
+ 
+Kiểm tra lại các thông tin đã nhập, nhấn ‘Lưu’ để hoàn tất việc thiết lập 
+ 
+ 
+ 
+ 
+12 
+
+
+===== PAGE 13 =====
+
+ 
+2.​ Tạo nhiều dãy kệ cùng lúc bằng file Excel 
+-​
+Chọn ‘+Nhiều Dãy Kệ’ 
+-​
+Tải xuống file mẫu (template) và điền đầy đủ thông tin theo hướng dẫn có trong file.​
+Trong sheet “Mô tả” của file mẫu sẽ có phần giải thích chi tiết ý nghĩa từng cột dữ liệu.​
+Vui lòng đọc kỹ phần mô tả này trước khi nhập dữ liệu. 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+-​
+Sau khi upload, kết quả tạo lối đi sẽ hiển thị bên dưới, cho biết những bản ghi nào tạo thành 
+công hoặc thất bại (nếu có lỗi). 
+ 
+ 
+13 
+
+
+===== PAGE 14 =====
+
+ 
+V.​
+Thiết lập Vị trí lưu kho (bin) 
+Thực hiện theo các bước sau để thiết lập vị trí (bin) trong kho: 
+Từ bảng vận hàng, truy cập: Thiết lập\Quản lý vị trí , chọn tab ‘Danh sách vị trí lưu kho’ 
+1.​ Thiết lập vị trí thủ công 
+-​
+Chọn ‘+ Vị trí’ 
+-​
+Nhập các thông tin cần thiết như sau: 
+ 
++ Mã vị trí: Nhập mã định danh cho 
+bin, tối đa 15 ký tự 
++ Mã phòng: Chọn phòng nơi bin 
+sẽ được tạo. 
++ Mã tầng: Xác định tầng của giá 
+kệ mà bin này thuộc về​
++ Mã luống đi: Chọn đường đi 
+trong kho phục vụ cho vị trí này​
++ Mã dãy kệ: Chọn giá kệ mà bin 
+này thuộc về​
++ Độ ưu tiên: Xác định thứ tự ưu 
+tiên để lấy hàng tại bin​
+ (1 là ưu tiên cao nhất, tiếp theo là 
+2, 3,... theo thứ tự giảm dần)​
++ Số SKU tối đa: Số lượng SKU tối 
+ưu khuyến nghị trong 1 bin là 7 
+SKU​
++ Không thể lấy hàng: Nếu chọn 
+mục này, vị trí sẽ chỉ dùng để lưu 
+trữ, không dùng để lấy hàng cho 
+đơn. 
++ Vị trí Fast Moving: Ưu tiên lấy hàng tại vị trí này trước trong quá trình đi lấy hàng 
++ Kích thước (cm): giúp hệ thống tính toán thể tích kho sử dụng và đo lường khoảng trống 
+còn lại để lưu thêm hàng. 
+-​
+Kiểm tra lại các thông tin đã nhập, nhấn ‘Lưu’ để hoàn tất việc thiết lập. 
+Ví dụ về định dạng mã vị trí: 
+R1.A1.B.03 -  Trong đó: R1: mã phòng; A1: mã dãy kệ A1; B: tầng 2 của kệ; 03: vị trí bin số 3 trên kệ.​
+ 
+14 
+
+
+===== PAGE 15 =====
+
+ 
+2.​ Tạo nhiều vị trí lưu kho cùng lúc bằng file Excel 
+-​
+Chọn ‘+Nhiều Vị trí’ 
+ 
+-​
+Tải xuống file mẫu (template) và điền đầy đủ thông tin theo hướng dẫn có trong file.​
+Trong sheet “Mô tả” của file mẫu sẽ có phần giải thích chi tiết ý nghĩa từng cột dữ liệu.​
+Vui lòng đọc kỹ phần mô tả này trước khi nhập dữ liệu. 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Hướng dẫn thiết lập Độ ưu tiên cho vị trí lấy hàng 
+Giả sử với 2 dãy kệ A01 và A02, mỗi dãy kệ chỉ có 1 tầng A với 6 vị trí chứa hàng (A.01 → A.06), các ô xanh 
+lá chứa sản phẩm cần đi lấy hàng, và độ ưu tiên của 2 dãy là như nhau, ta có thể thiết lập độ ưu tiên của 
+các vị trí trên 2 dãy kệ để hình thành lối đi lấy hàng như sau: 
+ 
+(Ý nghĩa mã vị trí chứa hàng: A01.A.03 được hiểu như sau A01: Mã kệ, A.: Mã tầng (A là tầng thứ: 1), .03: vị trí chứa 
+hàng (vị trí thứ 3 ở của dãy kệ) 
+ 
+15 
+
+
+===== PAGE 16 =====
+
+ 
+ Nếu lối vào kệ hàng có đường đi thông được ở 2 phía, ta có thể thiết lập như sau: 
+ 
+Các vi trí A.01 →  A.06 của 2 dãy kệ ta thiết lập độ ưu tiên 
+(index) là từ 1→ 6 
+Khi đó, ta có cách di chuyển lấy hàng như hình bên, lấy theo thứ 
+tự index 2 → 3 → 5 sau đó picker di chuyển mang hàng đã lấy ra 
+ngoài đến vị trí trạm đóng gói. 
+ 
+ 
+ 
+Nếu có góc chết ở cuối đường giữa 2 dãy kệ, ta có thể thiết lập luống như sau: 
+Đi kiểu chữ U 
+- Ở dãy A01 các vị trí A.01→ A.06 ta thiết lập độ ưu tiên 
+là từ 1 → 6 
+- Ở dãy A02 các vị trí A.06 → A.01 ta thiết lập độ ưu tiên 
+là từ 6 → 12 
+Khi đó, ta có cách di chuyển lấy hàng như hình bên, lấy 
+theo thứ tự index 2 → 5 → 10 sau đó picker di chuyển 
+mang hàng đã lấy ra ngoài đến vị trí trạm đóng gói. 
+ 
+ 
+Đi kiểu Zigzag từ trong ra ngoài 
+- Ở dãy A01 các vị trí A.01→ A.06 ta thiết lập độ ưu tiên 
+là từ 1 → 6 
+- Ở dãy A02 các vị trí A.06 → A.01 ta thiết lập độ ưu tiên 
+là từ 6 → 1 
+Khi đó, ta có cách di chuyển lấy hàng như hình bên, lấy 
+theo thứ tự index 2 → 4 → 5 sau đó picker di chuyển 
+mang hàng đã lấy ra ngoài đến vị trí trạm đóng gói. 
+ 
+16 
+
+
+===== PAGE 17 =====
+
+ 
+-​
+Sau khi điền thông tin khai báo vị trí hoàn tất thì upload file lên hệ thống 
+-​
+Sau khi upload, kết quả tạo vị trí lưu kho sẽ hiển thị bên dưới, cho biết những bản ghi nào tạo 
+thành công hoặc thất bại (nếu có lỗi). 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Sau khi đã tạo mã vị trí thành công trên WMS, bạn cần in các mã vị trí này và dán lên các vị trí vật lý 
+tương ứng trong kho, nhằm đảm bảo đồng bộ giữa dữ liệu trên hệ thống và thực tế hiện trường. 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+17 
+
+
+===== PAGE 18 =====
+
+ 
+VI.​
+Thiết lập Thiết bị chứa hàng 
+Tại bước này, bạn sẽ đăng ký thiết bị chứa hàng vào hệ thống (ví dụ: tote nhựa, pallet, v.v.) bằng phương 
+pháp sau: 
+1.​ Thiết lập thiết bị chứa hàng thủ công 
+-​
+Từ bảng vận hàng, truy cập: Thiết lập\Quản lý thiết bị chứa hàng , chọn ‘Thêm’ 
+Nhập các thông tin yêu cầu như sau: 
+-​
+Loại dụng cụ: Chọn loại dụng cụ lưu trữ, ví 
+dụ: tote, pallet,... 
+-​
+Thủ công: Nếu chọn tùy chọn này, bạn sẽ 
+tự đặt tên (mã) cho từng thiết bị lưu trữ.​
+ 
+ 
+ 
+-​
+Auto (Tự động): Nếu chọn tùy chọn này, hệ thống sẽ tự động sinh ra mã tên ngẫu nhiên cho các 
+thiết bị. Bạn chỉ cần nhập số lượng thiết bị cần tạo. 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+18 
+
+
+===== PAGE 19 =====
+
+ 
+2.​ Tạo nhiều thiết bị chứa cùng lúc bằng file Excel 
+-​
+Từ bảng vận hàng, truy cập: Thiết lập\Quản lý thiết bị chứa hàng , chọn ‘Import Thiết Bị Chứa 
+Hàng’ 
+ 
+-​
+Tải xuống file mẫu (template) và điền đầy đủ thông tin theo hướng dẫn có trong file.​
+ 
+ 
+ 
+ 
+ 
+-​
+Trong sheet “Mô tả” của file mẫu sẽ có phần giải thích chi tiết ý nghĩa từng cột dữ liệu.​
+Vui lòng đọc kỹ phần mô tả này trước khi nhập dữ liệu. 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+19 
+
+
+===== PAGE 20 =====
+
+ 
+-​
+Sau khi bạn tải lên tập tin Excel, hệ thống sẽ xác minh dữ liệu để kiểm tra xem các thông tin đã 
+được điền đúng định dạng yêu cầu hay chưa. 
+ 
+-​
+Các bước tiếp theo như sau: 
++​ Nhấn ‘Import’ để tiến hành tạo hàng loạt thiết bị chứa hàng (1) 
++​ Nhấn ‘Update’ nếu bạn muốn tải lên tập tin Excel khác (2) 
++​ Nhấn ‘Export Fail Data’ để tải về báo cáo lỗi (nếu có dòng dữ liệu nào không hợp lệ) (3) 
+ 
+Lưu ý: Sau khi tạo thành công các thiết bị chứa hàng (tote/pallet) trên hệ thống, bạn cần in mã nhãn và 
+dán lên các thiết bị vật lý tương ứng trong kho, theo ví dụ minh họa bên dưới. 
+ 
+ 
+20 

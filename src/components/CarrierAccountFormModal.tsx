@@ -1,7 +1,6 @@
 import { useEffect, useMemo } from 'react'
-import { InfoCircleOutlined } from '@ant-design/icons'
+import { CloseOutlined, InfoCircleOutlined, SaveOutlined } from '@ant-design/icons'
 import {
-  Button,
   Checkbox,
   Form,
   Input,
@@ -13,6 +12,7 @@ import {
   Typography,
   message,
 } from 'antd'
+import { IconAction } from './IconAction'
 import {
   carrierCatalog,
   getCarrierByCode,
@@ -218,10 +218,8 @@ export default function CarrierAccountFormModal({
       destroyOnHidden
       footer={
         <Space>
-          <Button onClick={onCancel}>Thoát</Button>
-          <Button type="primary" onClick={() => form.submit()}>
-            Lưu
-          </Button>
+          <IconAction title="Thoát" icon={<CloseOutlined />} onClick={onCancel} />
+          <IconAction title="Lưu" type="primary" icon={<SaveOutlined />} onClick={() => form.submit()} />
         </Space>
       }
     >

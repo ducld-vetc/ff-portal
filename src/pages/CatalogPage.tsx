@@ -6,7 +6,8 @@ import {
   PlusOutlined,
   SearchOutlined,
 } from '@ant-design/icons'
-import { Button, Input, Select, Space, Table, Tag, Tooltip, type TableColumnsType } from 'antd'
+import { Input, Select, Space, Table, Tag, type TableColumnsType } from 'antd'
+import { IconAction } from '../components/IconAction'
 import { PageHeader } from '../components/PageHeader'
 import ProductFormModal from '../components/ProductFormModal'
 import { customers } from '../data/mock'
@@ -191,9 +192,13 @@ export default function CatalogPage() {
       width: 80,
       fixed: 'right',
       render: (_, row) => (
-        <Tooltip title="Sửa">
-          <Button type="primary" size="small" icon={<EditOutlined />} onClick={() => openEdit(row)} />
-        </Tooltip>
+        <IconAction
+          title="Sửa"
+          type="primary"
+          size="small"
+          icon={<EditOutlined />}
+          onClick={() => openEdit(row)}
+        />
       ),
     },
   ]
@@ -205,10 +210,13 @@ export default function CatalogPage() {
         description="Master data sản phẩm theo khách hàng: SKU, loại lưu trữ, hạn sử dụng, đơn vị tính và quy tắc xuất kho."
         extra={
           <Space>
-            <Button icon={<ImportOutlined />}>Import</Button>
-            <Button type="primary" icon={<PlusOutlined />} onClick={openCreate}>
-              Thêm sản phẩm
-            </Button>
+            <IconAction title="Import" icon={<ImportOutlined />} />
+            <IconAction
+              title="Thêm sản phẩm"
+              type="primary"
+              icon={<PlusOutlined />}
+              onClick={openCreate}
+            />
           </Space>
         }
       />
@@ -234,7 +242,8 @@ export default function CatalogPage() {
                 onChange={(e) => setQuery(e.target.value)}
                 onPressEnter={() => setAppliedQuery(query)}
               />
-              <Button
+              <IconAction
+                title="Tìm kiếm"
                 type="primary"
                 icon={<SearchOutlined />}
                 onClick={() => setAppliedQuery(query)}

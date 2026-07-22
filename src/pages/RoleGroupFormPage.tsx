@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { ArrowLeftOutlined, SaveOutlined } from '@ant-design/icons'
-import { Button, Col, Form, Input, Row, Space, Tabs, message } from 'antd'
+import { Col, Form, Input, Row, Space, Tabs, message } from 'antd'
+import { IconAction } from '../components/IconAction'
 import { PageHeader } from '../components/PageHeader'
 import PermissionTree from '../components/PermissionTree'
 import { useRoleGroups } from '../data/RoleGroupsContext'
@@ -96,12 +97,12 @@ export default function RoleGroupFormPage() {
         }
         extra={
           <Space>
-            <Button type="primary" icon={<SaveOutlined />} onClick={onSave}>
-              Lưu
-            </Button>
-            <Button icon={<ArrowLeftOutlined />} onClick={() => navigate('/staff/roles')}>
-              Thoát
-            </Button>
+            <IconAction title="Lưu" type="primary" icon={<SaveOutlined />} onClick={onSave} />
+            <IconAction
+              title="Thoát"
+              icon={<ArrowLeftOutlined />}
+              onClick={() => navigate('/staff/roles')}
+            />
           </Space>
         }
       />

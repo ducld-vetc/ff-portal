@@ -1,5 +1,8 @@
 import { useMemo, useState } from 'react'
 import {
+  CheckOutlined,
+  ClearOutlined,
+  CloseOutlined,
   DeleteOutlined,
   EditOutlined,
   FilterOutlined,
@@ -8,7 +11,6 @@ import {
   SearchOutlined,
 } from '@ant-design/icons'
 import {
-  Button,
   Col,
   Drawer,
   Form,
@@ -21,10 +23,10 @@ import {
   Space,
   Table,
   Tag,
-  Tooltip,
   message,
   type TableColumnsType,
 } from 'antd'
+import { IconAction } from '../components/IconAction'
 import { PageHeader } from '../components/PageHeader'
 import {
   calcVolumeCm3,
@@ -141,41 +143,43 @@ export default function MaterialsPage() {
       fixed: 'right',
       render: (_, row) => (
         <Space size={6}>
-          <Tooltip title="Chỉnh sửa">
-            <Button type="primary" size="small" icon={<EditOutlined />} onClick={() => openEdit(row)} />
-          </Tooltip>
-          <Tooltip title="Xóa">
-            <Button
-              size="small"
-              danger
-              style={{ background: '#fa8c16', borderColor: '#fa8c16', color: '#fff' }}
-              icon={<DeleteOutlined />}
-              onClick={() => {
-                Modal.confirm({
-                  title: `Xóa vật tư ${row.code}?`,
-                  okText: 'Xóa',
-                  okButtonProps: { danger: true },
-                  cancelText: 'Hủy',
-                  onOk: () => {
-                    setRows((prev) => prev.filter((item) => item.id !== row.id))
-                    message.success('Đã xóa vật tư')
-                  },
-                })
-              }}
-            />
-          </Tooltip>
-          <Tooltip title="In mã vật tư">
-            <Button
-              size="small"
-              style={{ background: '#52c41a', borderColor: '#52c41a', color: '#fff' }}
-              icon={<PrinterOutlined />}
-              onClick={() => {
-                setPrintTarget(row)
-                setPrintQty(1)
-                setPrintOpen(true)
-              }}
-            />
-          </Tooltip>
+          <IconAction
+            title="Chỉnh sửa"
+            type="primary"
+            size="small"
+            icon={<EditOutlined />}
+            onClick={() => openEdit(row)}
+          />
+          <IconAction
+            title="Xóa"
+            size="small"
+            danger
+            style={{ background: '#fa8c16', borderColor: '#fa8c16', color: '#fff' }}
+            icon={<DeleteOutlined />}
+            onClick={() => {
+              Modal.confirm({
+                title: `Xóa vật tư ${row.code}?`,
+                okText: 'Xóa',
+                okButtonProps: { danger: true },
+                cancelText: 'Hủy',
+                onOk: () => {
+                  setRows((prev) => prev.filter((item) => item.id !== row.id))
+                  message.success('Đã xóa vật tư')
+                },
+              })
+            }}
+          />
+          <IconAction
+            title="In mã vật tư"
+            size="small"
+            style={{ background: '#52c41a', borderColor: '#52c41a', color: '#fff' }}
+            icon={<PrinterOutlined />}
+            onClick={() => {
+              setPrintTarget(row)
+              setPrintQty(1)
+              setPrintOpen(true)
+            }}
+          />
         </Space>
       ),
     },
@@ -187,9 +191,7 @@ export default function MaterialsPage() {
         title="Vật tư"
         description="Quản lý vật tư đóng gói theo đối tác / kho: thêm, sửa, tìm lọc và in mã."
         extra={
-          <Button type="primary" icon={<PlusOutlined />} onClick={openCreate}>
-            Thêm
-          </Button>
+          <IconAction title="Thêm" type="primary" icon={<PlusOutlined />} onClick={openCreate} />
         }
       />
 
@@ -204,15 +206,19 @@ export default function MaterialsPage() {
                 onChange={(e) => setQuery(e.target.value)}
                 onPressEnter={() => setAppliedQuery(query)}
               />
-              <Button
+              <IconAction
+                title="Tìm kiếm"
                 type="primary"
                 icon={<SearchOutlined />}
                 onClick={() => setAppliedQuery(query)}
               />
             </Space.Compact>
-            <Button type="primary" icon={<FilterOutlined />} onClick={() => setFilterOpen(true)}>
-              Lọc
-            </Button>
+            <IconAction
+              title="Lọc"
+              type="primary"
+              icon={<FilterOutlined />}
+              onClick={() => setFilterOpen(true)}
+            />
             {(partnerFilter || typeFilter || ownerFilter || appliedQuery) && (
               <Tag
                 closable
@@ -246,18 +252,21 @@ export default function MaterialsPage() {
         width={360}
         footer={
           <Space style={{ width: '100%', justifyContent: 'flex-end' }}>
-            <Button
+            <IconAction
+              title="Xóa lọc"
+              icon={<ClearOutlined />}
               onClick={() => {
                 setPartnerFilter(undefined)
                 setTypeFilter(undefined)
                 setOwnerFilter(undefined)
               }}
-            >
-              Xóa lọc
-            </Button>
-            <Button type="primary" onClick={() => setFilterOpen(false)}>
-              Áp dụng
-            </Button>
+            />
+            <IconAction
+              title="Áp dụng"
+              type="primary"
+              icon={<CheckOutlined />}
+              onClick={() => setFilterOpen(false)}
+            />
           </Space>
         }
       >
@@ -442,8 +451,13 @@ export default function MaterialsPage() {
         onCancel={() => setPrintOpen(false)}
         footer={
           <Space>
-            <Button onClick={() => setPrintOpen(false)}>Thoát</Button>
-            <Button
+            <IconAction
+              title="Thoát"
+              icon={<CloseOutlined />}
+              onClick={() => setPrintOpen(false)}
+            />
+            <IconAction
+              title="In mã"
               type="primary"
               style={{ background: '#52c41a', borderColor: '#52c41a' }}
               icon={<PrinterOutlined />}
@@ -453,9 +467,7 @@ export default function MaterialsPage() {
                 )
                 setPrintOpen(false)
               }}
-            >
-              In mã
-            </Button>
+            />
           </Space>
         }
         destroyOnHidden

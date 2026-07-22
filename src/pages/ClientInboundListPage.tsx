@@ -1,6 +1,8 @@
 import { useMemo, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import {
+  CheckOutlined,
+  ClearOutlined,
   CopyOutlined,
   DownloadOutlined,
   FilterOutlined,
@@ -9,7 +11,6 @@ import {
   UploadOutlined,
 } from '@ant-design/icons'
 import {
-  Button,
   DatePicker,
   Drawer,
   Form,
@@ -18,12 +19,12 @@ import {
   Space,
   Table,
   Tag,
-  Tooltip,
   Typography,
   message,
   type TableColumnsType,
 } from 'antd'
 import dayjs from 'dayjs'
+import { IconAction } from '../components/IconAction'
 import { PageHeader } from '../components/PageHeader'
 import {
   goodsConditionColor,
@@ -149,14 +150,13 @@ export default function ClientInboundListPage() {
       width: 56,
       fixed: 'right',
       render: (_, row) => (
-        <Tooltip title="Sao chép tạo nhanh yêu cầu nhập kho">
-          <Button
-            type="primary"
-            size="small"
-            icon={<CopyOutlined />}
-            onClick={() => copyRequest(row)}
-          />
-        </Tooltip>
+        <IconAction
+          title="Sao chép tạo nhanh yêu cầu nhập kho"
+          type="primary"
+          size="small"
+          icon={<CopyOutlined />}
+          onClick={() => copyRequest(row)}
+        />
       ),
     },
   ]
@@ -171,31 +171,28 @@ export default function ClientInboundListPage() {
         description="Vận hành → Nhập kho: tìm kiếm, xem chi tiết, tạo / import / xuất Excel, hoặc sao chép yêu cầu có sẵn."
         extra={
           <Space wrap>
-            <Button
+            <IconAction
+              title="Import yêu cầu nhập kho"
               className="btn-success"
               icon={<UploadOutlined />}
               onClick={() =>
                 message.info('Demo: chọn file Excel/CSV để import yêu cầu nhập kho')
               }
-            >
-              Import yêu cầu nhập kho
-            </Button>
-            <Button
+            />
+            <IconAction
+              title="Tạo nhập kho"
               type="primary"
               icon={<PlusOutlined />}
               onClick={() => navigate('/client/operations/inbound/create')}
-            >
-              Tạo nhập kho
-            </Button>
-            <Button
+            />
+            <IconAction
+              title="Xuất Excel"
               className="btn-success"
               icon={<DownloadOutlined />}
               onClick={() =>
                 message.success(`Đã xuất ${filtered.length} yêu cầu nhập kho ra Excel (demo)`)
               }
-            >
-              Xuất Excel
-            </Button>
+            />
           </Space>
         }
       />
@@ -217,24 +214,22 @@ export default function ClientInboundListPage() {
               prefix={<SearchOutlined />}
               style={{ width: 280 }}
             />
-            <Tooltip title="Tìm kiếm nâng cao">
-              <Button
-                type="primary"
-                icon={<FilterOutlined />}
-                onClick={() => setAdvancedOpen(true)}
-              />
-            </Tooltip>
+            <IconAction
+              title="Tìm kiếm nâng cao"
+              type="primary"
+              icon={<FilterOutlined />}
+              onClick={() => setAdvancedOpen(true)}
+            />
           </Space.Compact>
           {Object.keys(advFilters).length > 0 ? (
-            <Button
-              type="link"
+            <IconAction
+              title="Xóa bộ lọc nâng cao"
+              icon={<ClearOutlined />}
               onClick={() => {
                 setAdvFilters({})
                 advForm.resetFields()
               }}
-            >
-              Xóa bộ lọc nâng cao
-            </Button>
+            />
           ) : null}
         </div>
 
@@ -254,16 +249,18 @@ export default function ClientInboundListPage() {
         width={400}
         extra={
           <Space>
-            <Button
+            <IconAction
+              title="Đặt lại"
+              icon={<ClearOutlined />}
               onClick={() => {
                 advForm.resetFields()
                 setAdvFilters({})
               }}
-            >
-              Đặt lại
-            </Button>
-            <Button
+            />
+            <IconAction
+              title="Áp dụng"
               type="primary"
+              icon={<CheckOutlined />}
               onClick={() => {
                 const values = advForm.getFieldsValue()
                 const range = values.expectedRange as
@@ -280,9 +277,7 @@ export default function ClientInboundListPage() {
                 setAdvancedOpen(false)
                 message.success('Đã áp dụng bộ lọc nâng cao')
               }}
-            >
-              Áp dụng
-            </Button>
+            />
           </Space>
         }
       >

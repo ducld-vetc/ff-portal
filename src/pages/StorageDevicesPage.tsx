@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react'
 import {
+  CloseOutlined,
   DeleteOutlined,
   EditOutlined,
   PlusOutlined,
@@ -8,7 +9,6 @@ import {
   UploadOutlined,
 } from '@ant-design/icons'
 import {
-  Button,
   Form,
   Input,
   InputNumber,
@@ -18,13 +18,13 @@ import {
   Space,
   Table,
   Tag,
-  Tooltip,
   Upload,
   message,
   type TableColumnsType,
   type UploadProps,
 } from 'antd'
 import { BarcodeLabel, buildCode39Svg } from '../components/BarcodeLabel'
+import { IconAction } from '../components/IconAction'
 import { PageHeader } from '../components/PageHeader'
 import { warehouses } from '../data/mock'
 import {
@@ -284,35 +284,37 @@ export default function StorageDevicesPage() {
       fixed: 'right',
       render: (_, row) => (
         <Space size={6}>
-          <Tooltip title="In barcode">
-            <Button
-              size="small"
-              icon={<PrinterOutlined />}
-              onClick={() => openPrint(row)}
-              style={{ color: '#52c41a', borderColor: '#b7eb8f' }}
-            />
-          </Tooltip>
-          <Tooltip title="Sửa">
-            <Button type="primary" size="small" icon={<EditOutlined />} onClick={() => openEdit(row)} />
-          </Tooltip>
-          <Tooltip title="Xóa">
-            <Button
-              danger
-              size="small"
-              icon={<DeleteOutlined />}
-              onClick={() => {
-                Modal.confirm({
-                  title: `Xóa thiết bị ${row.code}?`,
-                  okText: 'Xóa',
-                  okButtonProps: { danger: true },
-                  onOk: () => {
-                    setRows((prev) => prev.filter((item) => item.id !== row.id))
-                    message.success('Đã xóa thiết bị')
-                  },
-                })
-              }}
-            />
-          </Tooltip>
+          <IconAction
+            title="In barcode"
+            size="small"
+            icon={<PrinterOutlined />}
+            onClick={() => openPrint(row)}
+            style={{ color: '#52c41a', borderColor: '#b7eb8f' }}
+          />
+          <IconAction
+            title="Sửa"
+            type="primary"
+            size="small"
+            icon={<EditOutlined />}
+            onClick={() => openEdit(row)}
+          />
+          <IconAction
+            title="Xóa"
+            danger
+            size="small"
+            icon={<DeleteOutlined />}
+            onClick={() => {
+              Modal.confirm({
+                title: `Xóa thiết bị ${row.code}?`,
+                okText: 'Xóa',
+                okButtonProps: { danger: true },
+                onOk: () => {
+                  setRows((prev) => prev.filter((item) => item.id !== row.id))
+                  message.success('Đã xóa thiết bị')
+                },
+              })
+            }}
+          />
         </Space>
       ),
     },
@@ -326,11 +328,14 @@ export default function StorageDevicesPage() {
         extra={
           <Space>
             <Upload {...uploadProps}>
-              <Button icon={<UploadOutlined />}>Import Excel</Button>
+              <IconAction title="Import Excel" icon={<UploadOutlined />} />
             </Upload>
-            <Button type="primary" icon={<PlusOutlined />} onClick={openCreate}>
-              Tạo thiết bị
-            </Button>
+            <IconAction
+              title="Tạo thiết bị"
+              type="primary"
+              icon={<PlusOutlined />}
+              onClick={openCreate}
+            />
           </Space>
         }
       />
@@ -354,7 +359,8 @@ export default function StorageDevicesPage() {
                 onChange={(e) => setQuery(e.target.value)}
                 onPressEnter={() => setAppliedQuery(query)}
               />
-              <Button
+              <IconAction
+                title="Tìm kiếm"
                 type="primary"
                 icon={<SearchOutlined />}
                 onClick={() => setAppliedQuery(query)}
@@ -482,15 +488,18 @@ export default function StorageDevicesPage() {
         onCancel={() => setPrintOpen(false)}
         footer={
           <Space>
-            <Button onClick={() => setPrintOpen(false)}>Thoát</Button>
-            <Button
+            <IconAction
+              title="Thoát"
+              icon={<CloseOutlined />}
+              onClick={() => setPrintOpen(false)}
+            />
+            <IconAction
+              title="In barcode"
               type="primary"
               style={{ background: '#52c41a', borderColor: '#52c41a' }}
               icon={<PrinterOutlined />}
               onClick={handlePrintBarcode}
-            >
-              In barcode
-            </Button>
+            />
           </Space>
         }
         destroyOnHidden

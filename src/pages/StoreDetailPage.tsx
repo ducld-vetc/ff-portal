@@ -2,12 +2,13 @@ import { useMemo, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import {
   ArrowLeftOutlined,
+  CloudSyncOutlined,
   DisconnectOutlined,
   LinkOutlined,
   ReloadOutlined,
+  SaveOutlined,
 } from '@ant-design/icons'
 import {
-  Button,
   Form,
   InputNumber,
   Modal,
@@ -21,6 +22,7 @@ import {
   message,
   type TableColumnsType,
 } from 'antd'
+import { IconAction } from '../components/IconAction'
 import { PageHeader } from '../components/PageHeader'
 import { warehouses } from '../data/mock'
 import { seedCatalogProducts } from '../data/productCatalog'
@@ -91,7 +93,11 @@ export default function StoreDetailPage() {
     return (
       <div>
         <PageHeader title="Không tìm thấy cửa hàng" />
-        <Button onClick={() => navigate(listPath)}>Quay lại danh sách</Button>
+        <IconAction
+          title="Quay lại danh sách"
+          icon={<ArrowLeftOutlined />}
+          onClick={() => navigate(listPath)}
+        />
       </div>
     )
   }
@@ -227,15 +233,21 @@ export default function StoreDetailPage() {
         }
         if (row.autoLinkStatus === 'failed') {
           return (
-            <Button size="small" type="link" onClick={() => openManualLink(row)}>
-              Tự động thất bại · Thủ công
-            </Button>
+            <IconAction
+              title="Tự động thất bại · Thủ công"
+              size="small"
+              icon={<LinkOutlined />}
+              onClick={() => openManualLink(row)}
+            />
           )
         }
         return (
-          <Button size="small" type="link" onClick={() => openManualLink(row)}>
-            Chưa liên kết
-          </Button>
+          <IconAction
+            title="Chưa liên kết"
+            size="small"
+            icon={<LinkOutlined />}
+            onClick={() => openManualLink(row)}
+          />
         )
       },
     },
@@ -263,7 +275,8 @@ export default function StoreDetailPage() {
       title: 'Tác vụ',
       width: 120,
       render: (_, row) => (
-        <Button
+        <IconAction
+          title="Tạo lại"
           size="small"
           icon={<ReloadOutlined />}
           disabled={row.status !== 'hung'}
@@ -273,9 +286,7 @@ export default function StoreDetailPage() {
             )
             message.success(`Đã tạo lại đơn ${row.orderCode}`)
           }}
-        >
-          Tạo lại
-        </Button>
+        />
       ),
     },
   ]
@@ -289,12 +300,17 @@ export default function StoreDetailPage() {
         description={`${store.shopName} · ${store.channel}`}
         extra={
           <Space>
-            <Button icon={<ArrowLeftOutlined />} onClick={() => navigate(listPath)}>
-              Danh sách
-            </Button>
-            <Button danger icon={<DisconnectOutlined />} onClick={disconnect}>
-              Ngắt kết nối
-            </Button>
+            <IconAction
+              title="Danh sách"
+              icon={<ArrowLeftOutlined />}
+              onClick={() => navigate(listPath)}
+            />
+            <IconAction
+              title="Ngắt kết nối"
+              danger
+              icon={<DisconnectOutlined />}
+              onClick={disconnect}
+            />
           </Space>
         }
       />
@@ -443,8 +459,10 @@ export default function StoreDetailPage() {
                         options={warehouseOptions}
                         onChange={(value) => setPendingWarehouse(value)}
                       />
-                      <Button
+                      <IconAction
+                        title="Lưu"
                         type="primary"
+                        icon={<SaveOutlined />}
                         onClick={() => {
                           if (!warehouseValue) {
                             setStore((prev) =>
@@ -472,9 +490,7 @@ export default function StoreDetailPage() {
                           setPendingWarehouse(undefined)
                           message.success(`Đã liên kết kho ${warehouseValue}`)
                         }}
-                      >
-                        Lưu
-                      </Button>
+                      />
                     </Space>
                     <div className="sync-meta">
                       {store.warehouseLinked && store.linkedWarehouseCode
@@ -496,9 +512,12 @@ export default function StoreDetailPage() {
                       sản phẩm nhà bán hàng trên OMS.
                     </Typography.Text>
                     <Space>
-                      <Button icon={<LinkOutlined />} type="primary" onClick={autoLink}>
-                        Liên kết tự động
-                      </Button>
+                      <IconAction
+                        title="Liên kết tự động"
+                        icon={<LinkOutlined />}
+                        type="primary"
+                        onClick={autoLink}
+                      />
                     </Space>
                   </div>
                   <Table rowKey="id" columns={linkColumns} dataSource={links} pagination={false} />
@@ -606,19 +625,21 @@ export default function StoreDetailPage() {
                         fixed: 'right',
                         render: (_, row) => (
                           <Space size={4} wrap>
-                            <Button
+                            <IconAction
+                              title="Lưu cấu hình"
                               size="small"
                               type="primary"
+                              icon={<SaveOutlined />}
                               onClick={() => {
                                 message.success(
                                   `Đã lưu cấu hình tồn ${row.channelSku}: tỷ lệ ${row.syncRatio}%, ngưỡng ${row.threshold}, SL ban đầu ${row.initialSyncQty ?? 0}`,
                                 )
                               }}
-                            >
-                              Lưu cấu hình
-                            </Button>
-                            <Button
+                            />
+                            <IconAction
+                              title="Đồng bộ KBH"
                               size="small"
+                              icon={<CloudSyncOutlined />}
                               onClick={() => {
                                 setStore((prev) =>
                                   prev
@@ -630,9 +651,7 @@ export default function StoreDetailPage() {
                                 )
                                 message.success(`Đã đồng bộ tồn ${row.channelSku} lên KBH`)
                               }}
-                            >
-                              Đồng bộ KBH
-                            </Button>
+                            />
                           </Space>
                         ),
                       },
@@ -648,15 +667,14 @@ export default function StoreDetailPage() {
                 <>
                   <div className="table-toolbar">
                     <div />
-                    <Button
+                    <IconAction
+                      title="Tạo lại tất cả"
                       icon={<ReloadOutlined />}
                       onClick={() => {
                         setHung((prev) => prev.map((item) => ({ ...item, status: 'retried' })))
                         message.success('Đã tạo lại tất cả đơn hàng treo')
                       }}
-                    >
-                      Tạo lại tất cả
-                    </Button>
+                    />
                   </div>
                   <Table rowKey="id" columns={hungColumns} dataSource={hung} pagination={false} />
                   <p style={{ marginTop: 12, color: 'var(--color-text-muted)' }}>

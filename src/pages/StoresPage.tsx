@@ -7,7 +7,6 @@ import {
   SearchOutlined,
 } from '@ant-design/icons'
 import {
-  Button,
   Form,
   Input,
   Modal,
@@ -15,10 +14,10 @@ import {
   Space,
   Table,
   Tag,
-  Tooltip,
   message,
   type TableColumnsType,
 } from 'antd'
+import { IconAction } from '../components/IconAction'
 import { PageHeader } from '../components/PageHeader'
 import {
   connectableChannels,
@@ -189,23 +188,21 @@ export default function StoresPage() {
       fixed: 'right',
       render: (_, row) => (
         <Space size={6}>
-          <Tooltip title="Xem cửa hàng">
-            <Button
-              type="primary"
-              size="small"
-              icon={<EyeOutlined />}
-              onClick={() => navigate(`${detailBase}/${row.id}`)}
-            />
-          </Tooltip>
-          <Tooltip title="Ngắt kết nối">
-            <Button
-              danger
-              size="small"
-              icon={<DisconnectOutlined />}
-              disabled={row.status === 'disconnected'}
-              onClick={() => disconnectStore(row)}
-            />
-          </Tooltip>
+          <IconAction
+            title="Xem cửa hàng"
+            type="primary"
+            size="small"
+            icon={<EyeOutlined />}
+            onClick={() => navigate(`${detailBase}/${row.id}`)}
+          />
+          <IconAction
+            title="Ngắt kết nối"
+            danger
+            size="small"
+            icon={<DisconnectOutlined />}
+            disabled={row.status === 'disconnected'}
+            onClick={() => disconnectStore(row)}
+          />
         </Space>
       ),
     },
@@ -221,9 +218,12 @@ export default function StoresPage() {
             : 'Theo dõi trạng thái kết nối shop theo đối tác và kênh bán hàng.'
         }
         extra={
-          <Button type="primary" icon={<PlusOutlined />} onClick={() => setAddOpen(true)}>
-            Thêm cửa hàng
-          </Button>
+          <IconAction
+            title="Thêm cửa hàng"
+            type="primary"
+            icon={<PlusOutlined />}
+            onClick={() => setAddOpen(true)}
+          />
         }
       />
 
@@ -250,7 +250,7 @@ export default function StoresPage() {
               value={query}
               onChange={(e) => setQuery(e.target.value)}
             />
-            <Button type="primary" icon={<SearchOutlined />} />
+            <IconAction title="Tìm kiếm" type="primary" icon={<SearchOutlined />} />
           </Space.Compact>
         </div>
 

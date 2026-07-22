@@ -1,8 +1,9 @@
 import { useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { ArrowLeftOutlined, CopyOutlined } from '@ant-design/icons'
-import { Button, Space, Table, Tag, Tooltip, Typography } from 'antd'
+import { Space, Table, Tag, Tooltip, Typography } from 'antd'
 import dayjs from 'dayjs'
+import { IconAction } from '../components/IconAction'
 import { PageHeader } from '../components/PageHeader'
 import { InboundSerialModal } from '../components/InboundSerialModal'
 import {
@@ -25,7 +26,11 @@ export default function ClientInboundDetailPage() {
     return (
       <div>
         <PageHeader title="Không tìm thấy yêu cầu nhập kho" />
-        <Button onClick={() => navigate('/client/operations/inbound')}>Quay lại danh sách</Button>
+        <IconAction
+          title="Quay lại danh sách"
+          icon={<ArrowLeftOutlined />}
+          onClick={() => navigate('/client/operations/inbound')}
+        />
       </div>
     )
   }
@@ -41,12 +46,12 @@ export default function ClientInboundDetailPage() {
         description={`${request.warehouseName} · ${inboundTypeLabel[request.type]}`}
         extra={
           <Space>
-            <Button icon={<ArrowLeftOutlined />} onClick={() => navigate('/client/operations/inbound')}>
-              Danh sách
-            </Button>
-            <Button icon={<CopyOutlined />} onClick={copy}>
-              Sao chép tạo nhanh
-            </Button>
+            <IconAction
+              title="Danh sách"
+              icon={<ArrowLeftOutlined />}
+              onClick={() => navigate('/client/operations/inbound')}
+            />
+            <IconAction title="Sao chép tạo nhanh" icon={<CopyOutlined />} onClick={copy} />
           </Space>
         }
       />

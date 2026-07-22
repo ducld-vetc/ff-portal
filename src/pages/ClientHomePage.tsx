@@ -12,8 +12,10 @@ import {
   ProductOutlined,
   ShopOutlined,
   ShoppingCartOutlined,
+  SwapOutlined,
 } from '@ant-design/icons'
-import { Button, Card, Col, Row, Space, Statistic, Typography } from 'antd'
+import { Card, Col, Row, Space, Statistic, Typography } from 'antd'
+import { IconAction } from '../components/IconAction'
 import { PageHeader } from '../components/PageHeader'
 import { seedCatalogProducts } from '../data/productCatalog'
 import { storeRows } from '../data/stores'
@@ -31,14 +33,14 @@ export default function ClientHomePage() {
         title="Cổng khách hàng"
         description={`Xin chào ${customerScope.customerName}. Theo dõi vận hành, cửa hàng kênh bán và sản phẩm của bạn.`}
         extra={
-          <Button
+          <IconAction
+            title="Sang cổng Admin"
+            icon={<SwapOutlined />}
             onClick={() => {
               setPortal('admin')
               navigate('/dashboard')
             }}
-          >
-            Sang cổng Admin
-          </Button>
+          />
         }
       />
 

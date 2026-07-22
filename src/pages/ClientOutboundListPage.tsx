@@ -1,6 +1,8 @@
 import { useMemo, useState, type Key } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import {
+  CheckOutlined,
+  ClearOutlined,
   CopyOutlined,
   DownloadOutlined,
   FileTextOutlined,
@@ -10,7 +12,6 @@ import {
   UploadOutlined,
 } from '@ant-design/icons'
 import {
-  Button,
   DatePicker,
   Drawer,
   Dropdown,
@@ -20,12 +21,12 @@ import {
   Space,
   Table,
   Tag,
-  Tooltip,
   Typography,
   message,
   type TableColumnsType,
 } from 'antd'
 import dayjs from 'dayjs'
+import { IconAction } from '../components/IconAction'
 import { PageHeader } from '../components/PageHeader'
 import {
   formatAddress,
@@ -136,13 +137,12 @@ export default function ClientOutboundListPage() {
       width: 56,
       fixed: 'right',
       render: (_, row) => (
-        <Tooltip title="Sao chép tạo nhanh yêu cầu xuất kho">
-          <Button
-            size="small"
-            icon={<CopyOutlined />}
-            onClick={() => navigate(`/client/operations/outbound/create?copyFrom=${row.id}`)}
-          />
-        </Tooltip>
+        <IconAction
+          title="Sao chép tạo nhanh yêu cầu xuất kho"
+          size="small"
+          icon={<CopyOutlined />}
+          onClick={() => navigate(`/client/operations/outbound/create?copyFrom=${row.id}`)}
+        />
       ),
     },
   ]
@@ -154,20 +154,18 @@ export default function ClientOutboundListPage() {
         description="Vận hành → Xuất kho: tìm kiếm, xem chi tiết, tạo / import / xuất file, hoặc sao chép yêu cầu có sẵn."
         extra={
           <Space wrap>
-            <Button
+            <IconAction
+              title="Import yêu cầu xuất kho"
               className="btn-success"
               icon={<UploadOutlined />}
               onClick={() => message.info('Demo: import yêu cầu xuất kho từ Excel/CSV')}
-            >
-              Import yêu cầu xuất kho
-            </Button>
-            <Button
+            />
+            <IconAction
+              title="Tạo xuất kho"
               type="primary"
               icon={<PlusOutlined />}
               onClick={() => navigate('/client/operations/outbound/create')}
-            >
-              Tạo xuất kho
-            </Button>
+            />
             <Dropdown
               menu={{
                 items: [
@@ -192,9 +190,7 @@ export default function ClientOutboundListPage() {
                 ],
               }}
             >
-              <Button className="btn-success" icon={<DownloadOutlined />}>
-                Xuất Excel
-              </Button>
+              <IconAction title="Xuất Excel" className="btn-success" icon={<DownloadOutlined />} />
             </Dropdown>
           </Space>
         }
@@ -217,20 +213,22 @@ export default function ClientOutboundListPage() {
               prefix={<SearchOutlined />}
               style={{ width: 280 }}
             />
-            <Tooltip title="Tìm kiếm nâng cao">
-              <Button type="primary" icon={<FilterOutlined />} onClick={() => setAdvancedOpen(true)} />
-            </Tooltip>
+            <IconAction
+              title="Tìm kiếm nâng cao"
+              type="primary"
+              icon={<FilterOutlined />}
+              onClick={() => setAdvancedOpen(true)}
+            />
           </Space.Compact>
           {Object.keys(advFilters).length > 0 ? (
-            <Button
-              type="link"
+            <IconAction
+              title="Xóa bộ lọc nâng cao"
+              icon={<ClearOutlined />}
               onClick={() => {
                 setAdvFilters({})
                 advForm.resetFields()
               }}
-            >
-              Xóa bộ lọc nâng cao
-            </Button>
+            />
           ) : null}
         </div>
 
@@ -254,16 +252,18 @@ export default function ClientOutboundListPage() {
         width={400}
         extra={
           <Space>
-            <Button
+            <IconAction
+              title="Đặt lại"
+              icon={<ClearOutlined />}
               onClick={() => {
                 advForm.resetFields()
                 setAdvFilters({})
               }}
-            >
-              Đặt lại
-            </Button>
-            <Button
+            />
+            <IconAction
+              title="Áp dụng"
               type="primary"
+              icon={<CheckOutlined />}
               onClick={() => {
                 const values = advForm.getFieldsValue()
                 const range = values.createdRange as [dayjs.Dayjs, dayjs.Dayjs] | undefined
@@ -278,9 +278,7 @@ export default function ClientOutboundListPage() {
                 setAdvancedOpen(false)
                 message.success('Đã áp dụng bộ lọc nâng cao')
               }}
-            >
-              Áp dụng
-            </Button>
+            />
           </Space>
         }
       >

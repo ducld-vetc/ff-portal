@@ -1,8 +1,7 @@
 import { useMemo, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
-import { DeleteOutlined, FormOutlined, SearchOutlined } from '@ant-design/icons'
+import { CloseOutlined, DeleteOutlined, FormOutlined, PlusOutlined, SearchOutlined } from '@ant-design/icons'
 import {
-  Button,
   Checkbox,
   Col,
   DatePicker,
@@ -19,6 +18,7 @@ import {
   type TableColumnsType,
 } from 'antd'
 import dayjs from 'dayjs'
+import { IconAction } from '../components/IconAction'
 import { PageHeader } from '../components/PageHeader'
 import {
   deliveryMethodLabel,
@@ -205,17 +205,17 @@ export default function ClientOutboundCreatePage() {
       width: 80,
       render: (_, row) => (
         <Space>
-          <Button
-            type="text"
+          <IconAction
+            title="Ghi chú dòng"
             icon={<FormOutlined />}
             onClick={() => {
               const note = window.prompt('Ghi chú dòng sản phẩm', row.note || '') ?? row.note
               updateLine(row.id, { note: note || undefined })
             }}
           />
-          <Button
+          <IconAction
+            title="Xóa dòng"
             danger
-            type="text"
             icon={<DeleteOutlined />}
             onClick={() => setLines((prev) => prev.filter((item) => item.id !== row.id))}
           />
@@ -571,10 +571,12 @@ export default function ClientOutboundCreatePage() {
 
       <div className="inbound-create-footer">
         <Space>
-          <Button onClick={() => navigate('/client/operations/outbound')}>Thoát</Button>
-          <Button type="primary" onClick={submit}>
-            Thêm
-          </Button>
+          <IconAction
+            title="Thoát"
+            icon={<CloseOutlined />}
+            onClick={() => navigate('/client/operations/outbound')}
+          />
+          <IconAction title="Thêm" type="primary" icon={<PlusOutlined />} onClick={submit} />
         </Space>
       </div>
     </div>

@@ -1,7 +1,8 @@
 import { useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { EyeOutlined, PlusOutlined, SearchOutlined } from '@ant-design/icons'
-import { Button, Input, Space, Table, Tag, type TableColumnsType } from 'antd'
+import { DownloadOutlined, EyeOutlined, PlusOutlined, SearchOutlined } from '@ant-design/icons'
+import { Input, Space, Table, Tag, type TableColumnsType } from 'antd'
+import { IconAction } from '../components/IconAction'
 import { PageHeader } from '../components/PageHeader'
 import { getCustomerShipping } from '../data/customerShipping'
 import { customers, type Customer } from '../data/mock'
@@ -73,7 +74,8 @@ export default function CustomersPage() {
       title: 'Tác vụ',
       width: 90,
       render: (_, row) => (
-        <Button
+        <IconAction
+          title="Xem khách hàng"
           type="primary"
           size="small"
           icon={<EyeOutlined />}
@@ -89,9 +91,7 @@ export default function CustomersPage() {
         title="Khách hàng"
         description="Danh sách tenant / customer. Bấm vào dòng để mở trang chi tiết đầy đủ."
         extra={
-          <Button type="primary" icon={<PlusOutlined />}>
-            Thêm khách hàng
-          </Button>
+          <IconAction title="Thêm khách hàng" type="primary" icon={<PlusOutlined />} />
         }
       />
       <div className="content-card">
@@ -105,7 +105,7 @@ export default function CustomersPage() {
             onChange={(e) => setQuery(e.target.value)}
           />
           <Space>
-            <Button>Xuất CSV</Button>
+            <IconAction title="Xuất CSV" icon={<DownloadOutlined />} />
           </Space>
         </div>
         <Table rowKey="id" columns={columns} dataSource={filtered} pagination={false} />

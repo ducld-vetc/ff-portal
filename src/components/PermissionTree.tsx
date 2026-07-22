@@ -1,6 +1,15 @@
 import { useMemo, useState, type ReactNode } from 'react'
-import { CaretDownOutlined, CaretRightOutlined, SearchOutlined } from '@ant-design/icons'
-import { Button, Checkbox, Empty, Input, Space, Typography } from 'antd'
+import {
+  CaretDownOutlined,
+  CaretRightOutlined,
+  CheckSquareOutlined,
+  CompressOutlined,
+  ExpandOutlined,
+  SearchOutlined,
+  BorderOutlined,
+} from '@ant-design/icons'
+import { Checkbox, Empty, Input, Space, Typography } from 'antd'
+import { IconAction } from './IconAction'
 import {
   ALL_PERMISSION_KEYS,
   filterPermissionTree,
@@ -170,9 +179,21 @@ export default function PermissionTree({ value, onChange, readOnly, forceAll }: 
             Đã chọn {effectiveValue.length}/{ALL_PERMISSION_KEYS.length}
           </Typography.Text>
           {!disabled ? (
-            <Button
+            <IconAction
+              title={
+                effectiveValue.length === ALL_PERMISSION_KEYS.length
+                  ? 'Bỏ chọn tất cả'
+                  : 'Chọn tất cả'
+              }
               type="link"
               size="small"
+              icon={
+                effectiveValue.length === ALL_PERMISSION_KEYS.length ? (
+                  <BorderOutlined />
+                ) : (
+                  <CheckSquareOutlined />
+                )
+              }
               onClick={() =>
                 onChange(
                   effectiveValue.length === ALL_PERMISSION_KEYS.length
@@ -180,22 +201,22 @@ export default function PermissionTree({ value, onChange, readOnly, forceAll }: 
                     : [...ALL_PERMISSION_KEYS],
                 )
               }
-            >
-              {effectiveValue.length === ALL_PERMISSION_KEYS.length
-                ? 'Bỏ chọn tất cả'
-                : 'Chọn tất cả'}
-            </Button>
+            />
           ) : null}
-          <Button
+          <IconAction
+            title="Mở rộng"
             type="link"
             size="small"
+            icon={<ExpandOutlined />}
             onClick={() => setExpanded(new Set(collectExpandableKeys(tree)))}
-          >
-            Mở rộng
-          </Button>
-          <Button type="link" size="small" onClick={() => setExpanded(new Set())}>
-            Thu gọn
-          </Button>
+          />
+          <IconAction
+            title="Thu gọn"
+            type="link"
+            size="small"
+            icon={<CompressOutlined />}
+            onClick={() => setExpanded(new Set())}
+          />
         </Space>
       </div>
 
