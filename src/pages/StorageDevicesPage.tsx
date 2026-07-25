@@ -70,7 +70,7 @@ export default function StorageDevicesPage() {
     const labels = Array.from({ length: printQty }, () => {
       return `
         <div class="label">
-          <div class="title">Thiết bị chứa hàng</div>
+          <div class="title">Thiết bị di động</div>
           <div class="barcode-wrap">${svg}</div>
           <div class="code">${esc(printTarget.code)}</div>
           <div class="meta">${esc(printTarget.name)}</div>
@@ -323,7 +323,7 @@ export default function StorageDevicesPage() {
   return (
     <div>
       <PageHeader
-        title="Thiết bị chứa hàng"
+        title="Thiết bị di động"
         description="Quản lý thiết bị chứa hàng theo kho: tạo, import và in barcode dán lên thiết bị."
         extra={
           <Space>

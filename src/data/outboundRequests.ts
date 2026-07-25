@@ -4,6 +4,7 @@ export type OutboundStatus = 'new' | 'picking' | 'packed' | 'shipped' | 'cancell
 export type DeliveryMethod = 'pickup' | 'delivery'
 export type OutboundPriority = 'normal' | 'high' | 'urgent'
 export type GoodsCondition = 'new' | 'used' | 'damaged'
+export type OutboundOrderType = 'Order' | 'B2B' | 'Manual'
 
 export type OutboundLine = {
   id: string
@@ -32,6 +33,7 @@ export type OutboundRequest = {
   shippingPackage: string
   status: OutboundStatus
   isB2b: boolean
+  orderType?: OutboundOrderType
   buyerName: string
   buyerPhone: string
   buyerEmail?: string
@@ -43,16 +45,30 @@ export type OutboundRequest = {
   priority: OutboundPriority
   referenceCode?: string
   expectedDeliveryAt?: string | null
+  desiredDeliveryAt?: string | null
   requireDocuments: boolean
   noPacking: boolean
   packingNote?: string
   driver?: string
   vehicleNo?: string
   containerNo?: string
+  dimensions?: string
+  weightKg?: number
   channel?: string
   storeName?: string
+  partnerName?: string
   occurredAt?: string | null
   slaChannel?: string
+  slaChannelAt?: string | null
+  slaPackingAt?: string | null
+  slaCarrierLate?: boolean
+  carrierCode?: string
+  carrierChannel?: string
+  trackingCode?: string
+  packedAt?: string | null
+  handedOverAt?: string | null
+  delayDays?: number
+  processingStatus?: string
   paidAmount: number
   cod: number
   declaredValue: number
@@ -61,7 +77,7 @@ export type OutboundRequest = {
 }
 
 export const outboundStatusLabel: Record<OutboundStatus, string> = {
-  new: 'Mới',
+  new: 'Sẵn sàng lấy hàng',
   picking: 'Đang lấy hàng',
   packed: 'Đã đóng gói',
   shipped: 'Đã bàn giao',
@@ -69,7 +85,7 @@ export const outboundStatusLabel: Record<OutboundStatus, string> = {
 }
 
 export const outboundStatusColor: Record<OutboundStatus, string> = {
-  new: 'green',
+  new: 'orange',
   picking: 'processing',
   packed: 'blue',
   shipped: 'cyan',
@@ -85,6 +101,12 @@ export const outboundPriorityLabel: Record<OutboundPriority, string> = {
   normal: 'Bình thường',
   high: 'Cao',
   urgent: 'Khẩn cấp',
+}
+
+export const outboundPriorityColor: Record<OutboundPriority, string> = {
+  normal: 'default',
+  high: 'orange',
+  urgent: 'red',
 }
 
 export const goodsConditionLabel: Record<GoodsCondition, string> = {
@@ -176,9 +198,10 @@ const seedOutboundRequests: OutboundRequest[] = [
     warehouseCode: 'KQ2',
     warehouseName: 'KQ2 - Kho Cảng Quận 2',
     deliveryMethod: 'pickup',
-    shippingPackage: 'Standard',
+    shippingPackage: 'SPX-DVH',
     status: 'new',
     isB2b: false,
+    orderType: 'Order',
     buyerName: 'Nguyễn Văn A',
     buyerPhone: '0901234567',
     buyerEmail: 'a@example.com',
@@ -187,20 +210,30 @@ const seedOutboundRequests: OutboundRequest[] = [
     district: 'Q7',
     ward: 'PTT',
     address: '12 Nguyễn Văn Linh',
-    priority: 'normal',
-    referenceCode: 'REF-001',
-    expectedDeliveryAt: '2026-07-22',
+    priority: 'high',
+    referenceCode: '585193693010888334',
+    expectedDeliveryAt: '2026-07-25T12:33:02',
     requireDocuments: false,
     noPacking: false,
     packingNote: '',
     channel: 'Shopee',
     storeName: 'Giàn phơi thông minh AVOGROUP',
-    occurredAt: '2026-07-20T18:20:00',
+    partnerName: 'AVO - CÔNG TY TNHH AVOGROUP',
+    occurredAt: '2026-07-25T09:32:00',
     slaChannel: '24h',
+    slaChannelAt: '2026-07-25T23:59:59',
+    slaPackingAt: '2026-07-25T18:00:00',
+    slaCarrierLate: false,
+    carrierCode: 'JTEVN',
+    carrierChannel: 'Shopee - J&T Express',
+    trackingCode: '',
+    weightKg: 0.27,
+    delayDays: 0,
+    processingStatus: 'Chờ lấy hàng',
     paidAmount: 0,
     cod: 350000,
     declaredValue: 350000,
-    createdAt: '2026-07-20T18:20:00',
+    createdAt: '2026-07-25T09:33:02',
     lines: [
       {
         id: 'orl-1',
@@ -229,6 +262,7 @@ const seedOutboundRequests: OutboundRequest[] = [
     shippingPackage: 'GHN Express',
     status: 'picking',
     isB2b: true,
+    orderType: 'B2B',
     buyerName: 'Công ty ABC',
     buyerPhone: '0281234567',
     buyerEmail: 'ops@abc.vn',
@@ -241,8 +275,18 @@ const seedOutboundRequests: OutboundRequest[] = [
     noPacking: false,
     channel: 'TikTok',
     storeName: '3A Mall',
+    partnerName: 'AVI - CÔNG TY TNHH AVIATEK',
     occurredAt: '2026-07-20T11:05:00',
     slaChannel: '48h',
+    slaChannelAt: '2026-07-22T23:59:59',
+    slaPackingAt: '2026-07-21T18:00:00',
+    slaCarrierLate: false,
+    carrierCode: 'GHN',
+    carrierChannel: 'TikTok - GHN',
+    trackingCode: 'GHN99881234',
+    weightKg: 1.2,
+    delayDays: 0,
+    processingStatus: 'Đang lấy hàng',
     paidAmount: 100000,
     cod: 0,
     declaredValue: 450000,
@@ -268,12 +312,14 @@ const seedOutboundRequests: OutboundRequest[] = [
     id: 'or-3',
     code: 'ORHN01C8830',
     partnerOrCode: 'MANUAL-77',
+    internalCode: 'OUT-INT-1003',
     warehouseCode: 'WH-HN-01',
     warehouseName: 'WH-HN-01 · Kho Hà Nội Đông Anh',
     deliveryMethod: 'delivery',
     shippingPackage: 'GHTK Standard',
     status: 'shipped',
     isB2b: false,
+    orderType: 'Order',
     buyerName: 'Trần Thị B',
     buyerPhone: '0912345678',
     province: 'HN',
@@ -284,13 +330,26 @@ const seedOutboundRequests: OutboundRequest[] = [
     requireDocuments: false,
     noPacking: false,
     channel: 'Website',
-    storeName: '—',
+    storeName: 'Shop Official HN',
+    partnerName: 'NQA - HỘ KINH DOANH NGÔ QUỲNH ANH',
     occurredAt: '2026-07-18T09:00:00',
     slaChannel: '—',
+    slaChannelAt: '2026-07-18T23:59:59',
+    slaPackingAt: '2026-07-18T14:00:00',
+    slaCarrierLate: true,
+    carrierCode: 'GHTK',
+    carrierChannel: 'Website - GHTK',
+    trackingCode: 'GHTK556677',
+    packedAt: '2026-07-18T13:20:00',
+    handedOverAt: '2026-07-18T15:40:00',
+    weightKg: 0.45,
+    delayDays: 1,
+    processingStatus: 'Đã bàn giao',
     paidAmount: 200000,
     cod: 0,
     declaredValue: 200000,
     createdAt: '2026-07-18T09:00:00',
+    expectedDeliveryAt: '2026-07-19T12:00:00',
     lines: [
       {
         id: 'orl-3',
@@ -303,6 +362,7 @@ const seedOutboundRequests: OutboundRequest[] = [
         assignedQty: 1,
         unitPrice: 200000,
         discount: 0,
+        imageUrl: seedCatalogProducts[2]?.imageUrl,
       },
     ],
   },

@@ -38,6 +38,8 @@ export type InboundRequest = {
   id: string
   code: string
   partnerIrCode: string
+  /** Tên đối tác / khách hàng (cổng kho) */
+  partnerName?: string
   country: string
   warehouseCode: string
   warehouseName: string
@@ -45,11 +47,14 @@ export type InboundRequest = {
   skuCount: number
   productQty: number
   receivedQty: number
+  /** SL đã lưu kho (putaway) */
+  storedQty?: number
   goodsCondition: GoodsCondition
   supplier: string
   type: InboundType
   expectedAt: string
   receivedAt: string | null
+  lastCheckInAt?: string | null
   createdAt: string
   expiredAt?: string | null
   referenceCode?: string
@@ -65,7 +70,7 @@ export type InboundRequest = {
 export const inboundStatusLabel: Record<InboundStatus, string> = {
   new: 'Mới',
   processing: 'Đang xử lý',
-  received: 'Đã nhận',
+  received: 'Đã hoàn thành',
   cancelled: 'Đã hủy',
 }
 
@@ -90,7 +95,7 @@ export const goodsConditionColor: Record<GoodsCondition, string> = {
 
 export const inboundTypeLabel: Record<InboundType, string> = {
   inbound: 'Nhập kho',
-  return: 'Nhập hoàn',
+  return: 'Hàng trả',
   transfer: 'Nhập điều chuyển',
 }
 
@@ -116,6 +121,7 @@ const seedInboundRequests: InboundRequest[] = [
     id: 'ir-1',
     code: 'IRDDBQUB8864',
     partnerIrCode: '24725858',
+    partnerName: 'BLN - CÔNG TY TNHH BELLA ĐÀ LẠT',
     country: 'VN',
     warehouseCode: 'KBL',
     warehouseName: 'KBL - Kho Bella Đà Lạt',
@@ -159,6 +165,7 @@ const seedInboundRequests: InboundRequest[] = [
     id: 'ir-2',
     code: 'IRHCMQ7A1021',
     partnerIrCode: 'EC-IR-8891',
+    partnerName: 'EVC - CÔNG TY TNHH EVERCHARGE',
     country: 'VN',
     warehouseCode: 'WH-HCM-01',
     warehouseName: 'WH-HCM-01 · Kho HCM Quận 7',
@@ -166,11 +173,13 @@ const seedInboundRequests: InboundRequest[] = [
     skuCount: 3,
     productQty: 85,
     receivedQty: 40,
+    storedQty: 20,
     goodsCondition: 'new',
     supplier: 'EverCharge Supplier',
     type: 'inbound',
     expectedAt: '2026-07-18',
     receivedAt: null,
+    lastCheckInAt: '2026-07-18T08:50:23',
     createdAt: '2026-07-16T10:00:00',
     ownerName: 'Bella Nguyễn',
     ownerPhone: '0909092212',
@@ -211,6 +220,7 @@ const seedInboundRequests: InboundRequest[] = [
     id: 'ir-3',
     code: 'IRHN01B7740',
     partnerIrCode: 'RT-2026-04',
+    partnerName: 'NQA - HỘ KINH DOANH NGÔ QUỲNH ANH',
     country: 'VN',
     warehouseCode: 'WH-HN-01',
     warehouseName: 'WH-HN-01 · Kho Hà Nội Đông Anh',
@@ -218,11 +228,13 @@ const seedInboundRequests: InboundRequest[] = [
     skuCount: 1,
     productQty: 12,
     receivedQty: 12,
+    storedQty: 12,
     goodsCondition: 'used',
     supplier: 'Khách trả hàng',
     type: 'return',
     expectedAt: '2026-07-10',
     receivedAt: '2026-07-11',
+    lastCheckInAt: '2026-07-11T15:20:00',
     createdAt: '2026-07-09T14:20:00',
     ownerName: 'Bella Nguyễn',
     ownerPhone: '0909092212',

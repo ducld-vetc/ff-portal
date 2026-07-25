@@ -38,10 +38,30 @@ import {
 
 const { Header, Sider, Content } = Layout
 
-function flattenMenuKeys(items: typeof adminMenuItems): { key: string }[] {
-  return items.flatMap((item) =>
-    'children' in item && item.children ? item.children : [item],
-  ) as { key: string }[]
+type MenuNode = {
+  key?: string
+  children?: MenuNode[]
+}
+
+function flattenMenuKeys(items: MenuNode[]): { key: string }[] {
+  return items.flatMap((item) => {
+    if (item.children?.length) return flattenMenuKeys(item.children)
+    return item.key ? [{ key: item.key }] : []
+  })
+}
+
+function collectOpenKeysForPath(items: MenuNode[], path: string, ancestors: string[] = []): string[] {
+  for (const item of items) {
+    if (!item.key) continue
+    const nextAncestors = [...ancestors, item.key]
+    if (item.children?.length) {
+      const nested = collectOpenKeysForPath(item.children, path, nextAncestors)
+      if (nested.length) return nested
+    } else if (path === item.key || path.startsWith(`${item.key}/`)) {
+      return ancestors
+    }
+  }
+  return []
 }
 
 export default function AppLayout() {
@@ -68,6 +88,9 @@ export default function AppLayout() {
           'customers-group',
           'settings-group',
           'staff-group',
+          'ops-group',
+          'ops-inbound-group',
+          'ops-outbound-group',
           'products-group',
           'carriers-group',
           'system-group',
@@ -83,6 +106,12 @@ export default function AppLayout() {
       if (path.startsWith('/staff')) next.add('staff-group')
       if (path.startsWith('/carriers') && !path.startsWith('/client')) next.add('carriers-group')
       if (path.startsWith('/warehouses')) next.add('settings-group')
+      if (path.startsWith('/operations')) {
+        next.add('ops-group')
+        for (const key of collectOpenKeysForPath(adminMenuItems as MenuNode[], path)) {
+          next.add(key)
+        }
+      }
       if (
         (path.startsWith('/catalog') || path.startsWith('/products')) &&
         !path.startsWith('/client')

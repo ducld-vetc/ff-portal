@@ -6,7 +6,9 @@ import {
   BankOutlined,
   BarChartOutlined,
   CarOutlined,
+  ControlOutlined,
   DashboardOutlined,
+  DatabaseOutlined,
   EnvironmentOutlined,
   FileProtectOutlined,
   GiftOutlined,
@@ -14,12 +16,18 @@ import {
   HomeOutlined,
   IdcardOutlined,
   InboxOutlined,
+  PartitionOutlined,
+  PrinterOutlined,
   ProductOutlined,
   SafetyCertificateOutlined,
   SettingOutlined,
   ShopOutlined,
   ShoppingCartOutlined,
+  SnippetsOutlined,
+  SwapOutlined,
+  TagsOutlined,
   TeamOutlined,
+  ToolOutlined,
   UserOutlined,
   UsergroupAddOutlined,
   WarningOutlined,
@@ -58,7 +66,7 @@ export const adminMenuItems = [
       {
         key: '/warehouses/storage-devices',
         icon: <AppstoreOutlined />,
-        label: menuLabel('Thiết bị chứa hàng', true),
+        label: menuLabel('Thiết bị di động', true),
       },
     ],
   },
@@ -73,6 +81,120 @@ export const adminMenuItems = [
         label: menuLabel('Quản lý nhóm quyền', true),
       },
       { key: '/staff/users', icon: <UserOutlined />, label: menuLabel('Quản lý nhân sự', true) },
+    ],
+  },
+  {
+    key: 'ops-group',
+    icon: <ControlOutlined />,
+    label: menuLabel('Vận hành', true),
+    children: [
+      {
+        key: 'ops-inbound-group',
+        icon: <InboxOutlined />,
+        label: 'Nhập kho',
+        children: [
+          {
+            key: '/operations/inbound',
+            icon: <InboxOutlined />,
+            label: menuLabel('Yêu cầu nhập kho', true),
+          },
+        ],
+      },
+      {
+        key: 'ops-outbound-group',
+        icon: <ShoppingCartOutlined />,
+        label: 'Xuất kho',
+        children: [
+          {
+            key: '/operations/outbound',
+            icon: <ShoppingCartOutlined />,
+            label: menuLabel('Yêu cầu xuất kho', true),
+          },
+          {
+            key: '/operations/picking',
+            icon: <PartitionOutlined />,
+            label: menuLabel('Lấy hàng', true),
+          },
+          {
+            key: '/operations/picking-b2b',
+            icon: <ApartmentOutlined />,
+            label: menuLabel('Lấy hàng B2B', true),
+          },
+          {
+            key: '/operations/packing',
+            icon: <SnippetsOutlined />,
+            label: menuLabel('Đóng gói', true),
+          },
+          {
+            key: '/operations/packing-by-label',
+            icon: <TagsOutlined />,
+            label: menuLabel('Đóng gói theo nhãn', true),
+          },
+        ],
+      },
+      {
+        key: 'ops-inventory-group',
+        icon: <DatabaseOutlined />,
+        label: 'Tồn kho',
+        children: [
+          {
+            key: '/operations/inventory-adjust',
+            icon: <SwapOutlined />,
+            label: menuLabel('Điều chỉnh tồn', true),
+          },
+        ],
+      },
+      {
+        key: 'ops-shipping-group',
+        icon: <CarOutlined />,
+        label: 'Vận chuyển',
+        children: [
+          {
+            key: '/operations/carrier-handover',
+            icon: <CarOutlined />,
+            label: menuLabel('Bàn giao nhà vận chuyển', true),
+          },
+          {
+            key: '/operations/outbound-update',
+            icon: <HistoryOutlined />,
+            label: menuLabel('Cập nhật đơn xuất', true),
+          },
+        ],
+      },
+      {
+        key: 'ops-utils-group',
+        icon: <ToolOutlined />,
+        label: 'Tiện ích',
+        children: [
+          {
+            key: '/operations/issues',
+            icon: <WarningOutlined />,
+            label: menuLabel('Vấn đề phát sinh', true),
+          },
+          {
+            key: '/operations/print-labels',
+            icon: <PrinterOutlined />,
+            label: menuLabel('In nhãn', true),
+          },
+          {
+            key: '/operations/container-devices',
+            icon: <InboxOutlined />,
+            label: menuLabel('Thiết bị chứa hàng', true),
+          },
+        ],
+      },
+      {
+        key: 'ops-stocktake-group',
+        icon: <FileProtectOutlined />,
+        label: 'Kiểm kê',
+        children: [
+          {
+            key: '/operations/stocktake',
+            icon: <FileProtectOutlined />,
+            label: menuLabel('Danh sách phiên kiểm kê', true),
+          },
+        ],
+      },
     ],
   },
   { key: '/pickup-assignments', icon: <ApartmentOutlined />, label: 'Phân công lấy hàng' },

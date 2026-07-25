@@ -71,7 +71,7 @@ export const permissionTree: PermissionNode[] = [
       },
       {
         key: 'warehouses.storage',
-        title: 'Thiết bị chứa hàng',
+        title: 'Thiết bị di động',
         children: [
           { key: 'warehouses.storage.view', title: 'Xem thiết bị chứa hàng' },
           { key: 'warehouses.storage.create', title: 'Tạo thiết bị chứa hàng' },
@@ -129,6 +129,70 @@ export const permissionTree: PermissionNode[] = [
       { key: 'pickup.create', title: 'Tạo wave' },
       { key: 'pickup.assign', title: 'Phân công picker' },
       { key: 'pickup.update', title: 'Cập nhật trạng thái' },
+    ],
+  },
+  {
+    key: 'operations',
+    title: 'Vận hành',
+    children: [
+      {
+        key: 'operations.inbound',
+        title: 'Nhập kho',
+        children: [
+          { key: 'operations.inbound.view', title: 'Xem yêu cầu nhập kho' },
+          { key: 'operations.inbound.checkin', title: 'Check-in / nhận hàng' },
+          { key: 'operations.inbound.complete', title: 'Hoàn thành phiếu nhập' },
+          { key: 'operations.inbound.export', title: 'Xuất Excel nhập kho' },
+        ],
+      },
+      {
+        key: 'operations.outbound',
+        title: 'Xuất kho',
+        children: [
+          { key: 'operations.outbound.view', title: 'Xem yêu cầu xuất kho' },
+          { key: 'operations.outbound.quick_pick', title: 'Lấy hàng nhanh' },
+          { key: 'operations.outbound.export', title: 'Xuất file xuất kho' },
+          { key: 'operations.picking.view', title: 'Xem danh sách lấy hàng' },
+          { key: 'operations.picking.create', title: 'Tạo danh sách lấy hàng' },
+          { key: 'operations.picking.assign', title: 'Phân công lấy hàng' },
+          { key: 'operations.picking.b2b', title: 'Lấy hàng B2B' },
+          { key: 'operations.packing.view', title: 'Đóng gói' },
+          { key: 'operations.packing.label', title: 'Đóng gói theo nhãn' },
+        ],
+      },
+      {
+        key: 'operations.inventory',
+        title: 'Tồn kho',
+        children: [
+          { key: 'operations.inventory.adjust.view', title: 'Xem điều chỉnh tồn' },
+          { key: 'operations.inventory.adjust.create', title: 'Tạo điều chỉnh tồn' },
+        ],
+      },
+      {
+        key: 'operations.shipping',
+        title: 'Vận chuyển',
+        children: [
+          { key: 'operations.shipping.handover', title: 'Bàn giao nhà vận chuyển' },
+          { key: 'operations.shipping.outbound_update', title: 'Cập nhật đơn xuất' },
+        ],
+      },
+      {
+        key: 'operations.utils',
+        title: 'Tiện ích',
+        children: [
+          { key: 'operations.utils.issues', title: 'Vấn đề phát sinh' },
+          { key: 'operations.utils.print_labels', title: 'In nhãn' },
+          { key: 'operations.utils.container_devices', title: 'Thiết bị chứa hàng' },
+        ],
+      },
+      {
+        key: 'operations.stocktake',
+        title: 'Kiểm kê',
+        children: [
+          { key: 'operations.stocktake.view', title: 'Xem phiên kiểm kê' },
+          { key: 'operations.stocktake.create', title: 'Tạo phiên kiểm kê' },
+        ],
+      },
     ],
   },
   {

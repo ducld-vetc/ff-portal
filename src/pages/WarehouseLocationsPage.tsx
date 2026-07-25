@@ -596,7 +596,7 @@ export default function WarehouseLocationsPage() {
               onClick={() => navigate('/warehouses')}
             />
             <IconAction
-              title="Thiết bị chứa hàng"
+              title="Thiết bị di động"
               icon={<InboxOutlined />}
               onClick={() => navigate('/warehouses/storage-devices')}
             />

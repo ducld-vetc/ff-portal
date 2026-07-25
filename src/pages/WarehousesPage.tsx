@@ -95,7 +95,7 @@ export default function WarehousesPage() {
         extra={
           <Space>
             <IconAction
-              title="Thiết bị chứa hàng"
+              title="Thiết bị di động"
               icon={<InboxOutlined />}
               onClick={() => navigate('/warehouses/storage-devices')}
             />
