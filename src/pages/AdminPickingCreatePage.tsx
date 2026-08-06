@@ -84,7 +84,7 @@ function buildLocationRows(orders: OutboundRequest[]): PickListLine[] {
     }
   }
   const pickableBins = getLocationSetup('1').bins.filter((b) => !b.nonPickable)
-  const fallback = ['R4.A1.T1.002', 'R1.A01.A.02', 'R1.A01.A.05', 'R1.A02.A.03']
+  const fallback = ['Z1.KE01.02', 'Z1.KE01.05', 'Z1.KE02.03', 'Z1.KE01.01']
 
   const result: PickListLine[] = []
   let index = 0

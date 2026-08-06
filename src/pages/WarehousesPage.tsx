@@ -53,7 +53,7 @@ export default function WarehousesPage() {
         const progress = locationSetupProgress(row.id)
         return progress.ready ? (
           <Tag color="green">
-            {progress.rooms}P · {progress.aisles}L · {progress.racks}K · {progress.bins}Bin
+            {progress.zones}Z · {progress.devices}TB · {progress.bins}Ô
           </Tag>
         ) : (
           <Tag color="orange">Chưa đủ / trống</Tag>
@@ -91,7 +91,7 @@ export default function WarehousesPage() {
     <div>
       <PageHeader
         title="Kho"
-        description="Quản lý kho và thiết lập cấu trúc vị trí chứa hàng: Phòng → Tầng → Lối đi → Dãy kệ → Bin."
+        description="Quản lý kho và thiết lập cấu trúc vị trí chứa hàng: Zone → Thiết bị → Ô kệ."
         extra={
           <Space>
             <IconAction

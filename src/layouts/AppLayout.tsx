@@ -83,6 +83,7 @@ export default function AppLayout() {
           'client-channel-group',
           'client-products-group',
           'client-shipping-group',
+          'client-summary-group',
         ]
       : [
           'customers-group',
@@ -122,6 +123,7 @@ export default function AppLayout() {
         next.add('client-products-group')
       }
       if (path.startsWith('/client/carriers')) next.add('client-shipping-group')
+      if (path.startsWith('/client/summaries')) next.add('client-summary-group')
       if (path.startsWith('/client/operations')) next.add('client-ops-group')
       if (path.startsWith('/client/stores') || path.startsWith('/client/channel')) {
         next.add('client-channel-group')

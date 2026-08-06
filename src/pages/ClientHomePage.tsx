@@ -3,16 +3,15 @@ import {
   AppstoreOutlined,
   BarChartOutlined,
   DashboardOutlined,
-  EnvironmentOutlined,
   FileProtectOutlined,
   GiftOutlined,
-  HistoryOutlined,
   IdcardOutlined,
   InboxOutlined,
   ProductOutlined,
   ShopOutlined,
   ShoppingCartOutlined,
   SwapOutlined,
+  WarningOutlined,
 } from '@ant-design/icons'
 import { Card, Col, Row, Space, Statistic, Typography } from 'antd'
 import { IconAction } from '../components/IconAction'
@@ -72,15 +71,19 @@ export default function ClientHomePage() {
           { path: '/client/operations/outbound', icon: <ShoppingCartOutlined />, title: 'Xuất kho' },
           { path: '/client/stores', icon: <ShopOutlined />, title: 'Quản lý cửa hàng' },
           { path: '/client/catalog', icon: <ProductOutlined />, title: 'Sản phẩm' },
-          { path: '/client/products/locations', icon: <EnvironmentOutlined />, title: 'Vị trí sản phẩm' },
-          {
-            path: '/client/products/location-history',
-            icon: <HistoryOutlined />,
-            title: 'Lịch sử vị trí',
-          },
           { path: '/client/carriers/accounts', icon: <IdcardOutlined />, title: 'Tài khoản ĐVVC' },
           { path: '/client/carriers/packages', icon: <GiftOutlined />, title: 'Gói vận chuyển' },
           { path: '/client/cod', icon: <FileProtectOutlined />, title: 'Quản lý COD' },
+          {
+            path: '/client/summaries/materials',
+            icon: <InboxOutlined />,
+            title: 'Vật tư tiêu hao',
+          },
+          {
+            path: '/client/summaries/goods-damage',
+            icon: <WarningOutlined />,
+            title: 'Hàng hư hỏng / chuyển đổi',
+          },
           { path: '/client/reports', icon: <BarChartOutlined />, title: 'Báo cáo' },
         ].map((item) => (
           <Col xs={24} sm={12} md={8} lg={6} key={item.path}>

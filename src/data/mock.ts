@@ -313,21 +313,21 @@ export const pickupAssignments: PickupAssignment[] = [
     assignedAt: '2026-07-20T08:30:00',
     lines: [
       {
-        binCode: 'R1.A01.A.02',
+        binCode: 'Z1.KE01.02',
         sku: 'SKU-CHARGER-20W',
         productName: 'Sạc nhanh 20W USB-C',
         qty: 4,
         orderCode: 'OR-1001',
       },
       {
-        binCode: 'R1.A01.A.05',
+        binCode: 'Z1.KE01.05',
         sku: 'SKU-CABLE-C-C-1M',
         productName: 'Cáp USB-C to C 1m',
         qty: 6,
         orderCode: 'OR-1002',
       },
       {
-        binCode: 'R1.A02.A.03',
+        binCode: 'Z1.KE02.03',
         sku: 'SKU-SERUM-30ML',
         productName: 'Serum dưỡng ẩm 30ml',
         qty: 2,
@@ -347,21 +347,21 @@ export const pickupAssignments: PickupAssignment[] = [
     assignedAt: '2026-07-20T09:05:00',
     lines: [
       {
-        binCode: 'R1.A01.A.01',
+        binCode: 'Z1.KE01.01',
         sku: 'SKU-CHARGER-20W',
         productName: 'Sạc nhanh 20W USB-C',
         qty: 2,
         orderCode: 'OR-2001',
       },
       {
-        binCode: 'R1.A01.A.04',
+        binCode: 'Z1.KE01.04',
         sku: 'SKU-PHONE-X1',
         productName: 'Điện thoại demo X1',
         qty: 1,
         orderCode: 'OR-2002',
       },
       {
-        binCode: 'R1.A02.A.06',
+        binCode: 'Z1.KE02.06',
         sku: 'SKU-CABLE-C-C-1M',
         productName: 'Cáp USB-C to C 1m',
         qty: 8,

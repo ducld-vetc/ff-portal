@@ -287,16 +287,6 @@ export const customerMenuItems = [
       { key: '/client/catalog', icon: <ProductOutlined />, label: menuLabel('Sản phẩm', true) },
       { key: '/client/products/categories', icon: <AppstoreOutlined />, label: 'Danh mục sản phẩm' },
       { key: '/client/products/units', icon: <InboxOutlined />, label: 'Đơn vị tính' },
-      {
-        key: '/client/products/locations',
-        icon: <EnvironmentOutlined />,
-        label: menuLabel('Vị trí sản phẩm', true),
-      },
-      {
-        key: '/client/products/location-history',
-        icon: <HistoryOutlined />,
-        label: menuLabel('Lịch sử vị trí', true),
-      },
     ],
   },
   {
@@ -309,6 +299,23 @@ export const customerMenuItems = [
     ],
   },
   { key: '/client/cod', icon: <FileProtectOutlined />, label: 'Quản lý COD' },
+  {
+    key: 'client-summary-group',
+    icon: <BarChartOutlined />,
+    label: 'Tổng hợp',
+    children: [
+      {
+        key: '/client/summaries/materials',
+        icon: <InboxOutlined />,
+        label: menuLabel('Vật tư tiêu hao', true),
+      },
+      {
+        key: '/client/summaries/goods-damage',
+        icon: <WarningOutlined />,
+        label: menuLabel('Hàng hư hỏng / chuyển đổi', true),
+      },
+    ],
+  },
   { key: '/client/reports', icon: <BarChartOutlined />, label: 'Báo cáo' },
 ]
 

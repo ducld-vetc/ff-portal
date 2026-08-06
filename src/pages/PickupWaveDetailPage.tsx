@@ -126,14 +126,14 @@ export default function PickupWaveDetailPage() {
             </h3>
           </Space>
           <Typography.Text type="secondary">
-            {path.length} điểm dừng · sort Room→Aisle→Rack→Level→Bin
+            {path.length} điểm dừng · sort Zone→Thiết bị→Ô kệ
           </Typography.Text>
         </div>
         <div className="picker-path-legend">
           <Tag color="blue">Theo yêu cầu</Tag>
           <span>
             Lộ trình <strong>không</strong> cấu hình trong Kho. Layout kho chỉ cung cấp độ ưu tiên;
-            mỗi wave có tập bin khác nhau → lộ trình khác nhau. Cấu hình ưu tiên xem tại{' '}
+            mỗi wave có tập ô kệ khác nhau → lộ trình khác nhau. Cấu hình ưu tiên xem tại{' '}
             <Link to={`/warehouses/${wave.warehouseId}/locations`}>Thiết lập vị trí kho</Link>.
           </span>
         </div>
@@ -161,11 +161,11 @@ export default function PickupWaveDetailPage() {
                 render: (_, r) => <span className="loc-code">{r.bin.code}</span>,
               },
               {
-                title: 'Phòng / Lối / Kệ / Tầng',
-                width: 200,
+                title: 'Zone / Thiết bị',
+                width: 160,
                 render: (_, r) => (
                   <span className="loc-code">
-                    {r.roomCode}.{r.aisleCode}.{r.rackCode}.{r.levelCode}
+                    {r.zoneCode}.{r.deviceCode}
                   </span>
                 ),
               },

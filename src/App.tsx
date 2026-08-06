@@ -65,6 +65,8 @@ import ClientOutboundDetailPage from './pages/ClientOutboundDetailPage'
 import ClientWaybillListPage from './pages/ClientWaybillListPage'
 import ClientWaybillCreatePage from './pages/ClientWaybillCreatePage'
 import ClientWaybillDetailPage from './pages/ClientWaybillDetailPage'
+import ClientMaterialConsumptionPage from './pages/ClientMaterialConsumptionPage'
+import ClientGoodsDamagePage from './pages/ClientGoodsDamagePage'
 import {
   ClientCategoriesPage,
   ClientCodPage,
@@ -220,6 +222,11 @@ export default function App() {
                 />
                 <Route path="client/channel-conditions" element={<ClientDefaultConditionPage />} />
                 <Route path="client/cod" element={<ClientCodPage />} />
+                <Route
+                  path="client/summaries/materials"
+                  element={<ClientMaterialConsumptionPage />}
+                />
+                <Route path="client/summaries/goods-damage" element={<ClientGoodsDamagePage />} />
                 <Route path="client/carriers/accounts" element={<CarrierAccountsPage />} />
                 <Route path="client/carriers/packages" element={<ShippingPackagesPage />} />
                 <Route path="client/reports" element={<ReportsPage />} />

@@ -31,21 +31,16 @@ import {
   setLocationSetup,
   suggestBinCode,
   type LocationSetupSnapshot,
-  type WarehouseAisle,
   type WarehouseBin,
-  type WarehouseLevel,
-  type WarehouseRack,
-  type WarehouseRoom,
+  type WarehouseDevice,
+  type WarehouseZone,
 } from '../data/warehouseLocations'
 
-type EntityTab = 'rooms' | 'levels' | 'aisles' | 'racks' | 'bins'
-type TabKey = EntityTab
+type EntityTab = 'zones' | 'devices' | 'bins'
 
 type EditingState =
-  | { type: 'rooms'; row: WarehouseRoom }
-  | { type: 'levels'; row: WarehouseLevel }
-  | { type: 'aisles'; row: WarehouseAisle }
-  | { type: 'racks'; row: WarehouseRack }
+  | { type: 'zones'; row: WarehouseZone }
+  | { type: 'devices'; row: WarehouseDevice }
   | { type: 'bins'; row: WarehouseBin }
   | null
 
@@ -68,32 +63,29 @@ export default function WarehouseLocationsPage() {
   const warehouse = warehouses.find((w) => w.id === id)
 
   const [setup, setSetup] = useState<LocationSetupSnapshot>(() => getLocationSetup(id))
-  const [tab, setTab] = useState<TabKey>('rooms')
+  const [tab, setTab] = useState<EntityTab>('zones')
   const [modalType, setModalType] = useState<EntityTab | null>(null)
   const [editing, setEditing] = useState<EditingState>(null)
   const [form] = Form.useForm()
-  const watchedRoomId = Form.useWatch('roomId', form)
 
   const persist = (next: LocationSetupSnapshot) => {
     setSetup(next)
     setLocationSetup(id, next)
   }
 
-  const isReady =
-    setup.rooms.length > 0 &&
-    setup.levels.length > 0 &&
-    setup.aisles.length > 0 &&
-    setup.racks.length > 0 &&
-    setup.bins.length > 0
+  const isReady = setup.zones.length > 0 && setup.devices.length > 0 && setup.bins.length > 0
 
-  const roomOptions = setup.rooms.map((r) => ({ value: r.id, label: r.code }))
-  const levelOptions = setup.levels.map((r) => ({ value: r.id, label: r.code }))
-  const aisleOptions = setup.aisles.map((r) => ({
+  const zoneOptions = setup.zones.map((r) => ({
     value: r.id,
-    label: `${setup.rooms.find((x) => x.id === r.roomId)?.code || '?'}.${r.code}`,
+    label: r.name ? `${r.code} · ${r.name}` : r.code,
   }))
-  const rackOptions = setup.racks.map((r) => ({ value: r.id, label: r.code }))
-
+  const deviceOptions = setup.devices.map((r) => {
+    const zone = setup.zones.find((z) => z.id === r.zoneId)
+    return {
+      value: r.id,
+      label: `${zone?.code || '?'}.${r.code}${r.name ? ` · ${r.name}` : ''}`,
+    }
+  })
 
   if (!warehouse) {
     return (
@@ -118,43 +110,29 @@ export default function WarehouseLocationsPage() {
     setEditing(null)
     setModalType(key)
     form.resetFields()
-    if (key === 'rooms') form.setFieldsValue({ pickPriority: setup.rooms.length + 1 })
-    if (key === 'levels') form.setFieldsValue({ pickPriority: setup.levels.length + 1 })
-    if (key === 'aisles') {
-      form.setFieldsValue({
-        roomId: setup.rooms[0]?.id,
-        pickPriority: setup.aisles.length + 1,
-      })
+    if (key === 'zones') {
+      form.setFieldsValue({ pickPriority: setup.zones.length + 1 })
     }
-    if (key === 'racks') {
+    if (key === 'devices') {
       form.setFieldsValue({
-        roomId: setup.rooms[0]?.id,
-        aisleId: setup.aisles[0]?.id,
-        pickPriority: 1,
+        zoneId: setup.zones[0]?.id,
+        pickPriority: setup.devices.length + 1,
       })
     }
     if (key === 'bins') {
-      const room = setup.rooms[0]
-      const rack = setup.racks[0]
-      const level = setup.levels[0]
-      const seq = setup.bins.filter((b) => b.rackId === rack?.id).length + 1
+      const zone = setup.zones[0]
+      const device = setup.devices[0]
+      const seq = setup.bins.filter((b) => b.deviceId === device?.id).length + 1
       form.setFieldsValue({
-        roomId: room?.id,
-        levelId: level?.id,
-        aisleId: rack?.aisleId || setup.aisles[0]?.id,
-        rackId: rack?.id,
+        zoneId: zone?.id,
+        deviceId: device?.id,
         pickPriority: seq,
         maxSku: 7,
         nonPickable: false,
         fastMoving: false,
         code:
-          room && rack && level
-            ? suggestBinCode({
-                roomCode: room.code,
-                rackCode: rack.code,
-                levelCode: level.code,
-                seq,
-              })
+          zone && device
+            ? suggestBinCode({ zoneCode: zone.code, deviceCode: device.code, seq })
             : '',
       })
     }
@@ -172,152 +150,110 @@ export default function WarehouseLocationsPage() {
       const type = modalType
       if (!type) return
 
-      if (type === 'rooms') {
-        const duplicate = setup.rooms.some(
+      if (type === 'zones') {
+        const duplicate = setup.zones.some(
           (r) => r.code === values.code && r.id !== editing?.row.id,
         )
         if (duplicate) {
-          message.error('Mã phòng đã tồn tại')
+          message.error('Mã zone đã tồn tại')
           return
         }
-        if (editing?.type === 'rooms') {
+        if (editing?.type === 'zones') {
           persist({
             ...setup,
-            rooms: setup.rooms.map((r) =>
-              r.id === editing.row.id
-                ? { ...r, code: values.code, pickPriority: values.pickPriority }
-                : r,
-            ),
-          })
-          message.success(`Đã cập nhật phòng ${values.code}`)
-        } else {
-          const row: WarehouseRoom = {
-            id: `room-${Date.now()}`,
-            warehouseId: id,
-            code: values.code,
-            pickPriority: values.pickPriority,
-          }
-          persist({ ...setup, rooms: [...setup.rooms, row] })
-          message.success(`Đã tạo phòng ${row.code}`)
-        }
-      }
-
-      if (type === 'levels') {
-        const duplicate = setup.levels.some(
-          (r) => r.code === values.code && r.id !== editing?.row.id,
-        )
-        if (duplicate) {
-          message.error('Mã tầng đã tồn tại')
-          return
-        }
-        if (editing?.type === 'levels') {
-          persist({
-            ...setup,
-            levels: setup.levels.map((r) =>
-              r.id === editing.row.id
-                ? { ...r, code: values.code, pickPriority: values.pickPriority }
-                : r,
-            ),
-          })
-          message.success(`Đã cập nhật tầng ${values.code}`)
-        } else {
-          const row: WarehouseLevel = {
-            id: `lv-${Date.now()}`,
-            warehouseId: id,
-            code: values.code,
-            pickPriority: values.pickPriority,
-          }
-          persist({ ...setup, levels: [...setup.levels, row] })
-          message.success(`Đã tạo tầng ${row.code}`)
-        }
-      }
-
-      if (type === 'aisles') {
-        if (editing?.type === 'aisles') {
-          persist({
-            ...setup,
-            aisles: setup.aisles.map((r) =>
+            zones: setup.zones.map((r) =>
               r.id === editing.row.id
                 ? {
                     ...r,
-                    roomId: values.roomId,
                     code: values.code,
+                    name: values.name?.trim() || undefined,
                     pickPriority: values.pickPriority,
                   }
                 : r,
             ),
           })
-          message.success(`Đã cập nhật lối đi ${values.code}`)
+          message.success(`Đã cập nhật zone ${values.code}`)
         } else {
-          const row: WarehouseAisle = {
-            id: `aisle-${Date.now()}`,
+          const row: WarehouseZone = {
+            id: `zone-${Date.now()}`,
             warehouseId: id,
-            roomId: values.roomId,
             code: values.code,
+            name: values.name?.trim() || undefined,
             pickPriority: values.pickPriority,
           }
-          persist({ ...setup, aisles: [...setup.aisles, row] })
-          message.success(`Đã tạo lối đi ${row.code}`)
+          persist({ ...setup, zones: [...setup.zones, row] })
+          message.success(`Đã tạo zone ${row.code}`)
         }
+        closeModal()
+        return
       }
 
-      if (type === 'racks') {
-        const aisle = setup.aisles.find((a) => a.id === values.aisleId)
-        if (aisle && aisle.roomId !== values.roomId) {
-          message.error('Lối đi phải thuộc cùng phòng với dãy kệ')
+      if (type === 'devices') {
+        if (!values.zoneId) {
+          message.error('Chọn zone')
           return
         }
-        if (editing?.type === 'racks') {
+        const duplicate = setup.devices.some(
+          (r) =>
+            r.zoneId === values.zoneId &&
+            r.code === values.code &&
+            r.id !== editing?.row.id,
+        )
+        if (duplicate) {
+          message.error('Mã thiết bị đã tồn tại trong zone')
+          return
+        }
+        if (editing?.type === 'devices') {
           persist({
             ...setup,
-            racks: setup.racks.map((r) =>
+            devices: setup.devices.map((r) =>
               r.id === editing.row.id
                 ? {
                     ...r,
-                    roomId: values.roomId,
-                    aisleId: values.aisleId,
+                    zoneId: values.zoneId,
                     code: values.code,
+                    name: values.name?.trim() || undefined,
                     pickPriority: values.pickPriority,
                   }
                 : r,
             ),
           })
-          message.success(`Đã cập nhật dãy kệ ${values.code}`)
+          message.success(`Đã cập nhật thiết bị ${values.code}`)
         } else {
-          const row: WarehouseRack = {
-            id: `rack-${Date.now()}`,
+          const row: WarehouseDevice = {
+            id: `dev-${Date.now()}`,
             warehouseId: id,
-            roomId: values.roomId,
-            aisleId: values.aisleId,
+            zoneId: values.zoneId,
             code: values.code,
+            name: values.name?.trim() || undefined,
             pickPriority: values.pickPriority,
           }
-          persist({ ...setup, racks: [...setup.racks, row] })
-          message.success(`Đã tạo dãy kệ ${row.code}`)
+          persist({ ...setup, devices: [...setup.devices, row] })
+          message.success(`Đã tạo thiết bị ${row.code}`)
         }
+        closeModal()
+        return
       }
 
       if (type === 'bins') {
         const duplicate = setup.bins.some(
-          (b) => b.code === values.code && b.id !== editing?.row.id,
+          (r) => r.code === values.code && r.id !== editing?.row.id,
         )
         if (duplicate) {
-          message.error('Mã vị trí đã tồn tại')
+          message.error('Mã ô kệ đã tồn tại')
           return
         }
-        const rack = setup.racks.find((r) => r.id === values.rackId)
-        if (rack && (rack.roomId !== values.roomId || rack.aisleId !== values.aisleId)) {
-          message.error('Dãy kệ phải khớp phòng và lối đi đã chọn')
+        const device = setup.devices.find((d) => d.id === values.deviceId)
+        if (!device) {
+          message.error('Chọn thiết bị')
           return
         }
         const patch: Omit<WarehouseBin, 'id' | 'warehouseId'> = {
-          roomId: values.roomId,
-          levelId: values.levelId,
-          aisleId: values.aisleId,
-          rackId: values.rackId,
-          code: values.code,
+          zoneId: device.zoneId,
+          deviceId: device.id,
+          code: values.code.trim(),
           pickPriority: values.pickPriority,
-          maxSku: values.maxSku ?? 7,
+          maxSku: values.maxSku,
           nonPickable: !!values.nonPickable,
           fastMoving: !!values.fastMoving,
           lengthCm: values.lengthCm,
@@ -333,7 +269,7 @@ export default function WarehouseLocationsPage() {
               b.id === editing.row.id ? { ...b, ...patch } : b,
             ),
           })
-          message.success(`Đã cập nhật vị trí ${values.code}`)
+          message.success(`Đã cập nhật ô kệ ${values.code}`)
         } else {
           const row: WarehouseBin = {
             id: `bin-${Date.now()}`,
@@ -341,557 +277,324 @@ export default function WarehouseLocationsPage() {
             ...patch,
           }
           persist({ ...setup, bins: [...setup.bins, row] })
-          message.success(`Đã tạo vị trí ${row.code}`)
+          message.success(`Đã tạo ô kệ ${row.code}`)
         }
+        closeModal()
       }
-
-      closeModal()
     } catch {
-      /* validation */
+      /* form errors */
     }
   }
 
   const editBtn = (onClick: () => void) => (
-    <IconAction title="Chỉnh sửa" size="small" icon={<EditOutlined />} onClick={onClick} />
+    <IconAction title="Sửa" size="small" icon={<EditOutlined />} onClick={onClick} />
   )
 
-  const roomColumns: TableColumnsType<WarehouseRoom> = [
-    {
-      title: 'Mã phòng',
-      dataIndex: 'code',
-      width: 140,
-      render: (v: string) => <CodeCell value={v} />,
-    },
+  const zoneColumns: TableColumnsType<WarehouseZone> = [
+    { title: 'Mã zone', dataIndex: 'code', width: 120, render: (v) => <CodeCell value={v} /> },
+    { title: 'Tên', dataIndex: 'name', render: (v?: string) => v || '—' },
     {
       title: 'Độ ưu tiên',
       dataIndex: 'pickPriority',
-      width: 160,
-      render: (v: number) => <PriorityCell value={v} />,
-    },
-    {
-      title: 'Ghi chú',
-      render: (_, row) =>
-        row.pickPriority === 1 ? (
-          <Typography.Text type="secondary">Ưu tiên lấy hàng trước các phòng khác</Typography.Text>
-        ) : (
-          <Typography.Text type="secondary">Thứ tự lấy sau phòng ưu tiên thấp hơn</Typography.Text>
-        ),
-    },
-    {
-      title: '',
-      width: 64,
-      align: 'center',
-      render: (_, row) => editBtn(() => openEdit({ type: 'rooms', row })),
-    },
-  ]
-
-  const levelColumns: TableColumnsType<WarehouseLevel> = [
-    {
-      title: 'Mã tầng',
-      dataIndex: 'code',
       width: 140,
-      render: (v: string) => <CodeCell value={v} />,
-    },
-    {
-      title: 'Độ ưu tiên',
-      dataIndex: 'pickPriority',
-      width: 160,
-      render: (v: number) => <PriorityCell value={v} />,
-    },
-    {
-      title: 'Ghi chú',
-      render: (_, row) => (
-        <Typography.Text type="secondary">
-          {row.pickPriority === 1
-            ? 'Thường là tầng trệt / thấp — lấy trước'
-            : 'Tầng cao hơn — lấy sau khi hết tầng ưu tiên thấp'}
-        </Typography.Text>
-      ),
-    },
-    {
-      title: '',
-      width: 64,
-      align: 'center',
-      render: (_, row) => editBtn(() => openEdit({ type: 'levels', row })),
-    },
-  ]
-
-  const aisleColumns: TableColumnsType<WarehouseAisle> = [
-    {
-      title: 'Phòng',
-      width: 110,
-      render: (_, row) => (
-        <CodeCell value={setup.rooms.find((r) => r.id === row.roomId)?.code} />
-      ),
-    },
-    {
-      title: 'Mã lối đi',
-      dataIndex: 'code',
-      width: 140,
-      render: (v: string) => <CodeCell value={v} />,
-    },
-    {
-      title: 'Độ ưu tiên',
-      dataIndex: 'pickPriority',
-      width: 160,
       render: (v: number) => <PriorityCell value={v} />,
     },
     {
       title: '',
       width: 64,
-      align: 'center',
-      render: (_, row) => editBtn(() => openEdit({ type: 'aisles', row })),
+      render: (_, row) => editBtn(() => openEdit({ type: 'zones', row })),
     },
   ]
 
-  const rackColumns: TableColumnsType<WarehouseRack> = [
+  const deviceColumns: TableColumnsType<WarehouseDevice> = [
     {
-      title: 'Phòng',
+      title: 'Zone',
       width: 100,
-      render: (_, row) => (
-        <CodeCell value={setup.rooms.find((r) => r.id === row.roomId)?.code} />
-      ),
+      render: (_, row) => <CodeCell value={setup.zones.find((z) => z.id === row.zoneId)?.code} />,
     },
-    {
-      title: 'Lối đi',
-      width: 100,
-      render: (_, row) => (
-        <CodeCell value={setup.aisles.find((r) => r.id === row.aisleId)?.code} />
-      ),
-    },
-    {
-      title: 'Mã dãy kệ',
-      dataIndex: 'code',
-      width: 140,
-      render: (v: string) => <CodeCell value={v} />,
-    },
+    { title: 'Mã thiết bị', dataIndex: 'code', width: 120, render: (v) => <CodeCell value={v} /> },
+    { title: 'Tên', dataIndex: 'name', render: (v?: string) => v || '—' },
     {
       title: 'Độ ưu tiên',
       dataIndex: 'pickPriority',
-      width: 160,
+      width: 140,
       render: (v: number) => <PriorityCell value={v} />,
     },
     {
       title: '',
       width: 64,
-      align: 'center',
-      render: (_, row) => editBtn(() => openEdit({ type: 'racks', row })),
+      render: (_, row) => editBtn(() => openEdit({ type: 'devices', row })),
     },
   ]
 
   const binColumns: TableColumnsType<WarehouseBin> = [
     {
-      title: 'Mã vị trí',
+      title: 'Mã ô kệ',
       dataIndex: 'code',
-      width: 170,
-      fixed: 'left',
-      render: (v: string) => <CodeCell value={v} />,
+      width: 150,
+      render: (v) => <CodeCell value={v} />,
     },
     {
-      title: 'Phòng',
-      width: 88,
-      render: (_, row) => (
-        <CodeCell value={setup.rooms.find((r) => r.id === row.roomId)?.code} />
-      ),
+      title: 'Zone',
+      width: 90,
+      render: (_, row) => <CodeCell value={setup.zones.find((z) => z.id === row.zoneId)?.code} />,
     },
     {
-      title: 'Tầng',
-      width: 72,
+      title: 'Thiết bị',
+      width: 100,
       render: (_, row) => (
-        <CodeCell value={setup.levels.find((r) => r.id === row.levelId)?.code} />
-      ),
-    },
-    {
-      title: 'Lối',
-      width: 72,
-      render: (_, row) => (
-        <CodeCell value={setup.aisles.find((r) => r.id === row.aisleId)?.code} />
-      ),
-    },
-    {
-      title: 'Kệ',
-      width: 88,
-      render: (_, row) => (
-        <CodeCell value={setup.racks.find((r) => r.id === row.rackId)?.code} />
+        <CodeCell value={setup.devices.find((d) => d.id === row.deviceId)?.code} />
       ),
     },
     {
       title: 'Ưu tiên',
       dataIndex: 'pickPriority',
-      width: 110,
-      align: 'center',
+      width: 100,
       render: (v: number) => <PriorityCell value={v} />,
     },
+    { title: 'Max SKU', dataIndex: 'maxSku', width: 90, align: 'right' },
     {
-      title: 'Max SKU',
-      dataIndex: 'maxSku',
-      width: 96,
-      align: 'right',
-    },
-    {
-      title: 'Kích thước (cm)',
-      width: 130,
-      render: (_, row) =>
-        row.lengthCm || row.widthCm || row.heightCm ? (
-          <span className="loc-dim">
-            {row.lengthCm ?? '—'}×{row.widthCm ?? '—'}×{row.heightCm ?? '—'}
-          </span>
-        ) : (
-          <Typography.Text type="secondary">—</Typography.Text>
-        ),
-    },
-    {
-      title: 'Thuộc tính',
-      width: 220,
+      title: 'Cờ',
+      width: 160,
       render: (_, row) => (
         <Space size={4} wrap>
-          {row.nonPickable ? <Tag>Không lấy hàng</Tag> : null}
-          {row.fastMoving ? <Tag color="orange">Fast Moving</Tag> : null}
-          {!row.nonPickable && !row.fastMoving ? (
-            <Typography.Text type="secondary">—</Typography.Text>
-          ) : null}
+          {row.nonPickable ? <Tag>Không lấy</Tag> : null}
+          {row.fastMoving ? <Tag color="orange">Fast</Tag> : null}
+          {!row.nonPickable && !row.fastMoving ? <Typography.Text type="secondary">—</Typography.Text> : null}
         </Space>
       ),
     },
     {
       title: '',
       width: 64,
-      fixed: 'right',
-      align: 'center',
       render: (_, row) => editBtn(() => openEdit({ type: 'bins', row })),
     },
   ]
 
-  const modalTitle = (() => {
-    const isEdit = !!editing
-    const map: Record<EntityTab, [string, string]> = {
-      rooms: ['Thêm phòng lưu trữ', 'Sửa phòng lưu trữ'],
-      levels: ['Thêm tầng kệ', 'Sửa tầng kệ'],
-      aisles: ['Thêm lối đi', 'Sửa lối đi'],
-      racks: ['Thêm dãy kệ', 'Sửa dãy kệ'],
-      bins: ['Thêm vị trí (bin)', 'Sửa vị trí (bin)'],
-    }
-    if (!modalType) return ''
-    return map[modalType][isEdit ? 1 : 0]
-  })()
+  const titles: Record<EntityTab, [string, string]> = {
+    zones: ['Thêm zone', 'Sửa zone'],
+    devices: ['Thêm thiết bị', 'Sửa thiết bị'],
+    bins: ['Thêm ô kệ', 'Sửa ô kệ'],
+  }
 
-  const stats = [
-    { key: 'rooms', label: 'Phòng', value: setup.rooms.length, hint: 'Room' },
-    { key: 'levels', label: 'Tầng', value: setup.levels.length, hint: 'Level' },
-    { key: 'aisles', label: 'Lối đi', value: setup.aisles.length, hint: 'Aisle' },
-    { key: 'racks', label: 'Dãy kệ', value: setup.racks.length, hint: 'Rack' },
-    { key: 'bins', label: 'Vị trí bin', value: setup.bins.length, hint: 'Bin' },
+  const summary = [
+    { key: 'zones', label: 'Zone', value: setup.zones.length, hint: 'Khu vực' },
+    { key: 'devices', label: 'Thiết bị', value: setup.devices.length, hint: 'Kệ / thiết bị chứa' },
+    { key: 'bins', label: 'Ô kệ', value: setup.bins.length, hint: 'Bin' },
   ] as const
 
   return (
     <div>
       <PageHeader
         title={`Quản lý vị trí — ${warehouse.code}`}
-        description={`${warehouse.name}. Thiết lập / chỉnh sửa layout: Phòng → Tầng → Lối đi → Dãy kệ → Bin (độ ưu tiên). Lộ trình lấy hàng xem tại Phân công lấy hàng theo từng wave.`}
+        description="Cấu trúc tối giản 3 cấp: Zone → Thiết bị → Ô kệ. Độ ưu tiên số nhỏ = lấy trước."
         extra={
-          <Space>
-            <IconAction
-              title="Danh sách kho"
-              icon={<ArrowLeftOutlined />}
-              onClick={() => navigate('/warehouses')}
-            />
-            <IconAction
-              title="Thiết bị di động"
-              icon={<InboxOutlined />}
-              onClick={() => navigate('/warehouses/storage-devices')}
-            />
-          </Space>
+          <IconAction
+            title="Quay lại danh sách kho"
+            icon={<ArrowLeftOutlined />}
+            onClick={() => navigate('/warehouses')}
+          />
         }
       />
 
-      <div className="loc-summary-card">
-        <div className="loc-summary-top">
-          <div className="loc-summary-identity">
-            <span className="loc-summary-icon">
-              <HomeOutlined />
-            </span>
-            <div>
-              <div className="loc-summary-name">{warehouse.name}</div>
-              <div className="loc-summary-code">{warehouse.code}</div>
-            </div>
-          </div>
-          <div className={`loc-summary-status ${isReady ? 'is-ready' : 'is-pending'}`}>
-            <span className="loc-summary-status-dot" />
-            {isReady ? 'Sẵn sàng vận hành' : 'Chưa đủ cấu trúc'}
-          </div>
+      <div className="content-card loc-summary-card" style={{ marginBottom: 16 }}>
+        <div className="loc-summary-head">
+          <Space>
+            <HomeOutlined />
+            <strong>
+              {warehouse.name} · {warehouse.code}
+            </strong>
+            {isReady ? <Tag color="success">Đủ cấu hình</Tag> : <Tag color="warning">Chưa đủ</Tag>}
+          </Space>
+          <Typography.Text type="secondary">
+            Thứ tự thiết lập: Zone → Thiết bị (thuộc Zone) → Ô kệ (thuộc Thiết bị)
+          </Typography.Text>
         </div>
-        <div className="loc-summary-stats">
-          {stats.map((item) => (
+        <div className="loc-summary-grid">
+          {summary.map((item) => (
             <button
               key={item.key}
               type="button"
-              className={`loc-stat ${tab === item.key ? 'is-active' : ''}`}
+              className={`loc-summary-item ${tab === item.key ? 'is-active' : ''}`}
               onClick={() => setTab(item.key)}
             >
-              <span className="loc-stat-value">{item.value}</span>
-              <span className="loc-stat-label">{item.label}</span>
-              <span className="loc-stat-hint">{item.hint}</span>
+              <span className="loc-summary-value">{item.value}</span>
+              <span className="loc-summary-label">{item.label}</span>
+              <span className="loc-summary-hint">{item.hint}</span>
             </button>
           ))}
         </div>
       </div>
 
-      <div className="content-card loc-table-card">
+      <div className="content-card">
         <Tabs
           activeKey={tab}
-          onChange={(k) => setTab(k as TabKey)}
+          onChange={(key) => setTab(key as EntityTab)}
           items={[
             {
-              key: 'rooms',
-              label: `Phòng (${setup.rooms.length})`,
+              key: 'zones',
+              label: `Zone (${setup.zones.length})`,
               children: (
                 <>
                   <div className="table-toolbar">
                     <Typography.Text type="secondary">
-                      Max 5 ký tự. Có thể sửa mã và độ ưu tiên sau khi tạo.
+                      Khu vực vật lý trong kho (picking, lưu trữ, inbound…).
                     </Typography.Text>
                     <IconAction
-                      title="Thêm phòng"
+                      title="Thêm zone"
                       type="primary"
                       icon={<PlusOutlined />}
-                      onClick={() => openCreate('rooms')}
+                      onClick={() => openCreate('zones')}
                     />
                   </div>
                   <Table
                     className="loc-data-table"
                     rowKey="id"
                     size="middle"
-                    columns={roomColumns}
-                    dataSource={[...setup.rooms].sort((a, b) => a.pickPriority - b.pickPriority)}
+                    columns={zoneColumns}
+                    dataSource={[...setup.zones].sort((a, b) => a.pickPriority - b.pickPriority)}
                     pagination={false}
                   />
                 </>
               ),
             },
             {
-              key: 'levels',
-              label: `Tầng (${setup.levels.length})`,
+              key: 'devices',
+              label: `Thiết bị (${setup.devices.length})`,
               children: (
                 <>
                   <div className="table-toolbar">
                     <Typography.Text type="secondary">
-                      Max 3 ký tự. Tầng trệt nên ưu tiên số nhỏ hơn tầng cao.
+                      Thiết bị chứa hàng (kệ, pallet rack…) thuộc một Zone.
                     </Typography.Text>
                     <IconAction
-                      title="Thêm tầng"
+                      title="Thêm thiết bị"
                       type="primary"
                       icon={<PlusOutlined />}
-                      onClick={() => openCreate('levels')}
+                      disabled={!setup.zones.length}
+                      onClick={() => openCreate('devices')}
                     />
                   </div>
-                  <Table
-                    className="loc-data-table"
-                    rowKey="id"
-                    size="middle"
-                    columns={levelColumns}
-                    dataSource={[...setup.levels].sort((a, b) => a.pickPriority - b.pickPriority)}
-                    pagination={false}
-                  />
-                </>
-              ),
-            },
-            {
-              key: 'aisles',
-              label: `Lối đi (${setup.aisles.length})`,
-              children: (
-                <>
-                  <div className="table-toolbar">
-                    <Typography.Text type="secondary">
-                      Aisle phục vụ put-away & picking. Sửa được phòng gắn / mã / ưu tiên.
-                    </Typography.Text>
-                    <Space>
-                      <IconAction
-                        title="Import"
-                        icon={<UploadOutlined />}
-                        onClick={() => message.info('Demo: import nhiều lối đi từ Excel')}
-                      />
-                      <IconAction
-                        title="Thêm lối đi"
-                        type="primary"
-                        icon={<PlusOutlined />}
-                        onClick={() => openCreate('aisles')}
-                      />
-                    </Space>
-                  </div>
-                  <Table
-                    className="loc-data-table"
-                    rowKey="id"
-                    size="middle"
-                    columns={aisleColumns}
-                    dataSource={[...setup.aisles].sort((a, b) => a.pickPriority - b.pickPriority)}
-                    pagination={false}
-                  />
-                </>
-              ),
-            },
-            {
-              key: 'racks',
-              label: `Dãy kệ (${setup.racks.length})`,
-              children: (
-                <>
-                  <div className="table-toolbar">
-                    <Typography.Text type="secondary">
-                      Cùng lối: so priority kệ. Khác lối: ưu tiên lối đi trước.
-                    </Typography.Text>
-                    <Space>
-                      <IconAction
-                        title="Import"
-                        icon={<UploadOutlined />}
-                        onClick={() => message.info('Demo: import nhiều dãy kệ từ Excel')}
-                      />
-                      <IconAction
-                        title="Thêm dãy kệ"
-                        type="primary"
-                        icon={<PlusOutlined />}
-                        onClick={() => openCreate('racks')}
-                      />
-                    </Space>
-                  </div>
-                  <Table
-                    className="loc-data-table"
-                    rowKey="id"
-                    size="middle"
-                    columns={rackColumns}
-                    dataSource={[...setup.racks].sort((a, b) => a.pickPriority - b.pickPriority)}
-                    pagination={false}
-                  />
+                  {!setup.zones.length ? (
+                    <Typography.Text type="secondary">Tạo Zone trước khi thêm thiết bị.</Typography.Text>
+                  ) : (
+                    <Table
+                      className="loc-data-table"
+                      rowKey="id"
+                      size="middle"
+                      columns={deviceColumns}
+                      dataSource={[...setup.devices].sort((a, b) => a.pickPriority - b.pickPriority)}
+                      pagination={false}
+                    />
+                  )}
                 </>
               ),
             },
             {
               key: 'bins',
-              label: `Vị trí bin (${setup.bins.length})`,
+              label: `Ô kệ (${setup.bins.length})`,
               children: (
                 <>
                   <div className="table-toolbar">
                     <Typography.Text type="secondary">
-                      Max 15 ký tự. Có thể sửa toàn bộ tiêu chí (ưu tiên, cờ, kích thước…).
+                      Ô chứa trên thiết bị — đơn vị nhỏ nhất để put-away / picking.
                     </Typography.Text>
                     <Space>
                       <IconAction
                         title="Import"
                         icon={<UploadOutlined />}
-                        onClick={() => message.info('Demo: import nhiều vị trí từ Excel')}
+                        onClick={() => message.info('Demo: import nhiều ô kệ từ Excel')}
                       />
                       <IconAction
-                        title="Thêm vị trí"
+                        title="Thêm ô kệ"
                         type="primary"
                         icon={<PlusOutlined />}
+                        disabled={!setup.devices.length}
                         onClick={() => openCreate('bins')}
                       />
                     </Space>
                   </div>
-                  <Table
-                    className="loc-data-table"
-                    rowKey="id"
-                    size="middle"
-                    columns={binColumns}
-                    dataSource={[...setup.bins].sort((a, b) => a.pickPriority - b.pickPriority)}
-                    pagination={{ pageSize: 10, showSizeChanger: false }}
-                    scroll={{ x: 1180 }}
-                  />
+                  {!setup.devices.length ? (
+                    <Typography.Text type="secondary">Tạo Thiết bị trước khi thêm ô kệ.</Typography.Text>
+                  ) : (
+                    <Table
+                      className="loc-data-table"
+                      rowKey="id"
+                      size="middle"
+                      columns={binColumns}
+                      dataSource={[...setup.bins].sort((a, b) => a.pickPriority - b.pickPriority)}
+                      pagination={{ pageSize: 10, showSizeChanger: false }}
+                      scroll={{ x: 800 }}
+                    />
+                  )}
                 </>
               ),
-            }
+            },
           ]}
         />
       </div>
 
       <Modal
-        open={!!modalType}
-        title={modalTitle}
+        open={Boolean(modalType)}
+        title={
+          <span className="modal-title-blue">
+            {modalType ? titles[modalType][editing ? 1 : 0] : ''}
+          </span>
+        }
         onCancel={closeModal}
-        onOk={submitModal}
+        onOk={() => void submitModal()}
         okText={editing ? 'Cập nhật' : 'Lưu'}
-        destroyOnHidden
+        cancelText="Thoát"
         width={modalType === 'bins' ? 560 : 480}
+        destroyOnHidden
       >
-        <Form form={form} layout="vertical">
-          {modalType === 'rooms' ? (
+        <Form form={form} layout="vertical" requiredMark>
+          {modalType === 'zones' ? (
             <>
               <Form.Item
                 name="code"
-                label="Mã phòng"
+                label="Mã zone"
                 rules={[
-                  { required: true, message: 'Nhập mã phòng' },
-                  { max: 5, message: 'Tối đa 5 ký tự' },
+                  { required: true, message: 'Nhập mã zone' },
+                  { max: 10, message: 'Tối đa 10 ký tự' },
                 ]}
               >
-                <Input placeholder="VD: R1" maxLength={5} />
+                <Input className="mono-input" maxLength={10} placeholder="VD: Z1" />
+              </Form.Item>
+              <Form.Item name="name" label="Tên zone">
+                <Input placeholder="VD: Khu picking nhanh" />
               </Form.Item>
               <Form.Item
                 name="pickPriority"
                 label="Độ ưu tiên"
                 rules={[{ required: true, message: 'Nhập độ ưu tiên' }]}
-                extra="Số 1 = ưu tiên cao nhất"
               >
                 <InputNumber min={1} style={{ width: '100%' }} />
               </Form.Item>
             </>
           ) : null}
 
-          {modalType === 'levels' ? (
+          {modalType === 'devices' ? (
             <>
               <Form.Item
+                name="zoneId"
+                label="Zone"
+                rules={[{ required: true, message: 'Chọn zone' }]}
+              >
+                <Select options={zoneOptions} placeholder="Chọn zone" />
+              </Form.Item>
+              <Form.Item
                 name="code"
-                label="Mã tầng"
+                label="Mã thiết bị"
                 rules={[
-                  { required: true, message: 'Nhập mã tầng' },
-                  { max: 3, message: 'Tối đa 3 ký tự' },
+                  { required: true, message: 'Nhập mã thiết bị' },
+                  { max: 15, message: 'Tối đa 15 ký tự' },
                 ]}
               >
-                <Input placeholder="VD: A" maxLength={3} />
+                <Input className="mono-input" maxLength={15} placeholder="VD: KE01" />
               </Form.Item>
-              <Form.Item name="pickPriority" label="Độ ưu tiên" rules={[{ required: true }]}>
-                <InputNumber min={1} style={{ width: '100%' }} />
-              </Form.Item>
-            </>
-          ) : null}
-
-          {modalType === 'aisles' ? (
-            <>
-              <Form.Item name="roomId" label="Mã phòng" rules={[{ required: true }]}>
-                <Select options={roomOptions} />
-              </Form.Item>
-              <Form.Item
-                name="code"
-                label="Mã lối đi"
-                rules={[{ required: true }, { max: 10, message: 'Tối đa 10 ký tự' }]}
-              >
-                <Input maxLength={10} />
-              </Form.Item>
-              <Form.Item name="pickPriority" label="Độ ưu tiên" rules={[{ required: true }]}>
-                <InputNumber min={1} style={{ width: '100%' }} />
-              </Form.Item>
-            </>
-          ) : null}
-
-          {modalType === 'racks' ? (
-            <>
-              <Form.Item name="roomId" label="Mã phòng" rules={[{ required: true }]}>
-                <Select
-                  options={roomOptions}
-                  onChange={() => form.setFieldsValue({ aisleId: undefined })}
-                />
-              </Form.Item>
-              <Form.Item name="aisleId" label="Mã lối đi" rules={[{ required: true }]}>
-                <Select
-                  options={setup.aisles
-                    .filter((a) => a.roomId === watchedRoomId)
-                    .map((a) => ({ value: a.id, label: a.code }))}
-                />
-              </Form.Item>
-              <Form.Item
-                name="code"
-                label="Mã giá / dãy kệ"
-                rules={[{ required: true }, { max: 10 }]}
-              >
-                <Input maxLength={10} />
+              <Form.Item name="name" label="Tên thiết bị">
+                <Input placeholder="VD: Kệ A — hàng đi" />
               </Form.Item>
               <Form.Item name="pickPriority" label="Độ ưu tiên" rules={[{ required: true }]}>
                 <InputNumber min={1} style={{ width: '100%' }} />
@@ -902,51 +605,77 @@ export default function WarehouseLocationsPage() {
           {modalType === 'bins' ? (
             <>
               <Form.Item
-                name="code"
-                label="Mã vị trí"
-                rules={[{ required: true }, { max: 15, message: 'Tối đa 15 ký tự' }]}
+                name="deviceId"
+                label="Thiết bị"
+                rules={[{ required: true, message: 'Chọn thiết bị' }]}
               >
-                <Input maxLength={15} placeholder="R1.A01.A.03" />
+                <Select
+                  options={deviceOptions}
+                  placeholder="Chọn thiết bị"
+                  onChange={(deviceId) => {
+                    const device = setup.devices.find((d) => d.id === deviceId)
+                    const zone = setup.zones.find((z) => z.id === device?.zoneId)
+                    const seq = setup.bins.filter((b) => b.deviceId === deviceId).length + 1
+                    if (zone && device) {
+                      form.setFieldsValue({
+                        zoneId: zone.id,
+                        code: suggestBinCode({
+                          zoneCode: zone.code,
+                          deviceCode: device.code,
+                          seq,
+                        }),
+                        pickPriority: seq,
+                      })
+                    }
+                  }}
+                />
               </Form.Item>
-              <Form.Item name="roomId" label="Mã phòng" rules={[{ required: true }]}>
-                <Select options={roomOptions} />
+              <Form.Item name="zoneId" hidden>
+                <Input />
               </Form.Item>
-              <Form.Item name="levelId" label="Mã tầng" rules={[{ required: true }]}>
-                <Select options={levelOptions} />
-              </Form.Item>
-              <Form.Item name="aisleId" label="Mã lối đi" rules={[{ required: true }]}>
-                <Select options={aisleOptions} />
-              </Form.Item>
-              <Form.Item name="rackId" label="Mã dãy kệ" rules={[{ required: true }]}>
-                <Select options={rackOptions} />
+              <Form.Item
+                name="code"
+                label="Mã ô kệ"
+                rules={[{ required: true, message: 'Nhập mã ô kệ' }]}
+              >
+                <Input className="mono-input" maxLength={20} placeholder="Z1.KE01.03" />
               </Form.Item>
               <Form.Item name="pickPriority" label="Độ ưu tiên" rules={[{ required: true }]}>
                 <InputNumber min={1} style={{ width: '100%' }} />
               </Form.Item>
-              <Form.Item name="maxSku" label="Số SKU tối đa" extra="Khuyến nghị tối ưu ~7 SKU/bin">
+              <Form.Item name="maxSku" label="Số SKU tối đa" rules={[{ required: true }]}>
                 <InputNumber min={1} style={{ width: '100%' }} />
               </Form.Item>
-              <Form.Item name="nonPickable" valuePropName="checked">
-                <Checkbox>Không thể lấy hàng (chỉ lưu trữ)</Checkbox>
-              </Form.Item>
-              <Form.Item name="fastMoving" valuePropName="checked">
-                <Checkbox>Vị trí Fast Moving</Checkbox>
-              </Form.Item>
-              <Space>
+              <Space size={24} style={{ marginBottom: 16 }}>
+                <Form.Item name="nonPickable" valuePropName="checked" noStyle>
+                  <Checkbox>Không lấy hàng</Checkbox>
+                </Form.Item>
+                <Form.Item name="fastMoving" valuePropName="checked" noStyle>
+                  <Checkbox>Fast moving</Checkbox>
+                </Form.Item>
+              </Space>
+              <Space wrap>
                 <Form.Item name="lengthCm" label="Dài (cm)">
-                  <InputNumber min={0} />
+                  <InputNumber min={0} style={{ width: 100 }} />
                 </Form.Item>
                 <Form.Item name="widthCm" label="Rộng (cm)">
-                  <InputNumber min={0} />
+                  <InputNumber min={0} style={{ width: 100 }} />
                 </Form.Item>
                 <Form.Item name="heightCm" label="Cao (cm)">
-                  <InputNumber min={0} />
+                  <InputNumber min={0} style={{ width: 100 }} />
                 </Form.Item>
               </Space>
             </>
           ) : null}
         </Form>
       </Modal>
+
+      <div style={{ marginTop: 12 }}>
+        <Typography.Text type="secondary">
+          <InboxOutlined /> Lộ trình picker dùng ưu tiên Zone → Thiết bị → Ô kệ, xem tại Phân công
+          lấy hàng.
+        </Typography.Text>
+      </div>
     </div>
   )
 }

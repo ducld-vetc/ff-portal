@@ -1,41 +1,27 @@
-export type WarehouseRoom = {
+/** Cấu trúc vị trí kho tối giản: Zone → Thiết bị → Ô kệ */
+
+export type WarehouseZone = {
   id: string
   warehouseId: string
   code: string
+  name?: string
   pickPriority: number
 }
 
-export type WarehouseLevel = {
+export type WarehouseDevice = {
   id: string
   warehouseId: string
+  zoneId: string
   code: string
-  pickPriority: number
-}
-
-export type WarehouseAisle = {
-  id: string
-  warehouseId: string
-  roomId: string
-  code: string
-  pickPriority: number
-}
-
-export type WarehouseRack = {
-  id: string
-  warehouseId: string
-  roomId: string
-  aisleId: string
-  code: string
+  name?: string
   pickPriority: number
 }
 
 export type WarehouseBin = {
   id: string
   warehouseId: string
-  roomId: string
-  levelId: string
-  aisleId: string
-  rackId: string
+  zoneId: string
+  deviceId: string
   code: string
   pickPriority: number
   maxSku: number
@@ -50,63 +36,49 @@ export type WarehouseBin = {
 }
 
 export type LocationSetupSnapshot = {
-  rooms: WarehouseRoom[]
-  levels: WarehouseLevel[]
-  aisles: WarehouseAisle[]
-  racks: WarehouseRack[]
+  zones: WarehouseZone[]
+  devices: WarehouseDevice[]
   bins: WarehouseBin[]
 }
 
 const wh1 = '1'
 
-const seedRooms: WarehouseRoom[] = [
-  { id: 'room-p1', warehouseId: wh1, code: 'R1', pickPriority: 1 },
-  { id: 'room-p2', warehouseId: wh1, code: 'R2', pickPriority: 2 },
+const seedZones: WarehouseZone[] = [
+  { id: 'zone-z1', warehouseId: wh1, code: 'Z1', name: 'Khu picking nhanh', pickPriority: 1 },
+  { id: 'zone-z2', warehouseId: wh1, code: 'Z2', name: 'Khu lưu trữ', pickPriority: 2 },
 ]
 
-const seedLevels: WarehouseLevel[] = [
-  { id: 'lv-a', warehouseId: wh1, code: 'A', pickPriority: 1 },
-  { id: 'lv-b', warehouseId: wh1, code: 'B', pickPriority: 2 },
-]
-
-const seedAisles: WarehouseAisle[] = [
-  { id: 'aisle-01', warehouseId: wh1, roomId: 'room-p1', code: '01', pickPriority: 1 },
-  { id: 'aisle-02', warehouseId: wh1, roomId: 'room-p1', code: '02', pickPriority: 2 },
-]
-
-const seedRacks: WarehouseRack[] = [
+const seedDevices: WarehouseDevice[] = [
   {
-    id: 'rack-a01',
+    id: 'dev-ke01',
     warehouseId: wh1,
-    roomId: 'room-p1',
-    aisleId: 'aisle-01',
-    code: 'A01',
+    zoneId: 'zone-z1',
+    code: 'KE01',
+    name: 'Kệ A — hàng đi',
     pickPriority: 1,
   },
   {
-    id: 'rack-a02',
+    id: 'dev-ke02',
     warehouseId: wh1,
-    roomId: 'room-p1',
-    aisleId: 'aisle-01',
-    code: 'A02',
+    zoneId: 'zone-z1',
+    code: 'KE02',
+    name: 'Kệ A — hàng về',
     pickPriority: 1,
   },
 ]
 
-/** Seed bin theo lộ trình chữ U (HDSD): A01 = 1→6, A02 = A.06→A.01 = 7→12 */
+/** Seed ô kệ theo lộ trình chữ U: KE01 = 1→6, KE02 = 6→1 = bước 7→12 */
 function buildUPathBins(): WarehouseBin[] {
   const bins: WarehouseBin[] = []
   const demandSlots = new Set([2, 5, 10])
 
   for (let i = 1; i <= 6; i += 1) {
     bins.push({
-      id: `bin-a01-${i}`,
+      id: `bin-ke01-${i}`,
       warehouseId: wh1,
-      roomId: 'room-p1',
-      levelId: 'lv-a',
-      aisleId: 'aisle-01',
-      rackId: 'rack-a01',
-      code: `R1.A01.A.${String(i).padStart(2, '0')}`,
+      zoneId: 'zone-z1',
+      deviceId: 'dev-ke01',
+      code: `Z1.KE01.${String(i).padStart(2, '0')}`,
       pickPriority: i,
       maxSku: 7,
       nonPickable: false,
@@ -122,13 +94,11 @@ function buildUPathBins(): WarehouseBin[] {
   for (let pos = 6; pos >= 1; pos -= 1) {
     const pickPriority = 7 + (6 - pos)
     bins.push({
-      id: `bin-a02-${pos}`,
+      id: `bin-ke02-${pos}`,
       warehouseId: wh1,
-      roomId: 'room-p1',
-      levelId: 'lv-a',
-      aisleId: 'aisle-01',
-      rackId: 'rack-a02',
-      code: `R1.A02.A.${String(pos).padStart(2, '0')}`,
+      zoneId: 'zone-z1',
+      deviceId: 'dev-ke02',
+      code: `Z1.KE02.${String(pos).padStart(2, '0')}`,
       pickPriority,
       maxSku: 7,
       nonPickable: false,
@@ -144,29 +114,23 @@ function buildUPathBins(): WarehouseBin[] {
 }
 
 let store: LocationSetupSnapshot = {
-  rooms: [...seedRooms],
-  levels: [...seedLevels],
-  aisles: [...seedAisles],
-  racks: [...seedRacks],
+  zones: [...seedZones],
+  devices: [...seedDevices],
   bins: buildUPathBins(),
 }
 
 export function getLocationSetup(warehouseId: string): LocationSetupSnapshot {
   return {
-    rooms: store.rooms.filter((r) => r.warehouseId === warehouseId),
-    levels: store.levels.filter((r) => r.warehouseId === warehouseId),
-    aisles: store.aisles.filter((r) => r.warehouseId === warehouseId),
-    racks: store.racks.filter((r) => r.warehouseId === warehouseId),
+    zones: store.zones.filter((r) => r.warehouseId === warehouseId),
+    devices: store.devices.filter((r) => r.warehouseId === warehouseId),
     bins: store.bins.filter((r) => r.warehouseId === warehouseId),
   }
 }
 
 export function setLocationSetup(warehouseId: string, next: LocationSetupSnapshot) {
   store = {
-    rooms: [...store.rooms.filter((r) => r.warehouseId !== warehouseId), ...next.rooms],
-    levels: [...store.levels.filter((r) => r.warehouseId !== warehouseId), ...next.levels],
-    aisles: [...store.aisles.filter((r) => r.warehouseId !== warehouseId), ...next.aisles],
-    racks: [...store.racks.filter((r) => r.warehouseId !== warehouseId), ...next.racks],
+    zones: [...store.zones.filter((r) => r.warehouseId !== warehouseId), ...next.zones],
+    devices: [...store.devices.filter((r) => r.warehouseId !== warehouseId), ...next.devices],
     bins: [...store.bins.filter((r) => r.warehouseId !== warehouseId), ...next.bins],
   }
 }
@@ -174,28 +138,23 @@ export function setLocationSetup(warehouseId: string, next: LocationSetupSnapsho
 export function locationSetupProgress(warehouseId: string) {
   const s = getLocationSetup(warehouseId)
   return {
-    rooms: s.rooms.length,
-    levels: s.levels.length,
-    aisles: s.aisles.length,
-    racks: s.racks.length,
+    zones: s.zones.length,
+    devices: s.devices.length,
     bins: s.bins.length,
-    ready: s.rooms.length > 0 && s.levels.length > 0 && s.aisles.length > 0 && s.racks.length > 0 && s.bins.length > 0,
+    ready: s.zones.length > 0 && s.devices.length > 0 && s.bins.length > 0,
   }
 }
 
 export type PickStop = {
   seq: number
   bin: WarehouseBin
-  roomCode: string
-  aisleCode: string
-  rackCode: string
-  levelCode: string
+  zoneCode: string
+  deviceCode: string
   reason: string
 }
 
 /**
- * Xây lộ trình picker theo HDSD:
- * Room.priority → Aisle.priority → Rack.priority → Level.priority → Bin.priority
+ * Lộ trình picker: Zone.priority → Device.priority → Bin.priority
  * FastMoving ưu tiên trong cùng nhóm; loại nonPickable.
  */
 export function buildPickerPath(
@@ -203,10 +162,8 @@ export function buildPickerPath(
   options?: { onlyDemand?: boolean },
 ): PickStop[] {
   const s = getLocationSetup(warehouseId)
-  const roomMap = Object.fromEntries(s.rooms.map((r) => [r.id, r]))
-  const levelMap = Object.fromEntries(s.levels.map((r) => [r.id, r]))
-  const aisleMap = Object.fromEntries(s.aisles.map((r) => [r.id, r]))
-  const rackMap = Object.fromEntries(s.racks.map((r) => [r.id, r]))
+  const zoneMap = Object.fromEntries(s.zones.map((r) => [r.id, r]))
+  const deviceMap = Object.fromEntries(s.devices.map((r) => [r.id, r]))
 
   const candidates = s.bins.filter((bin) => {
     if (bin.nonPickable) return false
@@ -216,21 +173,13 @@ export function buildPickerPath(
   })
 
   candidates.sort((a, b) => {
-    const roomA = roomMap[a.roomId]?.pickPriority ?? 999
-    const roomB = roomMap[b.roomId]?.pickPriority ?? 999
-    if (roomA !== roomB) return roomA - roomB
+    const zoneA = zoneMap[a.zoneId]?.pickPriority ?? 999
+    const zoneB = zoneMap[b.zoneId]?.pickPriority ?? 999
+    if (zoneA !== zoneB) return zoneA - zoneB
 
-    const aisleA = aisleMap[a.aisleId]?.pickPriority ?? 999
-    const aisleB = aisleMap[b.aisleId]?.pickPriority ?? 999
-    if (aisleA !== aisleB) return aisleA - aisleB
-
-    const rackA = rackMap[a.rackId]?.pickPriority ?? 999
-    const rackB = rackMap[b.rackId]?.pickPriority ?? 999
-    if (rackA !== rackB) return rackA - rackB
-
-    const levelA = levelMap[a.levelId]?.pickPriority ?? 999
-    const levelB = levelMap[b.levelId]?.pickPriority ?? 999
-    if (levelA !== levelB) return levelA - levelB
+    const deviceA = deviceMap[a.deviceId]?.pickPriority ?? 999
+    const deviceB = deviceMap[b.deviceId]?.pickPriority ?? 999
+    if (deviceA !== deviceB) return deviceA - deviceB
 
     if (a.fastMoving !== b.fastMoving) return a.fastMoving ? -1 : 1
     return a.pickPriority - b.pickPriority
@@ -239,15 +188,11 @@ export function buildPickerPath(
   return candidates.map((bin, index) => ({
     seq: index + 1,
     bin,
-    roomCode: roomMap[bin.roomId]?.code ?? '—',
-    aisleCode: aisleMap[bin.aisleId]?.code ?? '—',
-    rackCode: rackMap[bin.rackId]?.code ?? '—',
-    levelCode: levelMap[bin.levelId]?.code ?? '—',
+    zoneCode: zoneMap[bin.zoneId]?.code ?? '—',
+    deviceCode: deviceMap[bin.deviceId]?.code ?? '—',
     reason: [
-      `Room ${roomMap[bin.roomId]?.pickPriority}`,
-      `Aisle ${aisleMap[bin.aisleId]?.pickPriority}`,
-      `Rack ${rackMap[bin.rackId]?.pickPriority}`,
-      `Level ${levelMap[bin.levelId]?.pickPriority}`,
+      `Zone ${zoneMap[bin.zoneId]?.pickPriority}`,
+      `Device ${deviceMap[bin.deviceId]?.pickPriority}`,
       `Bin ${bin.pickPriority}`,
       bin.fastMoving ? 'FastMoving' : null,
     ]
@@ -262,8 +207,7 @@ export type WavePickStop = PickStop & {
 }
 
 /**
- * Lộ trình picker theo từng yêu cầu/wave:
- * chỉ các bin đã được allocate trong lines của wave đó, sort theo priority layout kho.
+ * Lộ trình picker theo wave: chỉ ô kệ đã allocate, sort Zone → Device → Bin.
  */
 export function buildPickerPathForWave(
   warehouseId: string,
@@ -276,10 +220,8 @@ export function buildPickerPathForWave(
   }[],
 ): WavePickStop[] {
   const s = getLocationSetup(warehouseId)
-  const roomMap = Object.fromEntries(s.rooms.map((r) => [r.id, r]))
-  const levelMap = Object.fromEntries(s.levels.map((r) => [r.id, r]))
-  const aisleMap = Object.fromEntries(s.aisles.map((r) => [r.id, r]))
-  const rackMap = Object.fromEntries(s.racks.map((r) => [r.id, r]))
+  const zoneMap = Object.fromEntries(s.zones.map((r) => [r.id, r]))
+  const deviceMap = Object.fromEntries(s.devices.map((r) => [r.id, r]))
 
   const byBin = new Map<
     string,
@@ -302,18 +244,12 @@ export function buildPickerPathForWave(
 
   const groups = [...byBin.values()]
   groups.sort((a, b) => {
-    const roomA = roomMap[a.bin.roomId]?.pickPriority ?? 999
-    const roomB = roomMap[b.bin.roomId]?.pickPriority ?? 999
-    if (roomA !== roomB) return roomA - roomB
-    const aisleA = aisleMap[a.bin.aisleId]?.pickPriority ?? 999
-    const aisleB = aisleMap[b.bin.aisleId]?.pickPriority ?? 999
-    if (aisleA !== aisleB) return aisleA - aisleB
-    const rackA = rackMap[a.bin.rackId]?.pickPriority ?? 999
-    const rackB = rackMap[b.bin.rackId]?.pickPriority ?? 999
-    if (rackA !== rackB) return rackA - rackB
-    const levelA = levelMap[a.bin.levelId]?.pickPriority ?? 999
-    const levelB = levelMap[b.bin.levelId]?.pickPriority ?? 999
-    if (levelA !== levelB) return levelA - levelB
+    const zoneA = zoneMap[a.bin.zoneId]?.pickPriority ?? 999
+    const zoneB = zoneMap[b.bin.zoneId]?.pickPriority ?? 999
+    if (zoneA !== zoneB) return zoneA - zoneB
+    const deviceA = deviceMap[a.bin.deviceId]?.pickPriority ?? 999
+    const deviceB = deviceMap[b.bin.deviceId]?.pickPriority ?? 999
+    if (deviceA !== deviceB) return deviceA - deviceB
     if (a.bin.fastMoving !== b.bin.fastMoving) return a.bin.fastMoving ? -1 : 1
     return a.bin.pickPriority - b.bin.pickPriority
   })
@@ -321,15 +257,11 @@ export function buildPickerPathForWave(
   return groups.map((group, index) => ({
     seq: index + 1,
     bin: group.bin,
-    roomCode: roomMap[group.bin.roomId]?.code ?? '—',
-    aisleCode: aisleMap[group.bin.aisleId]?.code ?? '—',
-    rackCode: rackMap[group.bin.rackId]?.code ?? '—',
-    levelCode: levelMap[group.bin.levelId]?.code ?? '—',
+    zoneCode: zoneMap[group.bin.zoneId]?.code ?? '—',
+    deviceCode: deviceMap[group.bin.deviceId]?.code ?? '—',
     reason: [
-      `Room ${roomMap[group.bin.roomId]?.pickPriority}`,
-      `Aisle ${aisleMap[group.bin.aisleId]?.pickPriority}`,
-      `Rack ${rackMap[group.bin.rackId]?.pickPriority}`,
-      `Level ${levelMap[group.bin.levelId]?.pickPriority}`,
+      `Zone ${zoneMap[group.bin.zoneId]?.pickPriority}`,
+      `Device ${deviceMap[group.bin.deviceId]?.pickPriority}`,
       `Bin ${group.bin.pickPriority}`,
       group.bin.fastMoving ? 'FastMoving' : null,
     ]
@@ -340,11 +272,6 @@ export function buildPickerPathForWave(
   }))
 }
 
-export function suggestBinCode(parts: {
-  roomCode: string
-  rackCode: string
-  levelCode: string
-  seq: number
-}) {
-  return `${parts.roomCode}.${parts.rackCode}.${parts.levelCode}.${String(parts.seq).padStart(2, '0')}`
+export function suggestBinCode(parts: { zoneCode: string; deviceCode: string; seq: number }) {
+  return `${parts.zoneCode}.${parts.deviceCode}.${String(parts.seq).padStart(2, '0')}`
 }
