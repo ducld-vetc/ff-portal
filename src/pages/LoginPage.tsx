@@ -68,7 +68,10 @@ export default function LoginPage() {
           </Button>
         </Form>
       </Card>
-      <span className="login-footer">© 2026 FulfillOne · Vận hành fulfillment thông minh</span>
+      <span className="login-footer">
+        © 2026 FulfillOne · Vận hành fulfillment thông minh ·{' '}
+        <a href="/pda/login">Mở WAREHOUSE OPS</a>
+      </span>
     </div>
   )
 }

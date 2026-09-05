@@ -140,6 +140,7 @@ export const permissionTree: PermissionNode[] = [
         title: 'Nhập kho',
         children: [
           { key: 'operations.inbound.view', title: 'Xem yêu cầu nhập kho' },
+          { key: 'operations.inbound.import', title: 'Import yêu cầu nhập kho' },
           { key: 'operations.inbound.checkin', title: 'Check-in / nhận hàng' },
           { key: 'operations.inbound.complete', title: 'Hoàn thành phiếu nhập' },
           { key: 'operations.inbound.export', title: 'Xuất Excel nhập kho' },
@@ -286,6 +287,74 @@ export const permissionTree: PermissionNode[] = [
         key: 'system.health',
         title: 'Trạng thái dịch vụ',
         children: [{ key: 'system.health.view', title: 'Xem health check' }],
+      },
+    ],
+  },
+  {
+    key: 'pda',
+    title: 'PDA (Thiết bị cầm tay)',
+    children: [
+      {
+        key: 'pda.auth',
+        title: 'Đăng nhập & phiên',
+        children: [
+          { key: 'pda.auth.login', title: 'Đăng nhập PDA' },
+          { key: 'pda.session.warehouse', title: 'Chọn kho / ca làm việc' },
+        ],
+      },
+      {
+        key: 'pda.menu',
+        title: 'Menu PDA',
+        children: [
+          { key: 'pda.menu.inbound', title: 'Menu Nhập kho' },
+          { key: 'pda.menu.outbound', title: 'Menu Xuất kho' },
+          { key: 'pda.menu.shipping', title: 'Menu Vận chuyển' },
+          { key: 'pda.menu.inventory', title: 'Menu Tồn kho' },
+        ],
+      },
+      {
+        key: 'pda.inbound',
+        title: 'PDA — Nhập kho',
+        children: [
+          { key: 'pda.inbound.checkin', title: 'Check-in IR' },
+          { key: 'pda.inbound.receive', title: 'Nhận hàng (Receiving)' },
+          { key: 'pda.inbound.complete', title: 'Hoàn tất IR' },
+          { key: 'pda.inbound.putaway', title: 'Lưu kho (Putaway)' },
+        ],
+      },
+      {
+        key: 'pda.pick',
+        title: 'PDA — Lấy hàng',
+        children: [
+          { key: 'pda.pick.list', title: 'Xem pick list được gán' },
+          { key: 'pda.pick.execute', title: 'Thực hiện directed pick' },
+          { key: 'pda.pick.complete', title: 'Hoàn tất phiên lấy hàng' },
+        ],
+      },
+      {
+        key: 'pda.pack',
+        title: 'PDA — Đóng gói',
+        children: [
+          { key: 'pda.pack.execute', title: 'Đóng gói theo tote' },
+          { key: 'pda.pack.print_label', title: 'In nhãn vận chuyển' },
+        ],
+      },
+      {
+        key: 'pda.handover',
+        title: 'PDA — Bàn giao ĐVVC',
+        children: [
+          { key: 'pda.handover.execute', title: 'Quét kiện vào phiên' },
+          { key: 'pda.handover.confirm', title: 'Xác nhận bàn giao' },
+        ],
+      },
+      {
+        key: 'pda.inventory',
+        title: 'PDA — Tồn kho',
+        children: [
+          { key: 'pda.inquiry.view', title: 'Tra cứu vị trí / SKU' },
+          { key: 'pda.stocktake.execute', title: 'Kiểm kê trên PDA (Phase 2)' },
+          { key: 'pda.adjust.execute', title: 'Điều chỉnh tồn (Supervisor)' },
+        ],
       },
     ],
   },

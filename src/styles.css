@@ -1657,6 +1657,10 @@ button {
   min-width: 0;
 }
 
+.ops-handover-row-cancelled td {
+  background: #fff2f0 !important;
+}
+
 .ops-handover-scan-row {
   display: flex;
   align-items: stretch;
@@ -1883,6 +1887,78 @@ button {
   margin: 0 0 14px !important;
   color: #16a34a !important;
   font-weight: 700 !important;
+}
+
+.ops-pack-session-page {
+  padding-bottom: 88px;
+}
+
+.ops-pack-session-head {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--color-border, #e5e7eb);
+}
+
+.ops-pack-order-card {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  padding: 12px 14px;
+  margin-bottom: 12px;
+  border: 1px solid var(--color-border, #e5e7eb);
+  border-radius: 8px;
+  background: #fafafa;
+}
+
+.ops-pack-order-card.is-active {
+  border-color: #93c5fd;
+  background: #eff6ff;
+}
+
+.ops-pack-suggest {
+  padding: 16px;
+  border-radius: 8px;
+  background: #f8fafc;
+  border: 1px dashed #cbd5e1;
+  margin-bottom: 8px;
+}
+
+.ops-pack-suggest-with-media {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+}
+
+.ops-pack-suggest-with-media .product-thumb,
+.ops-pack-suggest-with-media .product-thumb-img {
+  width: 72px;
+  height: 72px;
+  flex-shrink: 0;
+}
+
+.ops-pack-actions {
+  position: sticky;
+  bottom: 0;
+  z-index: 5;
+  padding: 12px 16px;
+  margin-top: 8px;
+  background: rgba(255, 255, 255, 0.96);
+  border-top: 1px solid var(--color-border, #e5e7eb);
+  box-shadow: 0 -4px 16px rgba(15, 23, 42, 0.06);
+}
+
+.ops-pack-row-active td {
+  background: #eff6ff !important;
+}
+
+@media (max-width: 900px) {
+  .ops-pack-session-head,
+  .ops-pack-order-card {
+    grid-template-columns: 1fr 1fr;
+  }
 }
 
 .ops-doc-btn {

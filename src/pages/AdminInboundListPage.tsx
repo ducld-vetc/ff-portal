@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { FilterOutlined, SearchOutlined } from '@ant-design/icons'
+import { DownloadOutlined, FilterOutlined, SearchOutlined, UploadOutlined } from '@ant-design/icons'
 import {
   Button,
   DatePicker,
@@ -16,7 +16,9 @@ import {
   type TableColumnsType,
 } from 'antd'
 import dayjs from 'dayjs'
+import { InboundImportModal } from '../components/InboundImportModal'
 import { PageHeader } from '../components/PageHeader'
+import { downloadInboundImportTemplate } from '../data/inboundImport'
 import {
   goodsConditionColor,
   goodsConditionLabel,
@@ -35,7 +37,8 @@ const { RangePicker } = DatePicker
 
 export default function AdminInboundListPage() {
   const navigate = useNavigate()
-  const rows = listInboundRequests()
+  const [listVersion, setListVersion] = useState(0)
+  const rows = useMemo(() => listInboundRequests(), [listVersion])
   const [searchField, setSearchField] = useState<InboundSearchField>('partnerIrCode')
   const [query, setQuery] = useState('')
   const [createdRange, setCreatedRange] = useState<[dayjs.Dayjs, dayjs.Dayjs] | null>([
@@ -43,6 +46,7 @@ export default function AdminInboundListPage() {
     dayjs(),
   ])
   const [advancedOpen, setAdvancedOpen] = useState(false)
+  const [importOpen, setImportOpen] = useState(false)
   const [advForm] = Form.useForm()
   const [advFilters, setAdvFilters] = useState<{
     status?: InboundStatus
@@ -169,6 +173,16 @@ export default function AdminInboundListPage() {
         description="Vận hành → Nhập kho: tiếp nhận, check-in và hoàn thành phiếu nhập kho."
         extra={
           <Space wrap>
+            <Button icon={<DownloadOutlined />} onClick={downloadInboundImportTemplate}>
+              Tải mẫu import
+            </Button>
+            <Button
+              className="btn-success"
+              icon={<UploadOutlined />}
+              onClick={() => setImportOpen(true)}
+            >
+              Import phiếu
+            </Button>
             <Button type="primary" onClick={() => navigate('/operations/inbound/return')}>
               Tạo trả hàng
             </Button>
@@ -235,6 +249,15 @@ export default function AdminInboundListPage() {
           pagination={{ pageSize: 10, showTotal: (t) => `${t} yêu cầu` }}
         />
       </div>
+
+      <InboundImportModal
+        open={importOpen}
+        onClose={() => setImportOpen(false)}
+        onImported={() => {
+          setListVersion((v) => v + 1)
+          setCreatedRange([dayjs().subtract(30, 'day'), dayjs()])
+        }}
+      />
 
       <Drawer
         title="Bộ lọc nâng cao"

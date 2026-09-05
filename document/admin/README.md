@@ -24,6 +24,7 @@ Nhóm menu **Vận hành** cũng gắn nhãn Mới. Chi tiết theo submenu:
 - [Lấy hàng](./04-van-hanh/02-xuat-kho/lay-hang.md)
 - [Lấy hàng B2B](./04-van-hanh/02-xuat-kho/lay-hang-b2b.md)
 - [Đóng gói](./04-van-hanh/02-xuat-kho/dong-goi.md)
+- [Đóng gói theo loại DSLH (spec Dev)](./04-van-hanh/02-xuat-kho/dong-goi-theo-loai-dslh.md)
 - [Đóng gói theo nhãn](./04-van-hanh/02-xuat-kho/dong-goi-theo-nhan.md)
 
 ### Tồn kho

@@ -1,6 +1,6 @@
 import { useMemo, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { DoubleRightOutlined, FileExcelOutlined, SearchOutlined } from '@ant-design/icons'
+import { DoubleRightOutlined, DownloadOutlined, FileExcelOutlined, SearchOutlined } from '@ant-design/icons'
 import {
   Button,
   Input,
@@ -12,17 +12,20 @@ import {
   type InputRef,
   type TableColumnsType,
 } from 'antd'
+import { HandoverImportModal } from '../components/HandoverImportModal'
 import { PageHeader } from '../components/PageHeader'
 import {
   buildOutboundSummaries,
   createCarrierHandover,
   findDemoPackage,
   handoverCarrierOptions,
+  isOutboundCancelled,
   packageConditionOptions,
   returnTypeOptions,
   type HandoverPackage,
   type HandoverSessionType,
 } from '../data/carrierHandovers'
+import { downloadHandoverImportTemplate } from '../data/handoverImport'
 
 type Props = {
   mode: HandoverSessionType
@@ -40,6 +43,7 @@ export default function AdminCarrierHandoverCreatePage({ mode }: Props) {
   const [returnType, setReturnType] = useState('Hàng trả')
   const [condition, setCondition] = useState('Tốt')
   const [packages, setPackages] = useState<HandoverPackage[]>([])
+  const [importOpen, setImportOpen] = useState(false)
 
   const title = isReceipt
     ? 'Tạo phiên bàn giao - Tạo phiên nhận'
@@ -67,6 +71,13 @@ export default function AdminCarrierHandoverCreatePage({ mode }: Props) {
     }
     if (packages.some((p) => p.packageCode === hit.packageCode)) {
       message.warning(`Kiện ${hit.packageCode} đã có trong phiên`)
+      setScanValue('')
+      scanRef.current?.focus()
+      return
+    }
+
+    if (isOutboundCancelled(hit.outboundCode)) {
+      message.error(`OR ${hit.outboundCode} đã hủy — không thêm vào phiên`)
       setScanValue('')
       scanRef.current?.focus()
       return
@@ -220,10 +231,15 @@ export default function AdminCarrierHandoverCreatePage({ mode }: Props) {
                 />
               </div>
               <Button
-                className="btn-success"
-                icon={<FileExcelOutlined />}
-                onClick={() => message.info('Demo: import kiện từ file')}
+                icon={<DownloadOutlined />}
+                onClick={() => {
+                  downloadHandoverImportTemplate(mode)
+                  message.success('Đã tải file mẫu import CSV')
+                }}
               >
+                Tải mẫu
+              </Button>
+              <Button className="btn-success" icon={<FileExcelOutlined />} onClick={() => setImportOpen(true)}>
                 Import
               </Button>
             </div>
@@ -318,6 +334,16 @@ export default function AdminCarrierHandoverCreatePage({ mode }: Props) {
           </div>
         </div>
       </div>
+
+      <HandoverImportModal
+        open={importOpen}
+        sessionType={mode}
+        existing={packages}
+        defaultReturnType={returnType}
+        defaultCondition={condition}
+        onClose={() => setImportOpen(false)}
+        onImported={(next) => setPackages(next)}
+      />
     </div>
   )
 }

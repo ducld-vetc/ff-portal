@@ -25,7 +25,9 @@ import {
 } from 'antd'
 import dayjs from 'dayjs'
 import { IconAction } from '../components/IconAction'
+import { InboundImportModal } from '../components/InboundImportModal'
 import { PageHeader } from '../components/PageHeader'
+import { downloadInboundImportTemplate } from '../data/inboundImport'
 import {
   goodsConditionColor,
   goodsConditionLabel,
@@ -44,10 +46,12 @@ const { RangePicker } = DatePicker
 
 export default function ClientInboundListPage() {
   const navigate = useNavigate()
-  const rows = listInboundRequests()
+  const [listVersion, setListVersion] = useState(0)
+  const rows = useMemo(() => listInboundRequests(), [listVersion])
   const [searchField, setSearchField] = useState<InboundSearchField>('partnerIrCode')
   const [query, setQuery] = useState('')
   const [advancedOpen, setAdvancedOpen] = useState(false)
+  const [importOpen, setImportOpen] = useState(false)
   const [advForm] = Form.useForm()
   const [advFilters, setAdvFilters] = useState<{
     status?: InboundStatus
@@ -172,12 +176,15 @@ export default function ClientInboundListPage() {
         extra={
           <Space wrap>
             <IconAction
+              title="Tải mẫu import CSV"
+              icon={<DownloadOutlined />}
+              onClick={downloadInboundImportTemplate}
+            />
+            <IconAction
               title="Import yêu cầu nhập kho"
               className="btn-success"
               icon={<UploadOutlined />}
-              onClick={() =>
-                message.info('Demo: chọn file Excel/CSV để import yêu cầu nhập kho')
-              }
+              onClick={() => setImportOpen(true)}
             />
             <IconAction
               title="Tạo nhập kho"
@@ -241,6 +248,12 @@ export default function ClientInboundListPage() {
           pagination={{ pageSize: 10, showTotal: (t) => `${t} yêu cầu` }}
         />
       </div>
+
+      <InboundImportModal
+        open={importOpen}
+        onClose={() => setImportOpen(false)}
+        onImported={() => setListVersion((v) => v + 1)}
+      />
 
       <Drawer
         title="Tìm kiếm nâng cao"

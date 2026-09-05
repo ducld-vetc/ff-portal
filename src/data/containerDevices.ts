@@ -178,6 +178,35 @@ function buildDevices(): ContainerDeviceRow[] {
 
 export const seedContainerDevices: ContainerDeviceRow[] = buildDevices()
 
+let containerDeviceStore: ContainerDeviceRow[] = [...seedContainerDevices]
+
+export function updateContainerDeviceStatus(code: string, status: ContainerDeviceStatus) {
+  const normalized = code.trim().toUpperCase()
+  const idx = containerDeviceStore.findIndex((r) => r.code.toUpperCase() === normalized)
+  if (idx < 0) {
+    const created: ContainerDeviceRow = {
+      id: `cd-pack-${normalized}`,
+      code: normalized,
+      deviceType: 'Tote',
+      status,
+      ageBucket: 'n0',
+      skuCount: 0,
+      productQty: 0,
+      operator: operators[2],
+      tab: 'devices',
+    }
+    containerDeviceStore = [created, ...containerDeviceStore]
+    return created
+  }
+  const next = { ...containerDeviceStore[idx], status }
+  containerDeviceStore = [
+    ...containerDeviceStore.slice(0, idx),
+    next,
+    ...containerDeviceStore.slice(idx + 1),
+  ]
+  return next
+}
+
 export type CancelledPackageStatus = 'ready_cancelled_putaway' | 'putaway_cancelled' | 'completed'
 
 export type CancelledPackageRow = {
@@ -239,8 +268,8 @@ export const seedCancelledPackages: CancelledPackageRow[] = cancelledSeedMeta.ma
 }))
 
 export function listContainerDevices(deviceType?: string) {
-  if (!deviceType) return seedContainerDevices
-  return seedContainerDevices.filter((r) => r.deviceType === deviceType)
+  if (!deviceType) return containerDeviceStore
+  return containerDeviceStore.filter((r) => r.deviceType === deviceType)
 }
 
 export function listCancelledPackages() {

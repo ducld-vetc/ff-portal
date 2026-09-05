@@ -34,10 +34,12 @@ const { RangePicker } = DatePicker
 const pickMethods = [
   { value: 'Cluster', label: 'Gom đơn xuất (Cluster)' },
   { value: 'PTO', label: 'Lấy theo đơn xuất (PTO)' },
+  { value: 'MIO', label: 'MIO - Đơn nhiều sản phẩm (1 tote = 1 đơn)' },
   { value: 'PTS', label: 'Lấy hàng và phân loại (PTS)' },
   { value: 'PTD', label: 'PTD - Lấy hàng và bàn giao' },
   { value: 'SIO', label: 'SIO - Chỉ xử lý các đơn một sản phẩm' },
   { value: 'SSO', label: 'SSO - Chỉ xử lý các đơn hàng cùng mã sản phẩm' },
+  { value: 'SMO', label: 'SMO - Đơn giống nhau về bộ SKU và số lượng từng mã' },
   {
     value: 'MSMQ',
     label: 'MSMQ - Chỉ xử lý các đơn hàng nhiều sản phẩm giống nhau chỉ khác số lượng',

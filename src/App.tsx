@@ -75,6 +75,25 @@ import {
   ClientStocktakePage,
   ClientUnitsPage,
 } from './pages/ClientOperationsPages'
+import PdaLoginPage from './pages/pda/PdaLoginPage'
+import PdaLayout from './pda/PdaLayout'
+import PdaHomePage from './pda/pages/PdaHomePage'
+import PdaReceivingPage from './pda/pages/PdaReceivingPage'
+import PdaPutawayPage from './pda/pages/PdaPutawayPage'
+import PdaPickPage from './pda/pages/PdaPickPage'
+import PdaPackPage from './pda/pages/PdaPackPage'
+import PdaHandoverPage from './pda/pages/PdaHandoverPage'
+import PdaInventoryPage from './pda/pages/PdaInventoryPage'
+import PdaAssignedBillsPage from './pda/pages/PdaAssignedBillsPage'
+import PdaLocationPage from './pda/pages/PdaLocationPage'
+import PdaProductLookupPage from './pda/pages/PdaProductLookupPage'
+import PdaTransferPage from './pda/pages/PdaTransferPage'
+import PdaReturnNotePage from './pda/pages/PdaReturnNotePage'
+import PdaReturnReceiptPage from './pda/pages/PdaReturnReceiptPage'
+import PdaConversionPage from './pda/pages/PdaConversionPage'
+import PdaRepackPage from './pda/pages/PdaRepackPage'
+import PdaComingSoonPage from './pda/pages/PdaComingSoonPage'
+import PdaSessionsPage from './pda/pages/PdaSessionsPage'
 import './styles.css'
 
 export default function App() {
@@ -92,6 +111,41 @@ export default function App() {
                   </PublicOnly>
                 }
               />
+
+              {/* PDA — mobile WMS (standalone layout) */}
+              <Route path="/pda/login" element={<PdaLoginPage />} />
+              <Route path="/pda" element={<PdaLayout />}>
+                <Route index element={<Navigate to="/pda/home" replace />} />
+                <Route path="home" element={<PdaHomePage />} />
+                <Route path="receiving" element={<PdaReceivingPage />} />
+                <Route path="putaway" element={<PdaPutawayPage />} />
+                <Route path="picking" element={<PdaPickPage />} />
+                <Route path="packing" element={<PdaPackPage />} />
+                <Route path="handover" element={<Navigate to="/pda/handover/delivery" replace />} />
+                <Route path="handover/delivery" element={<PdaHandoverPage mode="delivery" />} />
+                <Route path="handover/receipt" element={<PdaHandoverPage mode="receipt" />} />
+                <Route path="inventory" element={<PdaInventoryPage />} />
+                <Route path="inventory/assigned-bills" element={<PdaAssignedBillsPage />} />
+                <Route path="location" element={<PdaLocationPage />} />
+                <Route path="product-lookup" element={<PdaProductLookupPage />} />
+                <Route path="transfer" element={<PdaTransferPage />} />
+                <Route path="return-note" element={<PdaReturnNotePage />} />
+                <Route path="return-receipt" element={<PdaReturnReceiptPage />} />
+                <Route path="conversion/uom" element={<PdaConversionPage />} />
+                <Route path="conversion/condition" element={<PdaConversionPage />} />
+                <Route path="repack" element={<PdaRepackPage />} />
+                <Route path="coming-soon" element={<PdaComingSoonPage />} />
+                <Route path="sessions" element={<PdaSessionsPage />} />
+                {/* legacy Phase 1 paths */}
+                <Route path="inbound/check-in" element={<Navigate to="/pda/receiving" replace />} />
+                <Route path="inbound/receiving" element={<Navigate to="/pda/receiving" replace />} />
+                <Route path="inbound/putaway" element={<Navigate to="/pda/putaway" replace />} />
+                <Route path="outbound/pick" element={<Navigate to="/pda/picking" replace />} />
+                <Route path="outbound/pack" element={<Navigate to="/pda/packing" replace />} />
+                <Route path="shipping/handover" element={<Navigate to="/pda/handover/delivery" replace />} />
+                <Route path="inventory/inquiry" element={<Navigate to="/pda/location" replace />} />
+              </Route>
+
               <Route element={<AppLayout />}>
                 <Route index element={<Navigate to="/dashboard" replace />} />
 

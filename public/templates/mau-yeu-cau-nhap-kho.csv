@@ -1,0 +1,4 @@
+﻿Ma_IR_doi_tac,Ma_kho,Loai,TTHH,Nha_cung_cap,Ngay_du_kien,Ma_tham_chieu,Doi_tac,Tai_xe,So_xe,So_container,Ghi_chu,SKU,SKU_doi_tac,So_luong,Don_gia,DVT,Serial
+IMP-2026-001,WH-HCM-01,inbound,new,EverCharge Supplier,2026-09-10,PO-EC-9001,EVC - CONG TY TNHH EVERCHARGE,,,,Import mau phieu 1,SKU-CHARGER-20W,EVC-CHG-20,50,85000,Cai,
+IMP-2026-001,WH-HCM-01,inbound,new,EverCharge Supplier,2026-09-10,PO-EC-9001,EVC - CONG TY TNHH EVERCHARGE,,,,Import mau phieu 1,SKU-CABLE-C-C-1M,EVC-CABLE-01,30,45000,Cai,
+IMP-2026-002,KBL,inbound,new,SHEIN,10/09/2026,PO-SHEIN-IMP,BLN - CONG TY TNHH BELLA DA LAT,Nguyen Van A,51A-12345,,Import mau phieu 2,SKU-SERUM-30ML,GM-SERUM-A,5,120000,Cai,

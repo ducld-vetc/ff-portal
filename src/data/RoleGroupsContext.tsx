@@ -1,5 +1,6 @@
 import { createContext, useContext, useMemo, useState, type ReactNode } from 'react'
 import { ALL_PERMISSION_KEYS } from './permissions'
+import { pdaRolePresets } from './pdaRoles'
 
 export type RoleGroup = {
   id: string
@@ -49,6 +50,7 @@ const defaultGroups: RoleGroup[] = [
       'pickup.assign',
       'pickup.update',
       'operations.inbound.view',
+      'operations.inbound.import',
       'operations.inbound.checkin',
       'operations.inbound.complete',
       'operations.outbound.view',
@@ -84,6 +86,16 @@ const defaultGroups: RoleGroup[] = [
     userCount: 1,
     updatedAt: '2026-07-15T14:20:00',
   },
+  ...pdaRolePresets.map((preset, index) => ({
+    id: `rg-pda-${preset.code.toLowerCase().replace(/_/g, '-')}`,
+    code: preset.code,
+    name: preset.name,
+    description: preset.description,
+    permissionKeys: preset.permissionKeys,
+    isSystem: false,
+    userCount: index === 0 ? 2 : 0,
+    updatedAt: '2026-08-23T12:00:00',
+  })),
 ]
 
 function loadGroups(): RoleGroup[] {

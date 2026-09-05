@@ -27,6 +27,7 @@
 - Xem chi tiết IR
 - Lọc nâng cao: trạng thái, kho, NCC, loại, khoảng ngày
 - Import / Xuất Excel / Xác nhận hàng loạt (theo UI)
+- **Import CSV** theo mẫu `mau-yeu-cau-nhap-kho.csv` (chung với Admin)
 
 ### Ngoài phạm vi
 - Thao tác kho nội bộ (check-in vật lý, picking sàn) — thuộc portal Admin.

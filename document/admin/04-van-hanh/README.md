@@ -5,7 +5,7 @@ Nhóm menu **Vận hành** trên Admin cũng gắn badge **Mới**. Tài liệu 
 | Submenu | Thư mục | Chức năng |
 |---|---|---|
 | Nhập kho | [`01-nhap-kho/`](./01-nhap-kho/) | Yêu cầu nhập kho |
-| Xuất kho | [`02-xuat-kho/`](./02-xuat-kho/) | Yêu cầu xuất kho, Lấy hàng, Lấy hàng B2B, Đóng gói, Đóng gói theo nhãn |
+| Xuất kho | [`02-xuat-kho/`](./02-xuat-kho/) | Yêu cầu xuất kho, Lấy hàng, Lấy hàng B2B, Đóng gói, [Đóng gói theo loại DSLH](./02-xuat-kho/dong-goi-theo-loai-dslh.md), Đóng gói theo nhãn |
 | Tồn kho | [`03-ton-kho/`](./03-ton-kho/) | Điều chỉnh tồn |
 | Vận chuyển | [`04-van-chuyen/`](./04-van-chuyen/) | Bàn giao ĐVVC, Cập nhật đơn xuất |
 | Tiện ích | [`05-tien-ich/`](./05-tien-ich/) | Vấn đề phát sinh, In nhãn, Thiết bị chứa hàng |

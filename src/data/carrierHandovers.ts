@@ -276,6 +276,16 @@ export function findDemoPackage(scan: string): HandoverPackage | undefined {
   )
 }
 
+import { getOutboundRequest } from './outboundRequests'
+
+export function isOutboundCancelled(outboundCode: string) {
+  return getOutboundRequest(outboundCode)?.status === 'cancelled'
+}
+
+export function listCancelledPackagesInSession(packages: HandoverPackage[]) {
+  return packages.filter((p) => isOutboundCancelled(p.outboundCode))
+}
+
 export function buildOutboundSummaries(packages: HandoverPackage[]) {
   const map = new Map<
     string,
@@ -291,11 +301,29 @@ export function buildOutboundSummaries(packages: HandoverPackage[]) {
     cur.totalPackages = Math.max(cur.totalPackages, cur.sessionPackages)
     map.set(pkg.outboundCode, cur)
   }
-  return Array.from(map.values()).map((row) => ({
-    outboundCode: row.outboundCode,
-    remainingPackages: Math.max(0, row.totalPackages - row.sessionPackages),
-    sessionPackages: row.sessionPackages,
-    totalPackages: row.totalPackages,
-    processingStatus: 'Bình thường' as const,
-  }))
+  return Array.from(map.values()).map((row) => {
+    const cancelled = isOutboundCancelled(row.outboundCode)
+    return {
+      outboundCode: row.outboundCode,
+      remainingPackages: Math.max(0, row.totalPackages - row.sessionPackages),
+      sessionPackages: row.sessionPackages,
+      totalPackages: row.totalPackages,
+      processingStatus: cancelled ? ('Đã hủy' as const) : ('Bình thường' as const),
+      cancelled,
+    }
+  })
+}
+
+export function removePackagesFromSession(
+  session: CarrierHandoverSession,
+  predicate: (pkg: HandoverPackage) => boolean,
+) {
+  const packages = session.packages.filter((p) => !predicate(p))
+  const outboundCodes = new Set(packages.map((p) => p.outboundCode))
+  return {
+    ...session,
+    packages,
+    packageCount: packages.length,
+    outboundCount: outboundCodes.size,
+  }
 }

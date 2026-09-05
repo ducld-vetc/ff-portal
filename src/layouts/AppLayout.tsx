@@ -6,6 +6,7 @@ import {
   HomeOutlined,
   MenuFoldOutlined,
   MenuUnfoldOutlined,
+  MobileOutlined,
   MoonOutlined,
   SwapOutlined,
   SunOutlined,
@@ -168,6 +169,11 @@ export default function AppLayout() {
     }
   }
 
+  const openPda = () => {
+    const hasPdaSession = !!localStorage.getItem('ffm-pda-auth')
+    navigate(hasPdaSession ? '/pda/home' : '/pda/login')
+  }
+
   if (!user) {
     return <Navigate to="/login" replace state={{ from: location.pathname }} />
   }
@@ -276,6 +282,14 @@ export default function AppLayout() {
             </Space>
 
             <div className="header-actions">
+              {!isCustomer ? (
+                <IconAction
+                  title="Mở WAREHOUSE OPS"
+                  icon={<MobileOutlined />}
+                  onClick={openPda}
+                  className="pda-switch-btn"
+                />
+              ) : null}
               <IconAction
                 title={isCustomer ? 'Sang Admin' : 'Sang Khách hàng'}
                 type="primary"
@@ -296,6 +310,17 @@ export default function AppLayout() {
                 menu={{
                   items: [
                     { key: 'profile', label: 'Hồ sơ cá nhân', icon: <UserOutlined /> },
+                    ...(!isCustomer
+                      ? [
+                          {
+                            key: 'pda',
+                            label: 'Mở WAREHOUSE OPS',
+                            icon: <MobileOutlined />,
+                            onClick: openPda,
+                          },
+                          { type: 'divider' as const },
+                        ]
+                      : []),
                     {
                       key: 'switch-portal',
                       label: isCustomer ? 'Chuyển sang Admin' : 'Chuyển sang Khách hàng',

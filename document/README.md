@@ -10,6 +10,7 @@ Cấu trúc bám theo menu 2 portal:
 |---|---|---|
 | [`admin/`](./admin/) | Admin / nội bộ kho | Vận hành kho, thiết lập, nhân sự, sản phẩm, ĐVVC |
 | [`customer/`](./customer/) | Khách hàng / Partner | Bảng điều khiển, cửa hàng, sản phẩm |
+| [`pda/`](./pda/) | PDA / RF Mobile WMS | Execution layer trên sàn kho (Phase 1 MVP) |
 
 ## Quy ước tài liệu
 
@@ -32,5 +33,6 @@ Xem index chi tiết:
 
 - [Admin](./admin/README.md)
 - [Customer](./customer/README.md) — gồm cả nhóm **Vận hành** (Nhập/Xuất/Vận đơn/Kiểm kê/Xuất kho lỗi)
+- [PDA](./pda/README.md) — ứng dụng thiết bị cầm tay (WMS execution)
 
 > **Lưu ý triển khai hiện tại:** nhiều màn vận hành đang dùng dữ liệu mock/in-memory trong `src/data/*`. Tài liệu dưới đây mô tả nghiệp vụ đích để phát triển backend/API đầy đủ.
